@@ -81,14 +81,13 @@ export default function ResourcesPage() {
               <BookOpen className="w-4 h-4" />
               Read online
             </Link>
-            <a
-              href="/bitcoin-fud-buster-guide.pdf"
-              download
+            <Link
+              href="/guide"
               className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-bitcoin hover:bg-bitcoin-dark text-dark-950 text-sm font-semibold rounded-lg transition-colors"
             >
               <Download className="w-4 h-4" />
               Download PDF
-            </a>
+            </Link>
           </div>
         </div>
       </section>

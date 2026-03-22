@@ -55,3 +55,29 @@
 html {
   scroll-behavior: smooth;
 }
+
+/* Print styles for /guide PDF export */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  header, footer, .print\\:hidden {
+    display: none !important;
+  }
+  main {
+    padding-top: 0 !important;
+  }
+  .card {
+    background: white !important;
+    border-color: #e5e7eb !important;
+    box-shadow: none !important;
+  }
+  .gradient-text {
+    background: none !important;
+    -webkit-text-fill-color: #F7931A !important;
+    color: #F7931A !important;
+  }
+}
