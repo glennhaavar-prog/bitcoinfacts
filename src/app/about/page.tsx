@@ -1,4 +1,4 @@
-import { ExternalLink, Github, Heart, Zap } from "lucide-react";
+import { ExternalLink, Heart, Zap, Play } from "lucide-react";
 
 const sources = [
   {
@@ -45,6 +45,39 @@ export default function AboutPage() {
         </p>
       </div>
 
+      {/* Daniel Batten Video */}
+      <section className="mb-8">
+        <a
+          href="https://www.youtube.com/watch?v=Zak12xxYg0k"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="card-hover p-6 flex flex-col sm:flex-row items-center gap-5 group block"
+        >
+          <div className="w-full sm:w-48 h-32 sm:h-28 rounded-lg bg-dark-700 flex items-center justify-center flex-shrink-0 relative overflow-hidden">
+            <img
+              src="https://img.youtube.com/vi/Zak12xxYg0k/hqdefault.jpg"
+              alt="Daniel Batten - Bitcoin and Energy"
+              className="w-full h-full object-cover rounded-lg opacity-80 group-hover:opacity-100 transition-opacity"
+            />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-full bg-bitcoin/90 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Play className="w-5 h-5 text-dark-950 ml-0.5" />
+              </div>
+            </div>
+          </div>
+          <div>
+            <p className="text-[10px] text-bitcoin font-semibold uppercase tracking-wider mb-1">Featured Video</p>
+            <h2 className="text-lg font-bold text-white group-hover:text-bitcoin transition-colors">
+              Daniel Batten — Bitcoin &amp; the Environment
+            </h2>
+            <p className="text-dark-300 text-sm mt-1">
+              The essential talk on why Bitcoin mining is not what most people think. Data-driven, nuanced, and eye-opening.
+            </p>
+          </div>
+        </a>
+      </section>
+
+      {/* Mission */}
       <section className="card p-8 mb-8">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-xl bg-bitcoin/10 flex items-center justify-center">
@@ -72,6 +105,7 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* Method */}
       <section className="card p-8 mb-8">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-xl bg-green-400/10 flex items-center justify-center">
@@ -98,6 +132,7 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* Key Sources */}
       <section className="mb-8">
         <h2 className="text-xl font-bold text-white mb-4">Key Sources</h2>
         <div className="space-y-3">
@@ -119,14 +154,25 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* Beyond 66 */}
       <section className="card p-8 text-center">
-        <Github className="w-10 h-10 text-dark-300 mx-auto mb-4" />
-        <h2 className="text-xl font-bold text-white mb-2">Open Source</h2>
+        <div className="w-10 h-10 rounded-xl bg-bitcoin/10 flex items-center justify-center mx-auto mb-4">
+          <Zap className="w-5 h-5 text-bitcoin" />
+        </div>
+        <h2 className="text-xl font-bold text-white mb-2">Built by Beyond 66</h2>
         <p className="text-dark-300 text-sm max-w-md mx-auto mb-4">
-          FUD Buster is open source under the MIT license. Contribute facts,
-          improvements or translations.
+          FUD Buster is a project by Beyond 66 — advancing Bitcoin adoption
+          through education, tools and research.
         </p>
-        <p className="text-dark-500 text-xs">A Beyond 66 project</p>
+        <a
+          href="https://www.bitcoinbeyond66.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 px-6 py-2.5 bg-bitcoin hover:bg-bitcoin-dark text-dark-950 font-semibold text-sm rounded-lg transition-colors"
+        >
+          Visit bitcoinbeyond66.com
+          <ExternalLink className="w-4 h-4" />
+        </a>
       </section>
     </div>
   );

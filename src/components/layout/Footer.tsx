@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Zap } from "lucide-react";
+import { Zap, ExternalLink } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -17,9 +17,15 @@ export default function Footer() {
               Fact-based responses to Bitcoin criticism. Built with Daniel
               Batten&apos;s communication playbook and verified research.
             </p>
-            <p className="text-dark-400 text-xs mt-4">
+            <a
+              href="https://www.bitcoinbeyond66.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 mt-4 text-bitcoin hover:text-bitcoin-light text-sm font-medium transition-colors"
+            >
               A Beyond 66 project
-            </p>
+              <ExternalLink className="w-3.5 h-3.5" />
+            </a>
           </div>
 
           <div>
@@ -29,6 +35,8 @@ export default function Footer() {
                 { href: "/agent", label: "FUD Buster Agent" },
                 { href: "/facts", label: "Facts Library" },
                 { href: "/playbook", label: "Playbook" },
+                { href: "/resources", label: "Resources" },
+                { href: "/contribute", label: "Contribute Facts" },
                 { href: "/about", label: "About" },
               ].map((link) => (
                 <li key={link.href}>
@@ -47,6 +55,7 @@ export default function Footer() {
             <h3 className="font-semibold text-white text-sm mb-3">Resources</h3>
             <ul className="space-y-2">
               {[
+                { href: "https://www.bitcoinbeyond66.com", label: "Bitcoin Beyond 66" },
                 { href: "https://batcoinz.com", label: "Daniel Batten" },
                 { href: "https://ccaf.io/cbnsi/cbeci", label: "Cambridge CBECI" },
                 { href: "https://woocharts.com/esg-bitcoin-mining-sustainability/", label: "WooCharts ESG" },
@@ -66,10 +75,18 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-8 pt-8 border-t border-dark-800 text-center">
+        <div className="mt-8 pt-8 border-t border-dark-800 flex flex-col sm:flex-row items-center justify-between gap-2">
           <p className="text-dark-400 text-xs">
-            &copy; {new Date().getFullYear()} Bitcoin FUD Buster. Open source — MIT License.
+            &copy; {new Date().getFullYear()} Bitcoin FUD Buster. All rights reserved.
           </p>
+          <a
+            href="https://www.bitcoinbeyond66.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-dark-500 hover:text-bitcoin text-xs transition-colors"
+          >
+            bitcoinbeyond66.com ↗
+          </a>
         </div>
       </div>
     </footer>

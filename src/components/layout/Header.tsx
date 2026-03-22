@@ -9,7 +9,7 @@ const navLinks = [
   { href: "/agent", label: "FUD Buster" },
   { href: "/facts", label: "Facts" },
   { href: "/playbook", label: "Playbook" },
-  { href: "/contribute", label: "Contribute" },
+  { href: "/resources", label: "Resources" },
   { href: "/about", label: "About" },
 ];
 
