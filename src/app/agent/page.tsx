@@ -6,6 +6,7 @@ import {
   Copy,
   Check,
   ChevronDown,
+  ChevronUp,
   Loader2,
   AlertTriangle,
   BookOpen,
@@ -30,9 +31,9 @@ const platforms: { value: Platform; label: string }[] = [
 ];
 
 const tones: { value: Tone; label: string }[] = [
-  { value: "direct", label: "More direct" },
+  { value: "direct", label: "Direct" },
   { value: "balanced", label: "Balanced" },
-  { value: "soft", label: "Softer" },
+  { value: "soft", label: "Soft" },
 ];
 
 const triageIcons = {
@@ -54,6 +55,35 @@ const principleLabels: Record<PrincipleKey, { name: string; icon: string; color:
   authority_humility: { name: "Authority + Humility", icon: "🏅", color: "text-bitcoin bg-bitcoin/10 border-bitcoin/20" },
 };
 
+const TEXT_COLLAPSE_LENGTH = 280;
+
+function CollapsibleText({ text, className }: { text: string; className?: string }) {
+  const [expanded, setExpanded] = useState(false);
+  const needsCollapse = text.length > TEXT_COLLAPSE_LENGTH;
+
+  if (!needsCollapse) {
+    return <p className={className}>{text}</p>;
+  }
+
+  return (
+    <div>
+      <p className={className}>
+        {expanded ? text : `${text.slice(0, TEXT_COLLAPSE_LENGTH)}...`}
+      </p>
+      <button
+        onClick={() => setExpanded(!expanded)}
+        className="mt-1 text-bitcoin text-xs font-medium hover:text-bitcoin-light transition-colors inline-flex items-center gap-1"
+      >
+        {expanded ? (
+          <><ChevronUp className="w-3 h-3" /> Show less</>
+        ) : (
+          <><ChevronDown className="w-3 h-3" /> Read more</>
+        )}
+      </button>
+    </div>
+  );
+}
+
 export default function AgentPage() {
   const [fudText, setFudText] = useState("");
   const [platform, setPlatform] = useState<Platform>("general");
@@ -63,10 +93,8 @@ export default function AgentPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [showSources, setShowSources] = useState(false);
-  const [showPrinciples, setShowPrinciples] = useState(false);
+  const [expandedPanel, setExpandedPanel] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -77,6 +105,7 @@ export default function AgentPage() {
     if (!fudText.trim() || isLoading) return;
 
     setError(null);
+    setExpandedPanel(null);
     const userMessage: ChatMessage = { role: "user", content: fudText.trim() };
     setMessages((prev) => [...prev, userMessage]);
     setFudText("");
@@ -86,12 +115,7 @@ export default function AgentPage() {
       const res = await fetch("/api/fud-buster", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          fudText: userMessage.content,
-          platform,
-          language,
-          tone,
-        }),
+        body: JSON.stringify({ fudText: userMessage.content, platform, language, tone }),
       });
 
       if (!res.ok) {
@@ -105,48 +129,32 @@ export default function AgentPage() {
       const decoder = new TextDecoder();
       let fullText = "";
 
-      const assistantMessage: ChatMessage = {
-        role: "assistant",
-        content: "",
-      };
-      setMessages((prev) => [...prev, assistantMessage]);
+      setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-
         const chunk = decoder.decode(value);
-        const lines = chunk.split("\n");
-
-        for (const line of lines) {
+        for (const line of chunk.split("\n")) {
           if (line.startsWith("data: ")) {
             const data = line.slice(6);
             if (data === "[DONE]") break;
-
             try {
               const parsed = JSON.parse(data);
-              if (parsed.error) {
-                throw new Error(parsed.error);
-              }
+              if (parsed.error) throw new Error(parsed.error);
               if (parsed.text) {
                 fullText += parsed.text;
                 setMessages((prev) => {
                   const updated = [...prev];
-                  updated[updated.length - 1] = {
-                    ...updated[updated.length - 1],
-                    content: fullText,
-                  };
+                  updated[updated.length - 1] = { ...updated[updated.length - 1], content: fullText };
                   return updated;
                 });
               }
-            } catch (parseErr) {
-              // Skip malformed chunks
-            }
+            } catch { /* skip */ }
           }
         }
       }
 
-      // Try to parse the structured response
       try {
         const jsonMatch = fullText.match(/\{[\s\S]*\}/);
         if (jsonMatch) {
@@ -165,9 +173,7 @@ export default function AgentPage() {
             return updated;
           });
         }
-      } catch {
-        // If JSON parsing fails, keep the raw text
-      }
+      } catch { /* keep raw */ }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
       setMessages((prev) => prev.filter((m) => m.content !== ""));
@@ -182,64 +188,53 @@ export default function AgentPage() {
     setTimeout(() => setCopied(false), 2000);
   }
 
+  function togglePanel(panel: string) {
+    setExpandedPanel(expandedPanel === panel ? null : panel);
+  }
+
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col" style={{ height: "calc(100vh - 4rem)" }}>
+      {/* Compact header */}
+      <div className="pt-4 pb-2 flex-shrink-0">
+        <h1 className="text-xl sm:text-2xl font-bold text-white">
           FUD Buster <span className="gradient-text">Agent</span>
         </h1>
-        <p className="text-dark-300">
-          Paste a Bitcoin FUD comment and get a fact-based response.
-        </p>
       </div>
 
-      {/* Settings bar */}
-      <div className="card p-4 mb-6">
-        <div className="flex flex-wrap gap-4">
-          <div className="flex-1 min-w-[140px]">
-            <label className="block text-xs text-dark-400 mb-1.5">Platform</label>
+      {/* Sticky settings bar */}
+      <div className="card p-3 mb-3 flex-shrink-0">
+        <div className="flex items-end gap-3">
+          <div className="flex-1 min-w-0">
+            <label className="block text-[10px] text-dark-400 mb-1 uppercase tracking-wider">Platform</label>
             <div className="relative">
-              <select
-                value={platform}
-                onChange={(e) => setPlatform(e.target.value as Platform)}
-                className="w-full appearance-none bg-dark-700 border border-dark-600 text-dark-100 text-sm rounded-lg px-3 py-2 pr-8 focus:outline-none focus:border-bitcoin"
-              >
-                {platforms.map((p) => (
-                  <option key={p.value} value={p.value}>{p.label}</option>
-                ))}
+              <select value={platform} onChange={(e) => setPlatform(e.target.value as Platform)}
+                className="w-full appearance-none bg-dark-700 border border-dark-600 text-dark-100 text-xs rounded-lg px-2.5 py-1.5 pr-7 focus:outline-none focus:border-bitcoin">
+                {platforms.map((p) => <option key={p.value} value={p.value}>{p.label}</option>)}
               </select>
-              <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-dark-400 pointer-events-none" />
+              <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-dark-400 pointer-events-none" />
             </div>
           </div>
 
-          <div className="flex-1 min-w-[140px]">
-            <label className="block text-xs text-dark-400 mb-1.5">Language</label>
+          <div className="flex-1 min-w-0">
+            <label className="block text-[10px] text-dark-400 mb-1 uppercase tracking-wider">Language</label>
             <div className="relative">
-              <select
-                value={language}
-                onChange={(e) => setLanguage(e.target.value as Language)}
-                className="w-full appearance-none bg-dark-700 border border-dark-600 text-dark-100 text-sm rounded-lg px-3 py-2 pr-8 focus:outline-none focus:border-bitcoin"
-              >
+              <select value={language} onChange={(e) => setLanguage(e.target.value as Language)}
+                className="w-full appearance-none bg-dark-700 border border-dark-600 text-dark-100 text-xs rounded-lg px-2.5 py-1.5 pr-7 focus:outline-none focus:border-bitcoin">
                 <option value="en">English</option>
                 <option value="no">Norsk</option>
               </select>
-              <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-dark-400 pointer-events-none" />
+              <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-dark-400 pointer-events-none" />
             </div>
           </div>
 
-          <div className="flex-1 min-w-[140px]">
-            <label className="block text-xs text-dark-400 mb-1.5">Tone</label>
-            <div className="flex rounded-lg border border-dark-600 overflow-hidden">
+          <div className="flex-1 min-w-0">
+            <label className="block text-[10px] text-dark-400 mb-1 uppercase tracking-wider">Tone</label>
+            <div className="flex rounded-md border border-dark-600 overflow-hidden">
               {tones.map((t) => (
-                <button
-                  key={t.value}
-                  onClick={() => setTone(t.value)}
-                  className={`flex-1 px-3 py-2 text-xs font-medium transition-colors ${
-                    tone === t.value
-                      ? "bg-bitcoin text-dark-950"
-                      : "bg-dark-700 text-dark-300 hover:text-white"
-                  }`}
-                >
+                <button key={t.value} onClick={() => setTone(t.value)}
+                  className={`flex-1 px-2 py-1.5 text-[10px] font-medium transition-colors ${
+                    tone === t.value ? "bg-bitcoin text-dark-950" : "bg-dark-700 text-dark-300 hover:text-white"
+                  }`}>
                   {t.label}
                 </button>
               ))}
@@ -248,99 +243,86 @@ export default function AgentPage() {
         </div>
       </div>
 
-      {/* Chat area */}
-      <div className="card min-h-[400px] flex flex-col">
-        <div className="flex-1 p-4 sm:p-6 space-y-4 overflow-y-auto max-h-[60vh]">
+      {/* Chat area — fills remaining space */}
+      <div className="card flex-1 flex flex-col min-h-0 mb-4">
+        {/* Messages — scrollable */}
+        <div className="flex-1 p-3 sm:p-4 space-y-3 overflow-y-auto">
           {messages.length === 0 && (
-            <div className="text-center py-16">
-              <div className="w-16 h-16 rounded-2xl bg-bitcoin/10 flex items-center justify-center mx-auto mb-4">
-                <AlertTriangle className="w-8 h-8 text-bitcoin" />
+            <div className="text-center py-12">
+              <div className="w-12 h-12 rounded-xl bg-bitcoin/10 flex items-center justify-center mx-auto mb-3">
+                <AlertTriangle className="w-6 h-6 text-bitcoin" />
               </div>
-              <h3 className="text-lg font-semibold text-white mb-2">
-                No FUD yet
-              </h3>
-              <p className="text-dark-400 text-sm max-w-sm mx-auto">
-                Paste a Bitcoin-critical comment from social media and the
-                agent will give you a fact-based response.
+              <h3 className="text-sm font-semibold text-white mb-1">No FUD yet</h3>
+              <p className="text-dark-400 text-xs max-w-xs mx-auto">
+                Paste a Bitcoin-critical comment and get a fact-based response.
               </p>
             </div>
           )}
 
           {messages.map((msg, i) => (
-            <div
-              key={i}
-              className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
-            >
-              <div
-                className={`max-w-[85%] rounded-2xl px-4 py-3 ${
-                  msg.role === "user"
-                    ? "bg-bitcoin/20 border border-bitcoin/30 text-dark-100"
-                    : "bg-dark-700 border border-dark-600 text-dark-100"
-                }`}
-              >
+            <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+              <div className={`max-w-[85%] rounded-xl px-3 py-2.5 ${
+                msg.role === "user"
+                  ? "bg-bitcoin/15 border border-bitcoin/25 text-dark-100"
+                  : "bg-dark-700/80 border border-dark-600 text-dark-100"
+              }`}>
+                {/* Triage badges */}
                 {msg.role === "assistant" && msg.triageResult && (
-                  <div className="flex items-center gap-3 mb-3 pb-3 border-b border-dark-600">
+                  <div className="flex items-center gap-2 mb-2 pb-2 border-b border-dark-600 flex-wrap">
                     {(() => {
                       const Icon = triageIcons[msg.triageResult];
                       return (
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-dark-600 text-xs font-medium text-dark-200">
-                          <Icon className="w-3.5 h-3.5" />
-                          {triageLabels[msg.triageResult]}
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-dark-600 text-[10px] font-medium text-dark-200">
+                          <Icon className="w-3 h-3" />{triageLabels[msg.triageResult]}
                         </span>
                       );
                     })()}
                     {msg.fudType && (
-                      <span className="px-2.5 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-medium">
-                        {msg.fudType}
-                      </span>
+                      <span className="px-2 py-0.5 rounded-full bg-bitcoin/10 text-bitcoin text-[10px] font-medium">{msg.fudType}</span>
                     )}
                     {msg.strategy && (
-                      <span className="px-2.5 py-1 rounded-full bg-dark-600 text-dark-300 text-xs">
-                        {msg.strategy}
-                      </span>
+                      <span className="px-2 py-0.5 rounded-full bg-dark-600 text-dark-300 text-[10px]">{msg.strategy}</span>
                     )}
                   </div>
                 )}
 
-                <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</p>
+                {/* Message text — collapsible for long content */}
+                <CollapsibleText
+                  text={msg.content}
+                  className="text-sm leading-relaxed whitespace-pre-wrap"
+                />
 
+                {/* Action buttons */}
                 {msg.role === "assistant" && msg.content && (
-                  <div className="mt-3 pt-3 border-t border-dark-600 flex items-center gap-2">
-                    <button
-                      onClick={() => copyToClipboard(msg.content)}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-bitcoin/10 hover:bg-bitcoin/20 text-bitcoin text-xs font-medium transition-colors"
-                    >
-                      {copied ? (
-                        <><Check className="w-3.5 h-3.5" /> Copied!</>
-                      ) : (
-                        <><Copy className="w-3.5 h-3.5" /> Copy response</>
-                      )}
+                  <div className="mt-2 pt-2 border-t border-dark-600 flex items-center gap-1.5 flex-wrap">
+                    <button onClick={() => copyToClipboard(msg.content)}
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-bitcoin/10 hover:bg-bitcoin/20 text-bitcoin text-[10px] font-medium transition-colors">
+                      {copied ? <><Check className="w-3 h-3" /> Copied!</> : <><Copy className="w-3 h-3" /> Copy</>}
                     </button>
                     {msg.sources && msg.sources.length > 0 && (
-                      <button
-                        onClick={() => { setShowSources(!showSources); setShowPrinciples(false); }}
-                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${showSources ? "bg-bitcoin/20 text-bitcoin" : "bg-dark-600 hover:bg-dark-500 text-dark-200"}`}
-                      >
-                        <BookOpen className="w-3.5 h-3.5" />
-                        Sources ({msg.sources.length})
+                      <button onClick={() => togglePanel(`sources-${i}`)}
+                        className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[10px] font-medium transition-colors ${
+                          expandedPanel === `sources-${i}` ? "bg-bitcoin/20 text-bitcoin" : "bg-dark-600 hover:bg-dark-500 text-dark-200"
+                        }`}>
+                        <BookOpen className="w-3 h-3" />Sources ({msg.sources.length})
                       </button>
                     )}
                     {msg.principles && msg.principles.length > 0 && (
-                      <button
-                        onClick={() => { setShowPrinciples(!showPrinciples); setShowSources(false); }}
-                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${showPrinciples ? "bg-bitcoin/20 text-bitcoin" : "bg-dark-600 hover:bg-dark-500 text-dark-200"}`}
-                      >
-                        <Shield className="w-3.5 h-3.5" />
-                        Principles ({msg.principles.length})
+                      <button onClick={() => togglePanel(`principles-${i}`)}
+                        className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[10px] font-medium transition-colors ${
+                          expandedPanel === `principles-${i}` ? "bg-bitcoin/20 text-bitcoin" : "bg-dark-600 hover:bg-dark-500 text-dark-200"
+                        }`}>
+                        <Shield className="w-3 h-3" />Principles ({msg.principles.length})
                       </button>
                     )}
                   </div>
                 )}
 
-                {msg.role === "assistant" && showSources && msg.sources && msg.sources.length > 0 && (
-                  <div className="mt-3 space-y-2">
+                {/* Sources panel */}
+                {msg.role === "assistant" && expandedPanel === `sources-${i}` && msg.sources && (
+                  <div className="mt-2 space-y-1.5">
                     {msg.sources.map((src, j) => (
-                      <div key={j} className="p-2.5 rounded-lg bg-dark-800 text-xs">
+                      <div key={j} className="p-2 rounded-md bg-dark-800 text-[10px]">
                         <p className="font-medium text-dark-200">{src.name}</p>
                         <p className="text-dark-400 mt-0.5">{src.description}</p>
                       </div>
@@ -348,15 +330,16 @@ export default function AgentPage() {
                   </div>
                 )}
 
-                {msg.role === "assistant" && showPrinciples && msg.principles && msg.principles.length > 0 && (
-                  <div className="mt-3 space-y-2">
-                    <p className="text-xs font-semibold text-dark-400 uppercase tracking-wider">Batten Principles Applied</p>
+                {/* Principles panel */}
+                {msg.role === "assistant" && expandedPanel === `principles-${i}` && msg.principles && (
+                  <div className="mt-2 space-y-1.5">
+                    <p className="text-[10px] font-semibold text-dark-400 uppercase tracking-wider">Batten Principles Applied</p>
                     {msg.principles.map((p, j) => {
                       const label = principleLabels[p.key] || { name: p.key, icon: "📋", color: "text-dark-300 bg-dark-700 border-dark-600" };
                       return (
-                        <div key={j} className={`p-3 rounded-lg border text-xs ${label.color}`}>
-                          <p className="font-semibold mb-1">{label.icon} {label.name}</p>
-                          <p className="opacity-80">{p.how}</p>
+                        <div key={j} className={`p-2 rounded-md border text-[10px] ${label.color}`}>
+                          <p className="font-semibold">{label.icon} {label.name}</p>
+                          <p className="opacity-80 mt-0.5">{p.how}</p>
                         </div>
                       );
                     })}
@@ -368,8 +351,8 @@ export default function AgentPage() {
 
           {isLoading && messages[messages.length - 1]?.content === "" && (
             <div className="flex justify-start">
-              <div className="bg-dark-700 border border-dark-600 rounded-2xl px-4 py-3">
-                <Loader2 className="w-5 h-5 text-bitcoin animate-spin" />
+              <div className="bg-dark-700 border border-dark-600 rounded-xl px-3 py-2.5">
+                <Loader2 className="w-4 h-4 text-bitcoin animate-spin" />
               </div>
             </div>
           )}
@@ -377,40 +360,30 @@ export default function AgentPage() {
           <div ref={messagesEndRef} />
         </div>
 
+        {/* Error */}
         {error && (
-          <div className="mx-4 sm:mx-6 mb-3 p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
-            {error}
-          </div>
+          <div className="mx-3 mb-2 p-2 rounded-md bg-red-500/10 border border-red-500/30 text-red-400 text-xs">{error}</div>
         )}
 
-        <form onSubmit={handleSubmit} className="border-t border-dark-700 p-4 sm:p-6">
-          <div className="flex gap-3">
+        {/* Input — fixed at bottom of card */}
+        <form onSubmit={handleSubmit} className="border-t border-dark-700 p-3 flex-shrink-0">
+          <div className="flex gap-2">
             <textarea
-              ref={textareaRef}
               value={fudText}
               onChange={(e) => setFudText(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  handleSubmit(e);
-                }
-              }}
+              onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSubmit(e); } }}
               placeholder="Paste a FUD comment here..."
-              rows={2}
+              rows={1}
               maxLength={5000}
-              className="flex-1 bg-dark-700 border border-dark-600 rounded-xl px-4 py-3 text-sm text-dark-100 placeholder:text-dark-500 resize-none focus:outline-none focus:border-bitcoin transition-colors"
+              className="flex-1 bg-dark-700 border border-dark-600 rounded-lg px-3 py-2 text-sm text-dark-100 placeholder:text-dark-500 resize-none focus:outline-none focus:border-bitcoin transition-colors"
             />
-            <button
-              type="submit"
-              disabled={isLoading || !fudText.trim()}
-              className="self-end px-4 py-3 bg-bitcoin hover:bg-bitcoin-dark disabled:opacity-50 disabled:cursor-not-allowed text-dark-950 rounded-xl transition-colors"
-            >
-              {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
+            <button type="submit" disabled={isLoading || !fudText.trim()}
+              className="self-end px-3 py-2 bg-bitcoin hover:bg-bitcoin-dark disabled:opacity-50 disabled:cursor-not-allowed text-dark-950 rounded-lg transition-colors">
+              {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
             </button>
           </div>
-          <p className="mt-2 text-xs text-dark-500">
-            Press Enter to send, Shift+Enter for new line.{" "}
-            {fudText.length > 0 && `${fudText.length}/5000`}
+          <p className="mt-1 text-[10px] text-dark-500">
+            Enter to send, Shift+Enter for new line{fudText.length > 0 && ` · ${fudText.length}/5000`}
           </p>
         </form>
       </div>
