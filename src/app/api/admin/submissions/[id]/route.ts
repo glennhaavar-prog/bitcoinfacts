@@ -88,19 +88,20 @@ export async function PATCH(
       });
     }
 
-    // Update contributor count
+    // Update contributor approved count
     if (submission.contributor_id) {
-      await admin.rpc("increment_approved_count" as never, {
-        contributor_id: submission.contributor_id,
-      }).catch(() => {
-        // If the RPC doesn't exist, update manually
-        admin
-          .from("contributors")
-          .update({
-            approved_count: factsToPublish.length,
-          })
-          .eq("id", submission.contributor_id!);
-      });
+      const { data: contributor } = await admin
+        .from("contributors")
+        .select("approved_count")
+        .eq("id", submission.contributor_id)
+        .single();
+
+      await admin
+        .from("contributors")
+        .update({
+          approved_count: (contributor?.approved_count || 0) + factsToPublish.length,
+        })
+        .eq("id", submission.contributor_id);
     }
   }
 
