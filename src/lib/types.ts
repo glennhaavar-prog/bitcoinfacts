@@ -19,12 +19,20 @@ export interface FudBusterRequest {
   tone?: Tone;
 }
 
+export type PrincipleKey = "truth_first" | "influence" | "check_intention" | "authority_humility";
+
+export interface AppliedPrinciple {
+  key: PrincipleKey;
+  how: string;
+}
+
 export interface FudBusterResponse {
   reply: string;
   fudType: FudType;
   strategy: string;
   sources: Array<{ name: string; description: string }>;
   triageResult: TriageResult;
+  principles: AppliedPrinciple[];
 }
 
 export interface ChatMessage {
@@ -34,6 +42,7 @@ export interface ChatMessage {
   strategy?: string;
   sources?: Array<{ name: string; description: string }>;
   triageResult?: TriageResult;
+  principles?: AppliedPrinciple[];
 }
 
 export interface FactCategory {

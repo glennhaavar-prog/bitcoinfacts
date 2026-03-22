@@ -11,6 +11,7 @@ import {
   BookOpen,
   Swords,
   Eye,
+  Shield,
 } from "lucide-react";
 import type {
   Platform,
@@ -18,6 +19,7 @@ import type {
   Tone,
   FudBusterResponse,
   ChatMessage,
+  PrincipleKey,
 } from "@/lib/types";
 
 const platforms: { value: Platform; label: string }[] = [
@@ -45,6 +47,13 @@ const triageLabels = {
   educate: "Educate",
 };
 
+const principleLabels: Record<PrincipleKey, { name: string; icon: string; color: string }> = {
+  truth_first: { name: "Truth First", icon: "🛡️", color: "text-green-400 bg-green-400/10 border-green-400/20" },
+  influence: { name: "Influence, Don't Just Inform", icon: "💗", color: "text-pink-400 bg-pink-400/10 border-pink-400/20" },
+  check_intention: { name: "Check Intention", icon: "🎯", color: "text-blue-400 bg-blue-400/10 border-blue-400/20" },
+  authority_humility: { name: "Authority + Humility", icon: "🏅", color: "text-bitcoin bg-bitcoin/10 border-bitcoin/20" },
+};
+
 export default function AgentPage() {
   const [fudText, setFudText] = useState("");
   const [platform, setPlatform] = useState<Platform>("general");
@@ -55,6 +64,7 @@ export default function AgentPage() {
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showSources, setShowSources] = useState(false);
+  const [showPrinciples, setShowPrinciples] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -150,6 +160,7 @@ export default function AgentPage() {
               strategy: parsed.strategy,
               sources: parsed.sources,
               triageResult: parsed.triageResult,
+              principles: parsed.principles,
             };
             return updated;
           });
@@ -307,11 +318,20 @@ export default function AgentPage() {
                     </button>
                     {msg.sources && msg.sources.length > 0 && (
                       <button
-                        onClick={() => setShowSources(!showSources)}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-dark-600 hover:bg-dark-500 text-dark-200 text-xs font-medium transition-colors"
+                        onClick={() => { setShowSources(!showSources); setShowPrinciples(false); }}
+                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${showSources ? "bg-bitcoin/20 text-bitcoin" : "bg-dark-600 hover:bg-dark-500 text-dark-200"}`}
                       >
                         <BookOpen className="w-3.5 h-3.5" />
                         Sources ({msg.sources.length})
+                      </button>
+                    )}
+                    {msg.principles && msg.principles.length > 0 && (
+                      <button
+                        onClick={() => { setShowPrinciples(!showPrinciples); setShowSources(false); }}
+                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${showPrinciples ? "bg-bitcoin/20 text-bitcoin" : "bg-dark-600 hover:bg-dark-500 text-dark-200"}`}
+                      >
+                        <Shield className="w-3.5 h-3.5" />
+                        Principles ({msg.principles.length})
                       </button>
                     )}
                   </div>
@@ -325,6 +345,21 @@ export default function AgentPage() {
                         <p className="text-dark-400 mt-0.5">{src.description}</p>
                       </div>
                     ))}
+                  </div>
+                )}
+
+                {msg.role === "assistant" && showPrinciples && msg.principles && msg.principles.length > 0 && (
+                  <div className="mt-3 space-y-2">
+                    <p className="text-xs font-semibold text-dark-400 uppercase tracking-wider">Batten Principles Applied</p>
+                    {msg.principles.map((p, j) => {
+                      const label = principleLabels[p.key] || { name: p.key, icon: "📋", color: "text-dark-300 bg-dark-700 border-dark-600" };
+                      return (
+                        <div key={j} className={`p-3 rounded-lg border text-xs ${label.color}`}>
+                          <p className="font-semibold mb-1">{label.icon} {label.name}</p>
+                          <p className="opacity-80">{p.how}</p>
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               </div>

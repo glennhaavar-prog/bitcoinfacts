@@ -101,8 +101,21 @@ You MUST respond in valid JSON with this exact structure:
   "fudType": "energy" | "ponzi" | "criminal" | "useless" | "grid" | "environment" | "skepticism" | "other",
   "strategy": "180° reframe" | "admit-and-redefine" | "question technique" | "combined",
   "reply": "The actual response text ready to copy-paste",
-  "sources": [{"name": "Source name", "description": "Brief description of what this source shows"}]
+  "sources": [{"name": "Source name", "description": "Brief description of what this source shows"}],
+  "principles": [
+    {
+      "key": "truth_first" | "influence" | "check_intention" | "authority_humility",
+      "how": "Brief explanation of how this principle was applied in the response"
+    }
+  ]
 }
+
+The "principles" array MUST include every Batten principle that was actively applied in crafting the response. For each, explain HOW it was applied:
+- "truth_first": Did you acknowledge any valid points in the criticism?
+- "influence": Did you create emotional connection before presenting data?
+- "check_intention": Did you frame the response to educate rather than win?
+- "authority_humility": Did you cite evidence while being humble about complexity?
+Include at least 2 principles per response. Be specific about HOW each was applied — not generic descriptions.
 
 ## Platform Format Rules
 
