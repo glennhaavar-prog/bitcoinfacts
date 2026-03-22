@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
 
   if (isRateLimited(ip)) {
     return NextResponse.json(
-      { error: "For mange forespørsler. Prøv igjen om litt." },
+      { error: "Too many requests. Please try again later." },
       { status: 429 }
     );
   }
@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
       result = await extractFactsFromText(input_text);
     } else {
       return NextResponse.json(
-        { error: "Ugyldig input." },
+        { error: "Invalid input." },
         { status: 400 }
       );
     }

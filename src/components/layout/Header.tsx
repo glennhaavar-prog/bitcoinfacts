@@ -5,12 +5,12 @@ import Link from "next/link";
 import { Menu, X, Zap } from "lucide-react";
 
 const navLinks = [
-  { href: "/", label: "Hjem", labelEn: "Home" },
-  { href: "/agent", label: "FUD Buster", labelEn: "FUD Buster" },
-  { href: "/fakta", label: "Fakta", labelEn: "Facts" },
-  { href: "/playbook", label: "Playbook", labelEn: "Playbook" },
-  { href: "/bidra", label: "Bidra", labelEn: "Contribute" },
-  { href: "/om", label: "Om", labelEn: "About" },
+  { href: "/", label: "Home" },
+  { href: "/agent", label: "FUD Buster" },
+  { href: "/facts", label: "Facts" },
+  { href: "/playbook", label: "Playbook" },
+  { href: "/contribute", label: "Contribute" },
+  { href: "/about", label: "About" },
 ];
 
 export default function Header() {

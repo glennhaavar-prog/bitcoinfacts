@@ -128,27 +128,27 @@ export default function AdminLayout({
           {loginSent ? (
             <div className="text-center">
               <h2 className="text-xl font-semibold text-white mb-2">
-                Sjekk e-posten din
+                Check your email
               </h2>
               <p className="text-dark-300 text-sm">
-                Vi har sendt en innloggingslenke til{" "}
+                We sent a login link to{" "}
                 <strong className="text-white">{loginEmail}</strong>
               </p>
             </div>
           ) : (
             <>
               <h2 className="text-xl font-semibold text-white mb-2 text-center">
-                Logg inn
+                Log in
               </h2>
               <p className="text-dark-400 text-sm text-center mb-6">
-                Magic link — ingen passord.
+                Magic link — no password needed.
               </p>
               <form onSubmit={handleLogin} className="space-y-4">
                 <input
                   type="email"
                   value={loginEmail}
                   onChange={(e) => setLoginEmail(e.target.value)}
-                  placeholder="din@epost.no"
+                  placeholder="your@email.com"
                   required
                   className="w-full bg-dark-700 border border-dark-600 rounded-lg px-4 py-3 text-sm text-dark-100 placeholder:text-dark-500 focus:outline-none focus:border-bitcoin"
                 />
@@ -159,7 +159,7 @@ export default function AdminLayout({
                   type="submit"
                   className="w-full py-3 bg-bitcoin hover:bg-bitcoin-dark text-dark-950 font-semibold rounded-lg transition-colors"
                 >
-                  Send innloggingslenke
+                  Send login link
                 </button>
               </form>
             </>
@@ -197,7 +197,7 @@ export default function AdminLayout({
             className="flex items-center gap-2 text-sm text-dark-400 hover:text-red-400 transition-colors"
           >
             <LogOut className="w-4 h-4" />
-            Logg ut
+            Log out
           </button>
         </div>
       </aside>

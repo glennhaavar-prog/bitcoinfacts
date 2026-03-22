@@ -98,7 +98,7 @@ export default function AdminDashboard() {
         <div className="card p-5">
           <div className="flex items-center gap-3 mb-2">
             <Database className="w-5 h-5 text-bitcoin" />
-            <span className="text-sm text-dark-400">Publiserte fakta</span>
+            <span className="text-sm text-dark-400">Published facts</span>
           </div>
           <p className="text-3xl font-bold text-white">{stats.totalFacts}</p>
         </div>
@@ -106,7 +106,7 @@ export default function AdminDashboard() {
         <div className="card p-5">
           <div className="flex items-center gap-3 mb-2">
             <Inbox className="w-5 h-5 text-blue-400" />
-            <span className="text-sm text-dark-400">Ventende</span>
+            <span className="text-sm text-dark-400">Pending</span>
           </div>
           <p className="text-3xl font-bold text-white">
             {stats.pendingSubmissions}
@@ -116,7 +116,7 @@ export default function AdminDashboard() {
         <div className="card p-5">
           <div className="flex items-center gap-3 mb-2">
             <AlertTriangle className="w-5 h-5 text-yellow-400" />
-            <span className="text-sm text-dark-400">Trenger verifisering</span>
+            <span className="text-sm text-dark-400">Needs verification</span>
           </div>
           <p className="text-3xl font-bold text-white">
             {stats.needsVerification}
@@ -126,7 +126,7 @@ export default function AdminDashboard() {
         <div className="card p-5">
           <div className="flex items-center gap-3 mb-2">
             <TrendingUp className="w-5 h-5 text-green-400" />
-            <span className="text-sm text-dark-400">Kategorier</span>
+            <span className="text-sm text-dark-400">Categories</span>
           </div>
           <p className="text-3xl font-bold text-white">
             {stats.factsByCategory.length}
@@ -137,7 +137,7 @@ export default function AdminDashboard() {
       {/* Facts by category */}
       <div className="card p-6">
         <h2 className="text-lg font-semibold text-white mb-4">
-          Fakta per kategori
+          Facts by category
         </h2>
         <div className="space-y-3">
           {stats.factsByCategory.map((cat) => (

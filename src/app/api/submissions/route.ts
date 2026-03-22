@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
 
   if (isRateLimited(ip)) {
     return NextResponse.json(
-      { error: "For mange innsendinger. Prøv igjen om litt." },
+      { error: "Too many submissions. Please try again later." },
       { status: 429 }
     );
   }
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
 
     if (!input_type || !["url", "text", "fact"].includes(input_type)) {
       return NextResponse.json(
-        { error: "Ugyldig input-type." },
+        { error: "Invalid input type." },
         { status: 400 }
       );
     }
@@ -94,7 +94,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ id: data.id, status: "submitted" });
   } catch {
     return NextResponse.json(
-      { error: "Noe gikk galt." },
+      { error: "Something went wrong." },
       { status: 500 }
     );
   }

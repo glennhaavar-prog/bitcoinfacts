@@ -75,17 +75,17 @@ export default function SubmissionsPage() {
   return (
     <div>
       <h1 className="text-2xl font-bold text-white mb-6">
-        Submissions-kø
+        Submissions Queue
         {submissions.length > 0 && (
           <span className="ml-2 text-sm font-normal text-dark-400">
-            ({submissions.length} ventende)
+            ({submissions.length} pending)
           </span>
         )}
       </h1>
 
       {submissions.length === 0 ? (
         <div className="card p-12 text-center">
-          <p className="text-dark-400">Ingen ventende submissions.</p>
+          <p className="text-dark-400">Ingen pending submissions.</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -129,7 +129,7 @@ export default function SubmissionsPage() {
                     </p>
                     <p className="text-dark-500 text-xs mt-1">
                       {new Date(sub.created_at).toLocaleDateString("no-NB")}
-                      {facts.length > 0 && ` · ${facts.length} fakta ekstrahert`}
+                      {facts.length > 0 && ` · ${facts.length} facts extracted`}
                     </p>
                   </div>
                   {isExpanded ? (
@@ -144,7 +144,7 @@ export default function SubmissionsPage() {
                     {/* Raw input */}
                     <div className="p-4 rounded-lg bg-dark-900">
                       <h4 className="text-xs font-semibold text-dark-400 uppercase tracking-wider mb-2">
-                        Rå input
+                        Raw input
                       </h4>
                       {sub.input_url && (
                         <a
@@ -168,7 +168,7 @@ export default function SubmissionsPage() {
                     {sub.ai_summary && (
                       <div className="p-4 rounded-lg bg-dark-900">
                         <h4 className="text-xs font-semibold text-dark-400 uppercase tracking-wider mb-2">
-                          AI-oppsummering
+                          AI Summary
                         </h4>
                         <p className="text-dark-200 text-sm">
                           {sub.ai_summary}
@@ -183,7 +183,7 @@ export default function SubmissionsPage() {
                           <div className="flex items-center gap-2 mb-2">
                             <AlertTriangle className="w-4 h-4 text-yellow-400" />
                             <h4 className="text-xs font-semibold text-yellow-400 uppercase tracking-wider">
-                              Mulige duplikater
+                              Potential duplicates
                             </h4>
                           </div>
                           {(
@@ -207,7 +207,7 @@ export default function SubmissionsPage() {
                     {facts.length > 0 && (
                       <div>
                         <h4 className="text-xs font-semibold text-dark-400 uppercase tracking-wider mb-3">
-                          Ekstraherte fakta ({facts.length})
+                          Extracted facts ({facts.length})
                         </h4>
                         <div className="space-y-3">
                           {facts.map((fact, i) => (
@@ -249,7 +249,7 @@ export default function SubmissionsPage() {
                                     }
                                     disabled={actionLoading !== null}
                                     className="p-2 rounded-lg bg-green-500/10 hover:bg-green-500/20 text-green-400 transition-colors"
-                                    title="Godkjenn dette faktumet"
+                                    title="Approve this fact"
                                   >
                                     <Check className="w-4 h-4" />
                                   </button>
@@ -259,7 +259,7 @@ export default function SubmissionsPage() {
                                     }
                                     disabled={actionLoading !== null}
                                     className="p-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 transition-colors"
-                                    title="Avvis dette faktumet"
+                                    title="Reject this fact"
                                   >
                                     <X className="w-4 h-4" />
                                   </button>
@@ -275,13 +275,13 @@ export default function SubmissionsPage() {
                     <div className="flex gap-3 items-end">
                       <div className="flex-1">
                         <label className="block text-xs text-dark-400 mb-1">
-                          Notat (valgfritt)
+                          Note (optional)
                         </label>
                         <input
                           type="text"
                           value={reviewNote}
                           onChange={(e) => setReviewNote(e.target.value)}
-                          placeholder="Begrunnelse for godkjenning/avvisning..."
+                          placeholder="Reason for approval/rejection..."
                           className="w-full bg-dark-700 border border-dark-600 rounded-lg px-3 py-2 text-sm text-dark-100 placeholder:text-dark-500 focus:outline-none focus:border-bitcoin"
                         />
                       </div>
@@ -290,14 +290,14 @@ export default function SubmissionsPage() {
                         disabled={actionLoading !== null}
                         className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50"
                       >
-                        Godkjenn alle
+                        Approve all
                       </button>
                       <button
                         onClick={() => handleAction(sub.id, "rejected")}
                         disabled={actionLoading !== null}
                         className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50"
                       >
-                        Avvis
+                        Reject
                       </button>
                     </div>
                   </div>

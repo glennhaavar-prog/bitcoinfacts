@@ -148,9 +148,9 @@ export default function AdminFaktaPage() {
   return (
     <div>
       <h1 className="text-2xl font-bold text-white mb-6">
-        Faktaadministrasjon
+        Facts Administration
         <span className="ml-2 text-sm font-normal text-dark-400">
-          ({filteredFacts.length} fakta)
+          ({filteredFacts.length} facts)
         </span>
       </h1>
 
@@ -162,7 +162,7 @@ export default function AdminFaktaPage() {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Søk i fakta..."
+            placeholder="Search facts..."
             className="w-full bg-dark-700 border border-dark-600 rounded-lg pl-10 pr-4 py-2 text-sm text-dark-100 placeholder:text-dark-500 focus:outline-none focus:border-bitcoin"
           />
         </div>
@@ -172,7 +172,7 @@ export default function AdminFaktaPage() {
             onChange={(e) => setStatusFilter(e.target.value)}
             className="appearance-none bg-dark-700 border border-dark-600 text-dark-100 text-sm rounded-lg px-3 py-2 pr-8 focus:outline-none focus:border-bitcoin"
           >
-            <option value="all">Alle statuser</option>
+            <option value="all">All statuses</option>
             <option value="published">Published</option>
             <option value="draft">Draft</option>
             <option value="pending">Pending</option>
@@ -186,7 +186,7 @@ export default function AdminFaktaPage() {
             onChange={(e) => setCategoryFilter(e.target.value)}
             className="appearance-none bg-dark-700 border border-dark-600 text-dark-100 text-sm rounded-lg px-3 py-2 pr-8 focus:outline-none focus:border-bitcoin"
           >
-            <option value="all">Alle kategorier</option>
+            <option value="all">All categories</option>
             {categories.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.icon} {c.name_no}
@@ -216,7 +216,7 @@ export default function AdminFaktaPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div>
                       <label className="text-xs text-dark-400">
-                        Påstand (NO)
+                        Claim (NO)
                       </label>
                       <input
                         value={editData.claim_no || ""}
@@ -240,7 +240,7 @@ export default function AdminFaktaPage() {
                     </div>
                   </div>
                   <div>
-                    <label className="text-xs text-dark-400">Kilde</label>
+                    <label className="text-xs text-dark-400">Source</label>
                     <input
                       value={editData.source_name || ""}
                       onChange={(e) =>
@@ -268,7 +268,7 @@ export default function AdminFaktaPage() {
                       </select>
                     </div>
                     <div className="relative">
-                      <label className="text-xs text-dark-400">Kategori</label>
+                      <label className="text-xs text-dark-400">Category</label>
                       <select
                         value={editData.category_id || ""}
                         onChange={(e) =>
@@ -297,7 +297,7 @@ export default function AdminFaktaPage() {
                         <Loader2 className="w-4 h-4 animate-spin" />
                       ) : (
                         <span className="flex items-center gap-1">
-                          <Save className="w-4 h-4" /> Lagre
+                          <Save className="w-4 h-4" /> Save
                         </span>
                       )}
                     </button>
@@ -346,7 +346,7 @@ export default function AdminFaktaPage() {
                       {stale && (
                         <span className="flex items-center gap-1 px-2 py-0.5 rounded bg-yellow-500/10 text-yellow-400 text-xs">
                           <AlertTriangle className="w-3 h-3" />
-                          Trenger verifisering
+                          Needs verification
                         </span>
                       )}
                     </div>
@@ -354,7 +354,7 @@ export default function AdminFaktaPage() {
                       {fact.claim_no}
                     </p>
                     <p className="text-dark-500 text-xs mt-0.5">
-                      {fact.source_name} · Verifisert:{" "}
+                      {fact.source_name} · Verified:{" "}
                       {new Date(fact.verified_date).toLocaleDateString("no-NB")}
                     </p>
                   </div>
@@ -362,7 +362,7 @@ export default function AdminFaktaPage() {
                     <button
                       onClick={() => startEdit(fact)}
                       className="p-2 rounded-lg hover:bg-dark-700 text-dark-400 hover:text-white transition-colors"
-                      title="Rediger"
+                      title="Edit"
                     >
                       <Edit3 className="w-4 h-4" />
                     </button>
@@ -381,7 +381,7 @@ export default function AdminFaktaPage() {
                     <button
                       onClick={() => handleArchive(fact.id)}
                       className="p-2 rounded-lg hover:bg-dark-700 text-dark-400 hover:text-red-400 transition-colors"
-                      title="Arkiver"
+                      title="Archive"
                     >
                       <Archive className="w-4 h-4" />
                     </button>

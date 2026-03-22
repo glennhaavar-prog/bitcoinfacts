@@ -14,22 +14,22 @@ export default function Footer() {
               <span className="font-bold text-lg text-white">FUD Buster</span>
             </div>
             <p className="text-dark-300 text-sm max-w-md">
-              Faktagrunnede svar på Bitcoin-kritikk. Bygget med Daniel Battens
-              kommunikasjonsplaybook og verifisert forskning.
+              Fact-based responses to Bitcoin criticism. Built with Daniel
+              Batten&apos;s communication playbook and verified research.
             </p>
             <p className="text-dark-400 text-xs mt-4">
-              Et Beyond 66-prosjekt
+              A Beyond 66 project
             </p>
           </div>
 
           <div>
-            <h3 className="font-semibold text-white text-sm mb-3">Navigasjon</h3>
+            <h3 className="font-semibold text-white text-sm mb-3">Navigation</h3>
             <ul className="space-y-2">
               {[
                 { href: "/agent", label: "FUD Buster Agent" },
-                { href: "/fakta", label: "Faktabibliotek" },
+                { href: "/facts", label: "Facts Library" },
                 { href: "/playbook", label: "Playbook" },
-                { href: "/om", label: "Om prosjektet" },
+                { href: "/about", label: "About" },
               ].map((link) => (
                 <li key={link.href}>
                   <Link
@@ -44,7 +44,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <h3 className="font-semibold text-white text-sm mb-3">Ressurser</h3>
+            <h3 className="font-semibold text-white text-sm mb-3">Resources</h3>
             <ul className="space-y-2">
               {[
                 { href: "https://batcoinz.com", label: "Daniel Batten" },

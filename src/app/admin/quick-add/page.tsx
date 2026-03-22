@@ -49,7 +49,7 @@ export default function QuickAddPage() {
       const data = await res.json();
       setExtractedFacts(data.facts || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Noe gikk galt");
+      setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
       setExtracting(false);
     }
@@ -76,7 +76,7 @@ export default function QuickAddPage() {
       setExtractedFacts([]);
       setInputValue("");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Noe gikk galt");
+      setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
       setPublishing(false);
     }
@@ -106,7 +106,7 @@ export default function QuickAddPage() {
           <div className="flex items-center gap-2 text-green-400">
             <Check className="w-5 h-5" />
             <span className="text-sm font-medium">
-              Fakta publisert! De er nå tilgjengelige i databasen.
+              Facts published! They are now available in the database.
             </span>
           </div>
         </div>
@@ -151,7 +151,7 @@ export default function QuickAddPage() {
           <textarea
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            placeholder="Lim inn tekst med fakta..."
+            placeholder="Paste text with facts..."
             rows={6}
             className="w-full bg-dark-700 border border-dark-600 rounded-lg px-4 py-3 text-sm text-dark-100 placeholder:text-dark-500 resize-none focus:outline-none focus:border-bitcoin"
           />
@@ -169,12 +169,12 @@ export default function QuickAddPage() {
           {extracting ? (
             <>
               <Loader2 className="w-4 h-4 animate-spin" />
-              AI ekstraherer...
+              AI extracting...
             </>
           ) : (
             <>
               <Zap className="w-4 h-4" />
-              Ekstraher fakta
+              Extract facts
             </>
           )}
         </button>
@@ -185,7 +185,7 @@ export default function QuickAddPage() {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-semibold text-white">
-              Ekstraherte fakta ({extractedFacts.length})
+              Extracted facts ({extractedFacts.length})
             </h2>
             <button
               onClick={handlePublish}
@@ -197,7 +197,7 @@ export default function QuickAddPage() {
               ) : (
                 <Check className="w-4 h-4" />
               )}
-              Publiser alle
+              Publish all
             </button>
           </div>
 
@@ -210,7 +210,7 @@ export default function QuickAddPage() {
                     onChange={(e) =>
                       updateFact(i, { claim_no: e.target.value })
                     }
-                    placeholder="Påstand (NO)"
+                    placeholder="Claim (NO)"
                     className="w-full bg-dark-700 border border-dark-600 rounded px-3 py-2 text-sm text-dark-100 focus:outline-none focus:border-bitcoin"
                   />
                   <input
@@ -226,14 +226,14 @@ export default function QuickAddPage() {
                     onChange={(e) =>
                       updateFact(i, { source_name: e.target.value })
                     }
-                    placeholder="Kilde"
+                    placeholder="Source"
                     className="w-full bg-dark-700 border border-dark-600 rounded px-3 py-2 text-sm text-dark-100 focus:outline-none focus:border-bitcoin"
                   />
                   <button
                     onClick={() => setEditingIndex(null)}
                     className="flex items-center gap-1 px-3 py-1.5 bg-bitcoin text-dark-950 text-sm font-medium rounded-lg"
                   >
-                    <Save className="w-3.5 h-3.5" /> Ferdig
+                    <Save className="w-3.5 h-3.5" /> Done
                   </button>
                 </div>
               ) : (

@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
 
   if (isRateLimited(ip)) {
     return NextResponse.json(
-      { error: "For mange forespørsler. Prøv igjen om litt." },
+      { error: "Too many requests. Please try again later." },
       { status: 429 }
     );
   }
@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
 
     if (fudText.length > 5000) {
       return NextResponse.json(
-        { error: "Teksten er for lang. Maks 5000 tegn." },
+        { error: "Text is too long. Max 5000 characters." },
         { status: 400 }
       );
     }
@@ -126,7 +126,7 @@ Respond with valid JSON only. No markdown, no code fences.`;
     });
   } catch {
     return NextResponse.json(
-      { error: "Noe gikk galt. Prøv igjen." },
+      { error: "Something went wrong. Please try again." },
       { status: 500 }
     );
   }
