@@ -12,13 +12,17 @@ import {
   LogOut,
   Loader2,
   Zap,
+  MessageSquare,
 } from "lucide-react";
 
-const adminNav = [
-  { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/admin/submissions", label: "Submissions", icon: Inbox },
-  { href: "/admin/fakta", label: "Fakta", icon: Database },
-  { href: "/admin/quick-add", label: "Quick Add", icon: PlusCircle },
+type AdminRole = "admin" | "moderator" | "trainer";
+
+const allNavItems = [
+  { href: "/admin", label: "Dashboard", icon: LayoutDashboard, roles: ["admin", "moderator"] as AdminRole[] },
+  { href: "/admin/submissions", label: "Submissions", icon: Inbox, roles: ["admin", "moderator"] as AdminRole[] },
+  { href: "/admin/fakta", label: "Fakta", icon: Database, roles: ["admin", "moderator", "trainer"] as AdminRole[] },
+  { href: "/admin/quick-add", label: "Quick Add", icon: PlusCircle, roles: ["admin"] as AdminRole[] },
+  { href: "/admin/examples", label: "Examples", icon: MessageSquare, roles: ["admin", "trainer"] as AdminRole[] },
 ];
 
 export default function AdminLayout({
@@ -28,6 +32,7 @@ export default function AdminLayout({
 }) {
   const [loading, setLoading] = useState(true);
   const [authenticated, setAuthenticated] = useState(false);
+  const [role, setRole] = useState<AdminRole>("admin");
   const [email, setEmail] = useState("");
   const [loginEmail, setLoginEmail] = useState("");
   const [loginSent, setLoginSent] = useState(false);
@@ -43,15 +48,16 @@ export default function AdminLayout({
       } = await supabase.auth.getSession();
 
       if (session) {
-        // Verify user is admin
+        // Verify user is admin and get role
         const { data: admin } = await supabase
           .from("admins")
-          .select("id")
+          .select("id, role")
           .eq("auth_user_id", session.user.id)
           .single();
 
         if (admin) {
           setAuthenticated(true);
+          setRole(admin.role as AdminRole);
           setEmail(session.user.email || "");
         }
       }
@@ -66,12 +72,13 @@ export default function AdminLayout({
       if (event === "SIGNED_IN" && session) {
         const { data: admin } = await supabase
           .from("admins")
-          .select("id")
+          .select("id, role")
           .eq("auth_user_id", session.user.id)
           .single();
 
         if (admin) {
           setAuthenticated(true);
+          setRole(admin.role as AdminRole);
           setEmail(session.user.email || "");
         }
       } else if (event === "SIGNED_OUT") {
@@ -174,7 +181,7 @@ export default function AdminLayout({
       {/* Sidebar */}
       <aside className="w-64 bg-dark-900 border-r border-dark-800 flex flex-col fixed top-16 bottom-0">
         <nav className="flex-1 p-4 space-y-1">
-          {adminNav.map((item) => (
+          {allNavItems.filter((item) => item.roles.includes(role)).map((item) => (
             <Link
               key={item.href}
               href={item.href}

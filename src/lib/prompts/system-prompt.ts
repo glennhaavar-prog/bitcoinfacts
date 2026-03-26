@@ -2,14 +2,16 @@ import { factsForPrompt } from "./facts-database";
 import { tacticsContent } from "./tactics";
 import { createAdminClient } from "@/lib/supabase/admin";
 
-// Cache for dynamic facts from Supabase
+// Cache for dynamic facts and example responses from Supabase
 let cachedDynamicFacts: string | null = null;
-let cacheTimestamp = 0;
+let factsCacheTimestamp = 0;
+let cachedExamples: string | null = null;
+let examplesCacheTimestamp = 0;
 const CACHE_TTL_MS = 15 * 60 * 1000; // 15 minutes
 
 async function getDynamicFacts(): Promise<string | null> {
   const now = Date.now();
-  if (cachedDynamicFacts && now - cacheTimestamp < CACHE_TTL_MS) {
+  if (cachedDynamicFacts && now - factsCacheTimestamp < CACHE_TTL_MS) {
     return cachedDynamicFacts;
   }
 
@@ -28,11 +30,41 @@ async function getDynamicFacts(): Promise<string | null> {
             `### ${f.claim_en || f.claim_no}\n**Reality:** ${f.reality_en || f.reality_no || ""}\n**Source:** ${f.source_name} (${f.source_date || ""})\n**How to use:** ${f.batten_tip_en || f.batten_tip_no || ""}`
         )
         .join("\n\n");
-      cacheTimestamp = now;
+      factsCacheTimestamp = now;
       return cachedDynamicFacts;
     }
   } catch {
     // Supabase unavailable
+  }
+
+  return null;
+}
+
+async function getExampleResponses(): Promise<string | null> {
+  const now = Date.now();
+  if (cachedExamples && now - examplesCacheTimestamp < CACHE_TTL_MS) {
+    return cachedExamples;
+  }
+
+  try {
+    const supabase = createAdminClient();
+    const { data } = await supabase
+      .from("example_responses")
+      .select("fud_text, ideal_response, fud_type, platform, tone, strategy, notes")
+      .order("created_at", { ascending: false });
+
+    if (data && data.length > 0) {
+      cachedExamples = data
+        .map(
+          (e, i) =>
+            `### Example ${i + 1}${e.fud_type ? ` (${e.fud_type})` : ""}${e.strategy ? ` — ${e.strategy}` : ""}${e.platform && e.platform !== "general" ? ` [${e.platform}]` : ""}\n**FUD:** "${e.fud_text}"\n**Ideal response:** "${e.ideal_response}"${e.notes ? `\n**Why this works:** ${e.notes}` : ""}`
+        )
+        .join("\n\n");
+      examplesCacheTimestamp = now;
+      return cachedExamples;
+    }
+  } catch {
+    // Supabase unavailable or table doesn't exist yet
   }
 
   return null;
@@ -47,6 +79,7 @@ export async function buildSystemPrompt(language: "no" | "en"): Promise<string> 
   // Try dynamic facts from Supabase, fall back to static
   const dynamicFacts = await getDynamicFacts();
   const factsContent = dynamicFacts || factsForPrompt;
+  const exampleResponses = await getExampleResponses();
 
   return `You are Bitcoin FUD Buster — an AI assistant that helps people respond to Bitcoin criticism with facts, empathy, and effective communication.
 
@@ -139,5 +172,12 @@ ${factsContent}
 ## Tactical Reference
 
 ${tacticsContent}
+${exampleResponses ? `
+## Example Responses (Reference Style)
+
+These are curated examples of excellent responses by Daniel Batten. Study the tone, structure, and framing — then match this style in your responses.
+
+${exampleResponses}
+` : ""}
 `;
 }
