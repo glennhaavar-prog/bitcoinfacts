@@ -19,7 +19,7 @@ export interface FudBusterRequest {
   tone?: Tone;
 }
 
-export type PrincipleKey = "truth_first" | "influence" | "check_intention" | "authority_humility";
+export type PrincipleKey = "truth_first" | "influence" | "check_intention" | "authority_humility" | "yes_and";
 
 export interface AppliedPrinciple {
   key: PrincipleKey;

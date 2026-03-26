@@ -3,7 +3,7 @@
 import { useState } from "react";
 import {
   Shield, Heart, Target, Award, ArrowRight, ChevronDown, ChevronUp,
-  X, Check, HelpCircle, Eye, Swords, BookOpen, Ban,
+  X, Check, HelpCircle, Eye, Swords, BookOpen, Ban, MessageCircle,
 } from "lucide-react";
 
 const principles = [
@@ -27,6 +27,11 @@ const principles = [
     description: "Cite evidence confidently. Be humble about complexity. 'The research shows X, but this is a complex and evolving field' is more persuasive than 'You're wrong, here's the proof.'",
     color: "text-bitcoin", bg: "bg-bitcoin/10",
   },
+  {
+    icon: MessageCircle, title: "'Yes, and' — Never 'Yes, but'",
+    description: "When acknowledging a point, always use 'Yes, and' instead of 'Yes, but'. 'But' negates everything before it — the listener only hears the rebuttal. 'And' builds on their point, making them feel heard while you expand the frame.",
+    color: "text-purple-400", bg: "bg-purple-400/10",
+  },
 ];
 
 const reframeExamples = [
@@ -41,8 +46,8 @@ const reframeExamples = [
     category: "Admit & Redefine",
     fud: "Bitcoin uses an enormous amount of energy.",
     wrong: "Bitcoin's energy use is a drop in the ocean compared to Christmas lights!",
-    right: "Yes, Bitcoin does use significant energy. But the question isn't HOW MUCH — it's WHAT KIND and WHAT FOR. Cambridge shows 52.4% sustainable energy, it's 100% electrified with no direct emissions, and that energy enables grid stabilization, methane mitigation and acceleration of renewable development.",
-    why: "Wrong answer: whataboutism, minimizing. Right answer: acknowledges the claim, redefines the framework.",
+    right: "Yes, Bitcoin does use significant energy, and the important question is WHAT KIND and WHAT FOR. Cambridge shows 52.4% sustainable energy, it's 100% electrified with no direct emissions, and that energy enables grid stabilization, methane mitigation and acceleration of renewable development.",
+    why: "Wrong answer: whataboutism, minimizing. Right answer: acknowledges the claim with 'Yes, and' (not 'Yes, but' which negates the acknowledgment), then redefines the framework.",
   },
   {
     category: "Question Technique",

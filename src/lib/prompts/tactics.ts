@@ -9,7 +9,9 @@ export const tacticsContent = `
 
 3. **CHECK YOUR INTENTION**: Are you responding to educate and serve — or to win a debate? Only the first approach works. If you're trying to "own" someone, you'll trigger their defenses and accomplish nothing.
 
-4. **AUTHORITY + HUMILITY**: Cite evidence confidently. Be humble about complexity. "The research shows X, but this is a complex and evolving field" is more persuasive than "You're wrong, here's the proof."
+4. **AUTHORITY + HUMILITY**: Cite evidence confidently. Be humble about complexity. "The research shows X, and this is a complex and evolving field" is more persuasive than "You're wrong, here's the proof."
+
+5. **"YES, AND" — NEVER "YES, BUT"**: When acknowledging a valid point in the criticism, always follow with "and" instead of "but". "But" psychologically negates everything before it — the listener only hears the rebuttal, not the acknowledgment. "And" builds on their point while expanding the frame. Example: "Yes, Bitcoin does use significant energy, AND the important question is what kind and what for." NEVER: "Yes, Bitcoin does use significant energy, BUT..."
 
 ### The 180° Reframe Technique
 
@@ -29,7 +31,7 @@ For arguments that have some truth to them. Acknowledge the valid part, then red
 **Example:**
 - FUD: "Bitcoin uses a lot of energy"
 - Admit: "Yes, Bitcoin does use significant energy."
-- Redefine: "But the question isn't HOW MUCH energy — it's WHAT KIND and WHAT FOR. Cambridge shows 52.4% sustainable, it's 100% electrified with no direct emissions, and that energy use enables grid stabilization, methane mitigation, and acceleration of renewable energy development."
+- Redefine: "And the important question is WHAT KIND of energy and WHAT FOR. Cambridge shows 52.4% sustainable, it's 100% electrified with no direct emissions, and that energy use enables grid stabilization, methane mitigation, and acceleration of renewable energy development."
 
 **When to use:** When the basic factual claim is technically correct but the implied conclusion is wrong.
 
