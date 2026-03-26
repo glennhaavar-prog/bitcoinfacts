@@ -149,30 +149,10 @@ export default function AgentPage() {
   const [expandedPanel, setExpandedPanel] = useState<string | null>(null);
   const [showSettings, setShowSettings] = useState(true);
 
-  // Scroll tracking — don't auto-scroll if user manually scrolled up
+  // Scroll refs — no auto-scrolling, user controls scroll entirely
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const userScrolledUpRef = useRef(false);
   const lastStreamUpdateRef = useRef(0);
-
-  // Detect manual scroll
-  function handleScroll() {
-    const el = scrollContainerRef.current;
-    if (!el) return;
-    const isNearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 100;
-    userScrolledUpRef.current = !isNearBottom;
-  }
-
-  // Auto-scroll only when a new message is added (not during streaming content updates)
-  const messageCountRef = useRef(0);
-  useEffect(() => {
-    if (messages.length > messageCountRef.current && !userScrolledUpRef.current) {
-      requestAnimationFrame(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-      });
-    }
-    messageCountRef.current = messages.length;
-  }, [messages.length]);
 
   // Collapse settings on mobile after first message
   useEffect(() => {
@@ -184,8 +164,6 @@ export default function AgentPage() {
   const handleSubmit = useCallback(async (fudText: string) => {
     setError(null);
     setExpandedPanel(null);
-    // Reset scroll tracking — user just submitted, scroll to bottom
-    userScrolledUpRef.current = false;
 
     const userMessage: ChatMessage = { role: "user", content: fudText };
     setMessages((prev) => [...prev, userMessage]);
@@ -239,12 +217,6 @@ export default function AgentPage() {
                     return updated;
                   });
                   lastStreamUpdateRef.current = now;
-                  // Auto-scroll during streaming only if user hasn't scrolled up
-                  if (!userScrolledUpRef.current) {
-                    requestAnimationFrame(() => {
-                      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-                    });
-                  }
                 }
               }
             } catch {
@@ -409,7 +381,6 @@ export default function AgentPage() {
         {/* Messages */}
         <div
           ref={scrollContainerRef}
-          onScroll={handleScroll}
           className="flex-1 p-3 sm:p-4 space-y-3 overflow-y-auto"
         >
           {messages.length === 0 && (
