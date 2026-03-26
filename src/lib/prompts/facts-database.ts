@@ -57,6 +57,30 @@ export const factCategories: FactCategory[] = [
     description: "Debunking the most persistent Bitcoin myths",
     descriptionNo: "Avlivning av de mest hardnakkede Bitcoin-mytene",
   },
+  {
+    id: "ewaste",
+    name: "E-Waste & Hardware",
+    nameNo: "E-avfall & maskinvare",
+    icon: "♻️",
+    description: "Facts about Bitcoin mining e-waste, ASIC lifespan, and recycling",
+    descriptionNo: "Fakta om Bitcoin-minings e-avfall, ASIC-levetid og resirkulering",
+  },
+  {
+    id: "water",
+    name: "Water Usage",
+    nameNo: "Vannforbruk",
+    icon: "💧",
+    description: "Evidence about Bitcoin mining water usage and comparisons",
+    descriptionNo: "Bevis om Bitcoin-minings vannforbruk og sammenligninger",
+  },
+  {
+    id: "methane",
+    name: "Methane Mitigation",
+    nameNo: "Metanreduksjon",
+    icon: "🔥",
+    description: "How Bitcoin mining captures methane and paves the way to carbon neutrality",
+    descriptionNo: "Hvordan Bitcoin-mining fanger metan og baner vei mot karbonnøytralitet",
+  },
 ];
 
 export const facts: Fact[] = [
@@ -293,6 +317,102 @@ export const facts: Fact[] = [
     date: "2024",
     tip: "180° reframe: Bitcoin's blockchain is the most transparent financial system ever created. That's why law enforcement increasingly prefers catching criminals who use crypto.",
     tipNo: "180°-omformulering: Bitcoins blokkjede er det mest transparente finanssystemet som noensinne er laget. Derfor foretrekker rettshåndhevelse i økende grad å ta kriminelle som bruker krypto.",
+  },
+  // E-Waste & Hardware (DARI source)
+  {
+    id: "ewaste-1",
+    category: "ewaste",
+    claim: "Bitcoin mining generates enormous amounts of e-waste",
+    claimNo: "Bitcoin-mining genererer enorme mengder e-avfall",
+    reality:
+      "Cambridge's 2025 report found actual Bitcoin e-waste at ~2.3 kilotonnes in 2024 — only 7% of de Vries' projected levels (~30,000 tonnes annually predicted). Nearly 90% of mining ASICs are recycled, sold, or repurposed. ASIC lifespans are 5-8 years, not 1-2 years as critics claimed.",
+    realityNo:
+      "Cambridge 2025-rapport fant faktisk Bitcoin e-avfall på ~2,3 kilotonn i 2024 — bare 7 % av de Vries' anslåtte nivåer (~30 000 tonn årlig). Nesten 90 % av mining-ASICs resirkuleres, selges eller gjenbrukes. ASIC-levetider er 5-8 år, ikke 1-2 år som kritikere hevdet.",
+    source: "Cambridge Centre for Alternative Finance (2025); DA-RI",
+    sourceUrl: "https://www.da-ri.org/",
+    date: "2025",
+    tip: "The predicted e-waste crisis? Actual waste was 93% lower than what the most-cited critic predicted. 90% of miners are recycled or repurposed.",
+    tipNo: "Den spådde e-avfallskrisen? Faktisk avfall var 93 % lavere enn hva den mest siterte kritikeren spådde. 90 % av minere resirkuleres eller gjenbrukes.",
+  },
+  // Water Usage (DARI source)
+  {
+    id: "water-1",
+    category: "water",
+    claim: "Each Bitcoin transaction uses thousands of liters of water",
+    claimNo: "Hver Bitcoin-transaksjon bruker tusenvis av liter vann",
+    reality:
+      "Cambridge University itself states measuring resources 'per transaction' is 'not a meaningful metric in PoW blockchains.' A single blockchain transaction can contain 'many thousands of payments.' Bitcoin mining uses 0.0006% of the water a typical gold mine uses. Most water attributed to mining is cooling water returned to the source.",
+    realityNo:
+      "Cambridge University sier selv at å måle ressurser 'per transaksjon' er 'ikke en meningsfull metrikk i PoW-blokkjeder.' En enkelt blokkjedetransaksjon kan inneholde 'mange tusen betalinger.' Bitcoin-mining bruker 0,0006 % av vannet en typisk gullgruve bruker. Mesteparten av vannet tilskrevet mining er kjølevann som returneres til kilden.",
+    source: "Cambridge University CCAF; Marathon Digital Holdings; DA-RI",
+    sourceUrl: "https://www.da-ri.org/",
+    date: "2024",
+    tip: "Cambridge — the source critics love to cite — said themselves that per-transaction metrics are 'not meaningful.'",
+    tipNo: "Cambridge — kilden kritikere elsker å sitere — sa selv at per-transaksjon-metrikker er 'ikke meningsfulle'.",
+  },
+  // Methane Mitigation (DARI source)
+  {
+    id: "methane-1",
+    category: "methane",
+    claim: "The Bitcoin network can never become carbon neutral",
+    claimNo: "Bitcoin-nettverket kan aldri bli karbonnøytralt",
+    reality:
+      "291.9 MW of power from methane (vented) sources would make the entire Bitcoin network carbon-neutral — approximately 35 mid-sized landfills. Investment required: ~$421 million. Bitcoin miners already offset ~6% of network emissions through methane capture. The network is projected to reach carbon-negativity by 2027.",
+    realityNo:
+      "291,9 MW kraft fra metan (ventilerte) kilder ville gjort hele Bitcoin-nettverket karbonnøytralt — omtrent 35 mellomstore søppelfyllinger. Investering nødvendig: ~421 millioner dollar. Bitcoin-minere kompenserer allerede ~6 % av nettverkets utslipp gjennom metanfangst. Nettverket er anslått å nå karbonnegativitet innen 2027.",
+    source: "DA-RI original research; BEEST model",
+    sourceUrl: "https://www.da-ri.org/",
+    date: "2023",
+    tip: "35 landfills. That's all it takes to make the entire Bitcoin network carbon-neutral. Not 35,000. Not 350. Just 35.",
+    tipNo: "35 søppelfyllinger. Det er alt som trengs for å gjøre hele Bitcoin-nettverket karbonnøytralt. Ikke 35 000. Ikke 350. Bare 35.",
+  },
+  // Additional DARI: Industry comparison
+  {
+    id: "energy-4",
+    category: "energy",
+    claim: "Bitcoin mining is among the least sustainable industries",
+    claimNo: "Bitcoin-mining er blant de minst bærekraftige industriene",
+    reality:
+      "Bitcoin mining (52.6% sustainable) ranks highest among all industries compared. Rankings: Bitcoin Mining 52.6%, Banking 39.2%, Industrial 32%, Agriculture 19.5%, Gold 12.8%, Iron & Steel 9.8%. Bitcoin is decarbonizing at 4.49% per year vs industrial sector's 0.4%.",
+    realityNo:
+      "Bitcoin-mining (52,6 % bærekraftig) rangerer høyest blant alle sammenlignede industrier. Rangering: Bitcoin 52,6 %, Bank 39,2 %, Industri 32 %, Landbruk 19,5 %, Gull 12,8 %, Jern & Stål 9,8 %. Bitcoin avkarboniserer med 4,49 % per år vs industrisektorens 0,4 %.",
+    source: "DA-RI analysis using IEA, Our World in Data",
+    sourceUrl: "https://www.da-ri.org/",
+    date: "2023",
+    tip: "Bitcoin mining uses more sustainable energy than banking, industry, gold mining, agriculture, and steel. It's literally the greenest major industry.",
+    tipNo: "Bitcoin-mining bruker mer bærekraftig energi enn bank, industri, gullgruvedrift, landbruk og stål. Det er bokstavelig talt den grønneste store industrien.",
+  },
+  // Additional DARI: Refugees & humanitarian
+  {
+    id: "adoption-2",
+    category: "adoption",
+    claim: "Bitcoin is only for wealthy speculators in Western countries",
+    claimNo: "Bitcoin er bare for rike spekulanter i vestlige land",
+    reality:
+      "At least 329,000 displaced people have relied on Bitcoin for financial continuity. 5.7 billion people live under autocratic regimes — 9 of top 10 Bitcoin-adopting nations are autocratic. 2 billion people are unbanked (55% women, 90% people of color). 10.97 million Afghan women are legally prohibited from bank accounts.",
+    realityNo:
+      "Minst 329 000 fordrevne mennesker har vært avhengige av Bitcoin for finansiell kontinuitet. 5,7 milliarder mennesker lever under autokratiske regimer — 9 av de 10 største Bitcoin-adopsjonsnasjonene er autokratiske. 2 milliarder er uten banktilgang (55 % kvinner, 90 % ikke-hvite). 10,97 millioner afghanske kvinner er juridisk forhindret fra å ha bankkonto.",
+    source: "DA-RI / Dr. Simon Collins; World Bank; Statista",
+    sourceUrl: "https://www.da-ri.org/",
+    date: "2025",
+    tip: "The people who need Bitcoin most are the ones adopting it fastest — not Silicon Valley speculators, but 5.7 billion people living under autocratic regimes.",
+    tipNo: "Menneskene som trenger Bitcoin mest er de som adopterer det raskest — ikke Silicon Valley-spekulanter, men 5,7 milliarder mennesker under autokratiske regimer.",
+  },
+  // Additional DARI: De Vries debunk
+  {
+    id: "academic-3",
+    category: "academic",
+    claim: "Alex de Vries / Digiconomist is a reliable source on Bitcoin energy",
+    claimNo: "Alex de Vries / Digiconomist er en pålitelig kilde om Bitcoin-energi",
+    reality:
+      "De Vries' 2017 model predicted energy usage 2,509x higher than reality. He is affiliated with DNB (Dutch Central Bank), often undisclosed. Wikipedia dropped Digiconomist as a reference source. Cambridge called his per-transaction metric 'not meaningful.' His e-waste predictions were 93% too high.",
+    realityNo:
+      "De Vries' 2017-modell spådde energibruk 2 509x høyere enn virkeligheten. Han er tilknyttet DNB (den nederlandske sentralbanken), ofte ikke oppgitt. Wikipedia droppet Digiconomist som referansekilde. Cambridge kalte per-transaksjon-metrikken hans 'ikke meningsfull'. E-avfallsspådommene hans var 93 % for høye.",
+    source: "DA-RI multiple rebuttals; Cambridge CCAF",
+    sourceUrl: "https://www.da-ri.org/",
+    date: "2023",
+    tip: "The most-cited Bitcoin energy critic works for a central bank, predicted energy usage 2,509 times higher than reality, and even Cambridge said his metric is 'not meaningful.'",
+    tipNo: "Den mest siterte Bitcoin-energikritikeren jobber for en sentralbank, spådde energibruk 2 509 ganger høyere enn virkeligheten, og selv Cambridge sa metrikken hans er 'ikke meningsfull'.",
   },
 ];
 

@@ -10,9 +10,11 @@ import {
   Edit3,
   Save,
   ArrowRight,
+  ArrowLeft,
   Sparkles,
   Database,
   Users,
+  X,
 } from "lucide-react";
 import type { ExtractedFact } from "@/lib/supabase/types";
 
@@ -196,13 +198,16 @@ export default function ContributePage() {
                   <label className="block text-xs text-eb-muted mb-1">Category</label>
                   <select value={manualFact.category_slug} onChange={(e) => setManualFact({ ...manualFact, category_slug: e.target.value })}
                     className="input-field">
-                    <option value="energy">Energy</option>
-                    <option value="environment">Environment</option>
-                    <option value="grid">Grid</option>
-                    <option value="price">Prices</option>
-                    <option value="adoption">Adoption</option>
-                    <option value="academic">Academic</option>
-                    <option value="myths">Myths</option>
+                    <option value="energy">⚡ Energy & Sustainability</option>
+                    <option value="environment">🌱 Environmental Benefits</option>
+                    <option value="grid">🔌 Grid & Flexibility</option>
+                    <option value="price">💰 Electricity Prices</option>
+                    <option value="adoption">🌍 Adoption & Social Impact</option>
+                    <option value="academic">📚 Academic Support</option>
+                    <option value="myths">🔍 Common Myths</option>
+                    <option value="ewaste">♻️ E-Waste & Hardware</option>
+                    <option value="water">💧 Water Usage</option>
+                    <option value="methane">🔥 Methane Mitigation</option>
                   </select>
                 </div>
               </div>
@@ -226,22 +231,33 @@ export default function ContributePage() {
 
       {step === "preview" && (
         <div className="space-y-6">
-          <div className="card p-4 bg-eb-gold-faint border-eb-gold/20 text-center">
-            <p className="text-eb-gold text-sm font-medium">We found {extractedFacts.length} fact(s)! Edit if needed, add your name, and submit.</p>
+          <div className="flex items-center justify-between">
+            <button onClick={() => setStep("input")} className="flex items-center gap-1.5 px-3 py-2 text-sm text-eb-muted hover:text-eb-navy rounded-lg hover:bg-eb-surface-2 transition-colors">
+              <ArrowLeft className="w-4 h-4" /> Back
+            </button>
+            <div className="card px-4 py-2.5 bg-eb-gold-faint border-eb-gold/20">
+              <p className="text-eb-gold text-sm font-medium">{extractedFacts.length} fact(s) found — edit if needed, then submit.</p>
+            </div>
           </div>
           {extractedFacts.map((fact, i) => (
             <div key={i} className="card p-5">
               {editingIndex === i ? (
                 <div className="space-y-3">
                   <input value={fact.claim_en} onChange={(e) => updateFact(i, { claim_en: e.target.value })}
-                    className="input-field" />
+                    className="input-field" placeholder="Claim (English)" />
+                  {fact.reality_en && (
+                    <textarea value={fact.reality_en} onChange={(e) => updateFact(i, { reality_en: e.target.value })}
+                      className="input-field resize-none" rows={3} placeholder="Evidence / reality" />
+                  )}
+                  <input value={fact.source_name} onChange={(e) => updateFact(i, { source_name: e.target.value })}
+                    className="input-field" placeholder="Source" />
                   <button onClick={() => setEditingIndex(null)} className="flex items-center gap-1 px-3 py-1.5 bg-eb-gold text-white text-sm font-medium rounded-lg">
                     <Save className="w-3.5 h-3.5" /> Done
                   </button>
                 </div>
               ) : (
                 <div className="flex items-start justify-between gap-3">
-                  <div>
+                  <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-2">
                       <span className="badge-gold">{fact.category_slug}</span>
                       <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${fact.confidence === "high" ? "bg-eb-green-faint text-eb-green" : fact.confidence === "medium" ? "bg-yellow-50 text-yellow-700" : "bg-eb-red-faint text-eb-red"}`}>
@@ -249,11 +265,19 @@ export default function ContributePage() {
                       </span>
                     </div>
                     <p className="text-eb-navy text-sm font-medium font-serif">{fact.claim_en || fact.claim_no}</p>
-                    <p className="text-eb-muted text-xs mt-1">{fact.source_name}</p>
+                    {fact.reality_en && (
+                      <p className="text-eb-slate text-xs mt-1.5 line-clamp-2">{fact.reality_en}</p>
+                    )}
+                    <p className="text-eb-muted text-xs mt-1">{fact.source_name}{fact.source_date ? ` (${fact.source_date})` : ""}</p>
                   </div>
-                  <button onClick={() => setEditingIndex(i)} className="p-2 rounded-lg hover:bg-eb-surface-2 text-eb-subtle hover:text-eb-slate transition-colors">
-                    <Edit3 className="w-4 h-4" />
-                  </button>
+                  <div className="flex items-center gap-1 flex-shrink-0">
+                    <button onClick={() => setEditingIndex(i)} className="p-2 rounded-lg hover:bg-eb-surface-2 text-eb-subtle hover:text-eb-slate transition-colors" title="Edit">
+                      <Edit3 className="w-4 h-4" />
+                    </button>
+                    <button onClick={() => setExtractedFacts((prev) => prev.filter((_, j) => j !== i))} className="p-2 rounded-lg hover:bg-eb-red-faint text-eb-subtle hover:text-eb-red transition-colors" title="Remove">
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
               )}
             </div>

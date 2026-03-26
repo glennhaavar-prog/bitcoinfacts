@@ -163,12 +163,16 @@ export default function AgentPage() {
     userScrolledUpRef.current = !isNearBottom;
   }
 
-  // Auto-scroll to bottom when new messages arrive — only if user is at bottom
+  // Auto-scroll only when a new message is added (not during streaming content updates)
+  const messageCountRef = useRef(0);
   useEffect(() => {
-    if (!userScrolledUpRef.current && messages.length > 0) {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messages.length > messageCountRef.current && !userScrolledUpRef.current) {
+      requestAnimationFrame(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      });
     }
-  }, [messages]);
+    messageCountRef.current = messages.length;
+  }, [messages.length]);
 
   // Collapse settings on mobile after first message
   useEffect(() => {
@@ -235,6 +239,12 @@ export default function AgentPage() {
                     return updated;
                   });
                   lastStreamUpdateRef.current = now;
+                  // Auto-scroll during streaming only if user hasn't scrolled up
+                  if (!userScrolledUpRef.current) {
+                    requestAnimationFrame(() => {
+                      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+                    });
+                  }
                 }
               }
             } catch {

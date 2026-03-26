@@ -1,16 +1,6 @@
 import Link from "next/link";
-import {
-  ArrowRight,
-  BookOpen,
-  MessageSquare,
-  Copy,
-  Target,
-  Zap,
-  Shield,
-  TrendingUp,
-  Leaf,
-  Globe,
-} from "lucide-react";
+import { ArrowRight, BookOpen, MessageSquare, Copy, Target, Zap } from "lucide-react";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 const steps = [
   {
@@ -36,40 +26,37 @@ const steps = [
   },
 ];
 
-const researchHighlights = [
-  {
-    icon: Zap,
-    fact: "Bitcoin mining uses 52.4% sustainable energy — the only global industry verified above the 50% threshold.",
-    source: "Cambridge University, April 2025",
-  },
-  {
-    icon: Shield,
-    fact: "In Norway, electricity prices rose 20% immediately after a Bitcoin mining operation left the grid.",
-    source: "Norwegian grid data, Sept 2024",
-  },
-  {
-    icon: TrendingUp,
-    fact: "Texas saved $18 billion by using Bitcoin miners as flexible load instead of building gas peaker plants.",
-    source: "Digital Assets Research Institute",
-  },
-  {
-    icon: Leaf,
-    fact: "Bitcoin mining can utilize up to 98% of available solar energy and 92% of wind energy that would otherwise be wasted.",
-    source: "Lai & You, Cornell University",
-  },
-  {
-    icon: Globe,
-    fact: "Gridless delivers renewable energy to ~28,000 people across four African villages — funded by Bitcoin mining.",
-    source: "Gridless",
-  },
-  {
-    icon: MessageSquare,
-    fact: "22 media publications, including BBC, WSJ and Bloomberg, have now run stories on Bitcoin mining's environmental benefits.",
-    source: "Daniel Batten, media analysis",
-  },
+// Fallback highlights if Supabase is unavailable
+const fallbackHighlights = [
+  { fact: "Bitcoin mining uses 52.4% sustainable energy — the only global industry verified above the 50% threshold.", source: "Cambridge University, April 2025" },
+  { fact: "In Norway, electricity prices rose 20% immediately after a Bitcoin mining operation left the grid.", source: "Norwegian grid data, Sept 2024" },
+  { fact: "Texas saved $18 billion by using Bitcoin miners as flexible load instead of building gas peaker plants.", source: "Digital Assets Research Institute" },
+  { fact: "Bitcoin mining can utilize up to 98% of available solar energy and 92% of wind energy that would otherwise be wasted.", source: "Lai & You, Cornell University" },
+  { fact: "Gridless delivers renewable energy to ~28,000 people across four African villages — funded by Bitcoin mining.", source: "Gridless" },
+  { fact: "22 media publications, including BBC, WSJ and Bloomberg, have now run stories on Bitcoin mining's environmental benefits.", source: "Daniel Batten, media analysis" },
 ];
 
-export default function HomePage() {
+async function getHighlights() {
+  try {
+    const supabase = createAdminClient();
+    const { data } = await supabase
+      .from("facts")
+      .select("claim_en, source_name, source_date")
+      .eq("status", "published")
+      .order("created_at", { ascending: false })
+      .limit(6);
+    if (data && data.length >= 6) {
+      return data.map((f) => ({
+        fact: f.claim_en || "",
+        source: `${f.source_name}${f.source_date ? `, ${new Date(f.source_date).getFullYear()}` : ""}`,
+      }));
+    }
+  } catch { /* fall through */ }
+  return fallbackHighlights;
+}
+
+export default async function HomePage() {
+  const highlights = await getHighlights();
   return (
     <>
       {/* Hero */}
@@ -83,7 +70,7 @@ export default function HomePage() {
               Evidence-based research
             </div>
             <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-eb-navy leading-tight">
-              The Bitcoin{" "}
+              The Bitcoin Mining{" "}
               <span className="gradient-text">Evidence Base</span>
             </h1>
             <p className="mt-4 text-lg sm:text-xl text-eb-muted max-w-2xl mx-auto leading-relaxed">
@@ -162,10 +149,10 @@ export default function HomePage() {
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {researchHighlights.map((item, i) => (
+            {highlights.map((item, i) => (
               <div key={i} className="card-hover p-6">
                 <div className="w-9 h-9 rounded-lg bg-eb-gold-faint border border-eb-gold-border flex items-center justify-center mb-4">
-                  <item.icon className="w-4 h-4 text-eb-gold" />
+                  <Zap className="w-4 h-4 text-eb-gold" />
                 </div>
                 <p className="text-eb-navy text-sm leading-relaxed mb-3 font-medium">
                   {item.fact}

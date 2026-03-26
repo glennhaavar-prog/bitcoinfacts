@@ -9,6 +9,7 @@ const navLinks = [
   { href: "/", label: "Home" },
   { href: "/agent", label: "Research Tool" },
   { href: "/facts", label: "Evidence Database" },
+  { href: "/contribute", label: "Contribute" },
   { href: "/playbook", label: "Playbook" },
   { href: "/resources", label: "Resources" },
   { href: "/about", label: "About" },
@@ -30,7 +31,7 @@ export default function Header() {
             </div>
             <div className="hidden sm:block leading-none">
               <span className="font-serif font-bold text-[15px] text-eb-navy block">
-                The Bitcoin
+                The Bitcoin Mining
               </span>
               <span className="font-serif font-semibold text-[15px] text-eb-gold block">
                 Evidence Base
