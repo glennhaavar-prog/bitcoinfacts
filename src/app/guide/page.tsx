@@ -5,11 +5,11 @@ import { Printer } from "lucide-react";
 export default function GuidePage() {
   return (
     <>
-      {/* Print button - hidden in print */}
+      {/* Print button */}
       <div className="print:hidden fixed top-20 right-6 z-50">
         <button
           onClick={() => window.print()}
-          className="flex items-center gap-2 px-5 py-2.5 bg-bitcoin hover:bg-bitcoin-dark text-dark-950 font-semibold text-sm rounded-lg shadow-lg transition-colors"
+          className="flex items-center gap-2 px-5 py-2.5 bg-eb-gold hover:bg-eb-gold-dark text-white font-semibold text-sm rounded-lg shadow-card-md transition-colors"
         >
           <Printer className="w-4 h-4" />
           Save as PDF
@@ -17,222 +17,218 @@ export default function GuidePage() {
       </div>
 
       <div className="max-w-3xl mx-auto px-6 py-12 print:px-0 print:py-0 print:max-w-none">
+
         {/* Cover */}
         <div className="text-center mb-16 print:mb-12 print:pt-20">
-          <p className="text-bitcoin text-sm font-semibold uppercase tracking-widest mb-4 print:text-black">Bitcoin FUD Buster</p>
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-white print:text-black leading-tight mb-6">
-            The Complete Guide to<br />Responding to Bitcoin FUD
+          <p className="text-eb-gold print:text-orange-700 text-sm font-semibold uppercase tracking-widest mb-4">
+            The Bitcoin Evidence Base
+          </p>
+          <h1 className="font-serif text-4xl sm:text-5xl font-bold text-eb-navy print:text-black leading-tight mb-6">
+            The Complete Guide to<br />Responding to Bitcoin Criticism
           </h1>
-          <p className="text-dark-300 print:text-gray-600 text-lg max-w-xl mx-auto mb-8">
+          <p className="text-eb-muted print:text-gray-600 text-lg max-w-xl mx-auto mb-8 leading-relaxed">
             Facts, frameworks, and ready-to-use techniques for countering
             Bitcoin misinformation with evidence and empathy.
           </p>
-          <div className="text-dark-400 print:text-gray-500 text-sm space-y-1">
+          <div className="text-eb-subtle print:text-gray-500 text-sm space-y-1">
             <p>Based on Daniel Batten&apos;s Communication Playbook</p>
             <p>Published by Beyond 66 — bitcoinbeyond66.com</p>
             <p>Version 1.0 — March 2026</p>
           </div>
         </div>
 
-        <hr className="border-dark-700 print:border-gray-300 mb-12" />
+        <hr className="border-eb-border print:border-gray-300 mb-12" />
 
         {/* Table of Contents */}
         <section className="mb-12 print:break-after-page">
-          <h2 className="text-2xl font-bold text-white print:text-black mb-6">Table of Contents</h2>
-          <ol className="space-y-2 text-dark-200 print:text-gray-700 text-sm">
-            <li className="flex items-baseline gap-2"><span className="text-bitcoin font-bold">1.</span> The 4 Core Principles</li>
-            <li className="flex items-baseline gap-2"><span className="text-bitcoin font-bold">2.</span> Communication Techniques</li>
-            <li className="flex items-baseline gap-2"><span className="text-bitcoin font-bold">3.</span> FUD Triage: Fight, Ignore, or Educate</li>
-            <li className="flex items-baseline gap-2"><span className="text-bitcoin font-bold">4.</span> Analogies That Work</li>
-            <li className="flex items-baseline gap-2"><span className="text-bitcoin font-bold">5.</span> Never Say These Things</li>
-            <li className="flex items-baseline gap-2"><span className="text-bitcoin font-bold">6.</span> Platform Formatting Guide</li>
-            <li className="flex items-baseline gap-2"><span className="text-bitcoin font-bold">7.</span> Facts Database: Energy &amp; Sustainability</li>
-            <li className="flex items-baseline gap-2"><span className="text-bitcoin font-bold">8.</span> Facts Database: Environmental Benefits</li>
-            <li className="flex items-baseline gap-2"><span className="text-bitcoin font-bold">9.</span> Facts Database: Grid &amp; Flexibility</li>
-            <li className="flex items-baseline gap-2"><span className="text-bitcoin font-bold">10.</span> Facts Database: Electricity Prices</li>
-            <li className="flex items-baseline gap-2"><span className="text-bitcoin font-bold">11.</span> Facts Database: Adoption &amp; Academic Support</li>
-            <li className="flex items-baseline gap-2"><span className="text-bitcoin font-bold">12.</span> Facts Database: Common Myths</li>
-            <li className="flex items-baseline gap-2"><span className="text-bitcoin font-bold">13.</span> Key Sources &amp; References</li>
+          <h2 className="font-serif text-2xl font-bold text-eb-navy print:text-black mb-6">
+            Table of Contents
+          </h2>
+          <ol className="space-y-2 text-eb-slate print:text-gray-700 text-sm">
+            {[
+              "The 4 Core Principles",
+              "Communication Techniques",
+              "FUD Triage: Fight, Ignore, or Educate",
+              "Analogies That Work",
+              "Never Say These Things",
+              "Platform Formatting Guide",
+              "Facts Database: Energy & Sustainability",
+              "Facts Database: Environmental Benefits",
+              "Facts Database: Grid & Flexibility",
+              "Facts Database: Electricity Prices",
+              "Facts Database: Adoption & Academic Support",
+              "Facts Database: Common Myths",
+              "Key Sources & References",
+            ].map((title, i) => (
+              <li key={i} className="flex items-baseline gap-2">
+                <span className="text-eb-gold print:text-orange-700 font-bold font-mono text-sm">
+                  {i + 1}.
+                </span>
+                {title}
+              </li>
+            ))}
           </ol>
         </section>
 
         {/* 1. Core Principles */}
         <section className="mb-12 print:break-before-page">
-          <h2 className="text-2xl font-bold text-white print:text-black mb-6 flex items-baseline gap-3">
-            <span className="text-bitcoin">1.</span> The 4 Core Principles
+          <h2 className="font-serif text-2xl font-bold text-eb-navy print:text-black mb-6 flex items-baseline gap-3">
+            <span className="text-eb-gold print:text-orange-700">1.</span> The 4 Core Principles
           </h2>
-          <p className="text-dark-300 print:text-gray-600 text-sm mb-6">
+          <p className="text-eb-muted print:text-gray-600 text-sm mb-6 leading-relaxed">
             These principles, developed by Daniel Batten, are the foundation of effective Bitcoin communication.
             They apply to every interaction — whether you&apos;re responding to a tweet or writing a LinkedIn article.
           </p>
 
-          <div className="space-y-6">
-            <div className="card print:border print:border-gray-200 p-6">
-              <h3 className="text-lg font-bold text-green-400 print:text-green-700 mb-2">Principle 1: Truth First</h3>
-              <p className="text-dark-200 print:text-gray-700 text-sm leading-relaxed">
-                Never exaggerate, never lie. Acknowledge what is true in the criticism. If Bitcoin mining actually
-                caused problems in Kazakhstan in 2021, say so. If energy use IS significant, acknowledge it before
-                reframing. Credibility comes from honesty, not from spin. The moment you overstate a claim, you lose
-                the trust of everyone watching the conversation — not just the person you&apos;re responding to.
-              </p>
-            </div>
-
-            <div className="card print:border print:border-gray-200 p-6">
-              <h3 className="text-lg font-bold text-pink-400 print:text-pink-700 mb-2">Principle 2: Influence, Don&apos;t Just Inform</h3>
-              <p className="text-dark-200 print:text-gray-700 text-sm leading-relaxed">
-                Create emotional connection BEFORE presenting data. Show that you understand their perspective.
-                People don&apos;t change their minds because of data alone — they change when they feel heard first.
-                Start with &quot;I understand why you&apos;d think that&quot; or &quot;That&apos;s a fair concern&quot; before
-                presenting evidence. This isn&apos;t manipulation — it&apos;s basic human psychology. Data without
-                rapport feels like an attack.
-              </p>
-            </div>
-
-            <div className="card print:border print:border-gray-200 p-6">
-              <h3 className="text-lg font-bold text-blue-400 print:text-blue-700 mb-2">Principle 3: Check Your Intention</h3>
-              <p className="text-dark-200 print:text-gray-700 text-sm leading-relaxed">
-                Are you responding to educate and serve — or to win a debate? Only the first approach works.
-                If you&apos;re trying to &quot;own&quot; someone, you&apos;ll trigger their defenses and accomplish
-                nothing. Before responding, ask yourself: &quot;Am I doing this for the audience, or for my ego?&quot;
-                If you can&apos;t answer honestly, don&apos;t respond. The best responses leave the other person
-                thinking, not defensive.
-              </p>
-            </div>
-
-            <div className="card print:border print:border-gray-200 p-6">
-              <h3 className="text-lg font-bold text-bitcoin print:text-orange-700 mb-2">Principle 4: Authority + Humility</h3>
-              <p className="text-dark-200 print:text-gray-700 text-sm leading-relaxed">
-                Cite evidence confidently. Be humble about complexity. &quot;The research shows X, but this is a
-                complex and evolving field&quot; is more persuasive than &quot;You&apos;re wrong, here&apos;s the
-                proof.&quot; Authority without humility feels arrogant. Humility without authority feels uncertain.
-                The combination — confident citation paired with intellectual honesty — is what builds lasting credibility.
-              </p>
-            </div>
+          <div className="space-y-4">
+            {[
+              {
+                title: "Principle 1: Truth First",
+                color: "text-eb-green print:text-green-700",
+                bg: "bg-eb-green-faint print:bg-white",
+                border: "border-eb-green/20 print:border-gray-200",
+                text: "Never exaggerate, never lie. Acknowledge what is true in the criticism. If Bitcoin mining actually caused problems in Kazakhstan in 2021, say so. If energy use IS significant, acknowledge it before reframing. Credibility comes from honesty, not from spin. The moment you overstate a claim, you lose the trust of everyone watching the conversation — not just the person you're responding to.",
+              },
+              {
+                title: "Principle 2: Influence, Don't Just Inform",
+                color: "text-pink-600 print:text-pink-700",
+                bg: "bg-pink-50 print:bg-white",
+                border: "border-pink-200 print:border-gray-200",
+                text: "Create emotional connection BEFORE presenting data. Show that you understand their perspective. People don't change their minds because of data alone — they change when they feel heard first. Start with \"I understand why you'd think that\" or \"That's a fair concern\" before presenting evidence. This isn't manipulation — it's basic human psychology. Data without rapport feels like an attack.",
+              },
+              {
+                title: "Principle 3: Check Your Intention",
+                color: "text-blue-600 print:text-blue-700",
+                bg: "bg-blue-50 print:bg-white",
+                border: "border-blue-200 print:border-gray-200",
+                text: "Are you responding to educate and serve — or to win a debate? Only the first approach works. If you're trying to \"own\" someone, you'll trigger their defenses and accomplish nothing. Before responding, ask yourself: \"Am I doing this for the audience, or for my ego?\" If you can't answer honestly, don't respond. The best responses leave the other person thinking, not defensive.",
+              },
+              {
+                title: "Principle 4: Authority + Humility",
+                color: "text-eb-gold print:text-orange-700",
+                bg: "bg-eb-gold-faint print:bg-white",
+                border: "border-eb-gold-border print:border-gray-200",
+                text: "Cite evidence confidently. Be humble about complexity. \"The research shows X, and this is a complex and evolving field\" is more persuasive than \"You're wrong, here's the proof.\" Authority without humility feels arrogant. Humility without authority feels uncertain. The combination — confident citation paired with intellectual honesty — is what builds lasting credibility.",
+              },
+            ].map((p) => (
+              <div key={p.title} className={`card ${p.bg} border ${p.border} p-6`}>
+                <h3 className={`font-serif text-lg font-bold ${p.color} mb-2`}>{p.title}</h3>
+                <p className="text-eb-slate print:text-gray-700 text-sm leading-relaxed">{p.text}</p>
+              </div>
+            ))}
           </div>
         </section>
 
         {/* 2. Techniques */}
         <section className="mb-12 print:break-before-page">
-          <h2 className="text-2xl font-bold text-white print:text-black mb-6 flex items-baseline gap-3">
-            <span className="text-bitcoin">2.</span> Communication Techniques
+          <h2 className="font-serif text-2xl font-bold text-eb-navy print:text-black mb-6 flex items-baseline gap-3">
+            <span className="text-eb-gold print:text-orange-700">2.</span> Communication Techniques
           </h2>
 
           <div className="space-y-8">
-            <div>
-              <h3 className="text-lg font-bold text-white print:text-black mb-3">The 180° Reframe</h3>
-              <p className="text-dark-300 print:text-gray-600 text-sm mb-3">
-                Take the exact claim being made and show that the opposite is true, with evidence. This is the most
-                powerful technique when the evidence clearly supports the opposite conclusion.
-              </p>
-              <div className="card print:border print:border-gray-200 p-5 space-y-3">
-                <div>
-                  <p className="text-xs text-dark-400 print:text-gray-500 uppercase font-semibold mb-1">FUD</p>
-                  <p className="text-dark-200 print:text-gray-700 text-sm italic">&quot;Bitcoin mining destabilizes power grids&quot;</p>
-                </div>
-                <div>
-                  <p className="text-xs text-green-400 print:text-green-700 uppercase font-semibold mb-1">180° Reframe</p>
-                  <p className="text-dark-200 print:text-gray-700 text-sm">
-                    &quot;I understand the concern. It surprises many that research from Duke University, ERCOT data, and
-                    multiple peer-reviewed studies actually show the opposite: Bitcoin mining STABILIZES power grids
-                    due to its unique flexibility — it can power down in 500 milliseconds.&quot;
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-lg font-bold text-white print:text-black mb-3">Admit &amp; Redefine</h3>
-              <p className="text-dark-300 print:text-gray-600 text-sm mb-3">
-                For arguments that have some truth to them. Acknowledge the valid part, then redefine the frame.
-                Use when the basic factual claim is technically correct but the implied conclusion is wrong.
-              </p>
-              <div className="card print:border print:border-gray-200 p-5 space-y-3">
-                <div>
-                  <p className="text-xs text-dark-400 print:text-gray-500 uppercase font-semibold mb-1">FUD</p>
-                  <p className="text-dark-200 print:text-gray-700 text-sm italic">&quot;Bitcoin uses an enormous amount of energy&quot;</p>
-                </div>
-                <div>
-                  <p className="text-xs text-green-400 print:text-green-700 uppercase font-semibold mb-1">Admit &amp; Redefine</p>
-                  <p className="text-dark-200 print:text-gray-700 text-sm">
-                    &quot;Yes, Bitcoin does use significant energy. But the question isn&apos;t HOW MUCH — it&apos;s WHAT KIND
-                    and WHAT FOR. Cambridge shows 52.4% sustainable energy, it&apos;s 100% electrified with no direct
-                    emissions, and that energy enables grid stabilization, methane mitigation and acceleration of
-                    renewable energy development.&quot;
-                  </p>
+            {[
+              {
+                title: "The 180° Reframe",
+                desc: "Take the exact claim being made and show that the opposite is true, with evidence. This is the most powerful technique when the evidence clearly supports the opposite conclusion.",
+                fud: "\"Bitcoin mining destabilizes power grids\"",
+                label: "180° Reframe",
+                response: "\"I understand the concern. It surprises many that research from Duke University, ERCOT data, and multiple peer-reviewed studies actually show the opposite: Bitcoin mining STABILIZES power grids due to its unique flexibility — it can power down in 500 milliseconds.\"",
+              },
+              {
+                title: "Admit & Redefine",
+                desc: "For arguments that have some truth to them. Acknowledge the valid part, then redefine the frame. Use when the basic factual claim is technically correct but the implied conclusion is wrong.",
+                fud: "\"Bitcoin uses an enormous amount of energy\"",
+                label: "Admit & Redefine",
+                response: "\"Yes, Bitcoin does use significant energy. And the question isn't HOW MUCH — it's WHAT KIND and WHAT FOR. Cambridge shows 52.4% sustainable energy, it's 100% electrified with no direct emissions, and that energy enables grid stabilization, methane mitigation and acceleration of renewable energy development.\"",
+              },
+              {
+                title: "The Question Technique",
+                desc: "Instead of making statements, ask questions that lead to the correct conclusion. Best used with genuinely curious people — questions feel less confrontational and let people discover the truth themselves.",
+                fud: "\"Bitcoin is bad for the environment\"",
+                label: "Question Technique",
+                response: "\"Are you aware that there are now over 22 peer-reviewed papers documenting Bitcoin mining's environmental benefits? Or that it's the only global industry verified to use more than 50% sustainable energy?\"",
+              },
+            ].map((t) => (
+              <div key={t.title}>
+                <h3 className="font-serif text-lg font-bold text-eb-navy print:text-black mb-3">{t.title}</h3>
+                <p className="text-eb-muted print:text-gray-600 text-sm mb-3 leading-relaxed">{t.desc}</p>
+                <div className="card print:border print:border-gray-200 p-5 space-y-3">
+                  <div>
+                    <p className="text-xs text-eb-subtle print:text-gray-500 uppercase font-semibold mb-1">Claim</p>
+                    <p className="text-eb-slate print:text-gray-700 text-sm italic">{t.fud}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-eb-green print:text-green-700 uppercase font-semibold mb-1">{t.label}</p>
+                    <p className="text-eb-slate print:text-gray-700 text-sm leading-relaxed">{t.response}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-
-            <div>
-              <h3 className="text-lg font-bold text-white print:text-black mb-3">The Question Technique</h3>
-              <p className="text-dark-300 print:text-gray-600 text-sm mb-3">
-                Instead of making statements, ask questions that lead to the correct conclusion. Best used with
-                genuinely curious people — questions feel less confrontational and let people discover the truth themselves.
-              </p>
-              <div className="card print:border print:border-gray-200 p-5 space-y-3">
-                <div>
-                  <p className="text-xs text-dark-400 print:text-gray-500 uppercase font-semibold mb-1">FUD</p>
-                  <p className="text-dark-200 print:text-gray-700 text-sm italic">&quot;Bitcoin is bad for the environment&quot;</p>
-                </div>
-                <div>
-                  <p className="text-xs text-green-400 print:text-green-700 uppercase font-semibold mb-1">Question Technique</p>
-                  <p className="text-dark-200 print:text-gray-700 text-sm">
-                    &quot;Are you aware that there are now over 22 peer-reviewed papers documenting Bitcoin mining&apos;s
-                    environmental benefits? Or that it&apos;s the only global industry verified to use more than 50%
-                    sustainable energy?&quot;
-                  </p>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
         </section>
 
         {/* 3. Triage */}
         <section className="mb-12 print:break-before-page">
-          <h2 className="text-2xl font-bold text-white print:text-black mb-6 flex items-baseline gap-3">
-            <span className="text-bitcoin">3.</span> FUD Triage: Fight, Ignore, or Educate
+          <h2 className="font-serif text-2xl font-bold text-eb-navy print:text-black mb-6 flex items-baseline gap-3">
+            <span className="text-eb-gold print:text-orange-700">3.</span> FUD Triage: Fight, Ignore, or Educate
           </h2>
-          <p className="text-dark-300 print:text-gray-600 text-sm mb-6">
-            Before responding to any FUD, classify it. Not every comment deserves your energy.
+          <p className="text-eb-muted print:text-gray-600 text-sm mb-6 leading-relaxed">
+            Before responding to any claim, classify it. Not every comment deserves your energy.
           </p>
 
           <div className="space-y-4">
-            <div className="card print:border print:border-gray-200 p-5">
-              <h3 className="text-green-400 print:text-green-700 font-bold mb-2">FIGHT — High-priority responses</h3>
-              <ul className="text-dark-200 print:text-gray-700 text-sm space-y-1.5">
-                <li>• High-profile accounts spreading misinformation to large audiences</li>
-                <li>• Media articles with factual errors that will be widely shared</li>
-                <li>• Regulatory comments or policy discussions based on outdated data</li>
-              </ul>
-              <p className="text-green-400/80 print:text-green-700 text-xs font-medium mt-3">→ Deploy your strongest, most evidence-based response</p>
-            </div>
-
-            <div className="card print:border print:border-gray-200 p-5">
-              <h3 className="text-dark-300 print:text-gray-500 font-bold mb-2">IGNORE — Don&apos;t waste energy</h3>
-              <ul className="text-dark-200 print:text-gray-700 text-sm space-y-1.5">
-                <li>• Anonymous trolling with no genuine interest in discussion</li>
-                <li>• People who have shown they argue in bad faith</li>
-                <li>• Comments with no audience or reach</li>
-              </ul>
-              <p className="text-dark-400 print:text-gray-500 text-xs font-medium mt-3">→ Walk away. Use your energy on higher-impact responses</p>
-            </div>
-
-            <div className="card print:border print:border-gray-200 p-5">
-              <h3 className="text-blue-400 print:text-blue-700 font-bold mb-2">EDUCATE — Best opportunity</h3>
-              <ul className="text-dark-200 print:text-gray-700 text-sm space-y-1.5">
-                <li>• Genuinely curious people asking questions</li>
-                <li>• People who cite outdated but once-valid data</li>
-                <li>• Friends and family sharing mainstream media FUD</li>
-              </ul>
-              <p className="text-blue-400/80 print:text-blue-700 text-xs font-medium mt-3">→ Lead with empathy, use questions, provide verifiable sources</p>
-            </div>
+            {[
+              {
+                label: "FIGHT — High-priority responses",
+                color: "text-eb-green print:text-green-700",
+                items: [
+                  "High-profile accounts spreading misinformation to large audiences",
+                  "Media articles with factual errors that will be widely shared",
+                  "Regulatory comments or policy discussions based on outdated data",
+                ],
+                note: "→ Deploy your strongest, most evidence-based response",
+                noteColor: "text-eb-green/80 print:text-green-700",
+              },
+              {
+                label: "IGNORE — Don't waste energy",
+                color: "text-eb-muted print:text-gray-500",
+                items: [
+                  "Anonymous trolling with no genuine interest in discussion",
+                  "People who have shown they argue in bad faith",
+                  "Comments with no audience or reach",
+                ],
+                note: "→ Walk away. Use your energy on higher-impact responses",
+                noteColor: "text-eb-subtle print:text-gray-500",
+              },
+              {
+                label: "EDUCATE — Best opportunity",
+                color: "text-blue-600 print:text-blue-700",
+                items: [
+                  "Genuinely curious people asking questions",
+                  "People who cite outdated but once-valid data",
+                  "Friends and family sharing mainstream media claims",
+                ],
+                note: "→ Lead with empathy, use questions, provide verifiable sources",
+                noteColor: "text-blue-500/80 print:text-blue-700",
+              },
+            ].map((section) => (
+              <div key={section.label} className="card print:border print:border-gray-200 p-5">
+                <h3 className={`font-serif font-bold mb-2 ${section.color}`}>{section.label}</h3>
+                <ul className="text-eb-slate print:text-gray-700 text-sm space-y-1.5">
+                  {section.items.map((item, i) => (
+                    <li key={i}>• {item}</li>
+                  ))}
+                </ul>
+                <p className={`${section.noteColor} text-xs font-medium mt-3`}>{section.note}</p>
+              </div>
+            ))}
           </div>
         </section>
 
         {/* 4. Analogies */}
         <section className="mb-12 print:break-before-page">
-          <h2 className="text-2xl font-bold text-white print:text-black mb-6 flex items-baseline gap-3">
-            <span className="text-bitcoin">4.</span> Analogies That Work
+          <h2 className="font-serif text-2xl font-bold text-eb-navy print:text-black mb-6 flex items-baseline gap-3">
+            <span className="text-eb-gold print:text-orange-700">4.</span> Analogies That Work
           </h2>
           <div className="space-y-4">
             {[
@@ -244,10 +240,10 @@ export default function GuidePage() {
             ].map((a) => (
               <div key={a.name} className="card print:border print:border-gray-200 p-5">
                 <div className="flex items-baseline gap-2 mb-1">
-                  <h3 className="text-white print:text-black font-bold text-sm">{a.name}</h3>
-                  <span className="text-dark-400 print:text-gray-500 text-xs">— for {a.use}</span>
+                  <h3 className="text-eb-navy print:text-black font-bold text-sm font-serif">{a.name}</h3>
+                  <span className="text-eb-subtle print:text-gray-500 text-xs">— for {a.use}</span>
                 </div>
-                <p className="text-dark-200 print:text-gray-700 text-sm leading-relaxed">{a.analogy}</p>
+                <p className="text-eb-slate print:text-gray-700 text-sm leading-relaxed">{a.analogy}</p>
               </div>
             ))}
           </div>
@@ -255,8 +251,8 @@ export default function GuidePage() {
 
         {/* 5. Never Say */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold text-white print:text-black mb-6 flex items-baseline gap-3">
-            <span className="text-bitcoin">5.</span> Never Say These Things
+          <h2 className="font-serif text-2xl font-bold text-eb-navy print:text-black mb-6 flex items-baseline gap-3">
+            <span className="text-eb-gold print:text-orange-700">5.</span> Never Say These Things
           </h2>
           <div className="card print:border print:border-gray-200 p-5">
             <div className="space-y-3">
@@ -269,11 +265,11 @@ export default function GuidePage() {
                 { phrase: "HFSP (Have Fun Staying Poor)", why: "Toxic tribal mentality that repels potential allies" },
                 { phrase: "Bitcoin fixes this", why: "Vague and cult-like sounding to anyone outside the community" },
               ].map((item) => (
-                <div key={item.phrase} className="flex items-start gap-3 py-2 border-b border-dark-700 print:border-gray-200 last:border-0">
-                  <span className="text-red-400 print:text-red-600 text-sm mt-0.5">✕</span>
+                <div key={item.phrase} className="flex items-start gap-3 py-2 border-b border-eb-border print:border-gray-200 last:border-0">
+                  <span className="text-eb-red print:text-red-600 text-sm mt-0.5">✕</span>
                   <div>
-                    <p className="text-white print:text-black text-sm font-medium">&quot;{item.phrase}&quot;</p>
-                    <p className="text-dark-400 print:text-gray-500 text-xs mt-0.5">{item.why}</p>
+                    <p className="text-eb-navy print:text-black text-sm font-semibold">&quot;{item.phrase}&quot;</p>
+                    <p className="text-eb-muted print:text-gray-500 text-xs mt-0.5">{item.why}</p>
                   </div>
                 </div>
               ))}
@@ -283,8 +279,8 @@ export default function GuidePage() {
 
         {/* 6. Platform Guide */}
         <section className="mb-12 print:break-before-page">
-          <h2 className="text-2xl font-bold text-white print:text-black mb-6 flex items-baseline gap-3">
-            <span className="text-bitcoin">6.</span> Platform Formatting Guide
+          <h2 className="font-serif text-2xl font-bold text-eb-navy print:text-black mb-6 flex items-baseline gap-3">
+            <span className="text-eb-gold print:text-orange-700">6.</span> Platform Formatting Guide
           </h2>
           <div className="space-y-4">
             {[
@@ -294,8 +290,8 @@ export default function GuidePage() {
               { platform: "General", rules: "Medium length. Neutral platform tone. Balance data with readability. Include at least one specific source. Works for email, forums, comments, or any context where you're unsure of the format." },
             ].map((p) => (
               <div key={p.platform} className="card print:border print:border-gray-200 p-5">
-                <h3 className="text-white print:text-black font-bold text-sm mb-2">{p.platform}</h3>
-                <p className="text-dark-200 print:text-gray-700 text-sm leading-relaxed">{p.rules}</p>
+                <h3 className="text-eb-navy print:text-black font-serif font-bold text-sm mb-2">{p.platform}</h3>
+                <p className="text-eb-slate print:text-gray-700 text-sm leading-relaxed">{p.rules}</p>
               </div>
             ))}
           </div>
@@ -345,17 +341,27 @@ export default function GuidePage() {
           },
         ].map((section) => (
           <section key={section.num} className="mb-12 print:break-before-page">
-            <h2 className="text-2xl font-bold text-white print:text-black mb-6 flex items-baseline gap-3">
-              <span className="text-bitcoin">{section.num}.</span> {section.title}
+            <h2 className="font-serif text-2xl font-bold text-eb-navy print:text-black mb-6 flex items-baseline gap-3">
+              <span className="text-eb-gold print:text-orange-700">{section.num}.</span> {section.title}
             </h2>
             <div className="space-y-5">
               {section.facts.map((fact) => (
                 <div key={fact.claim} className="card print:border print:border-gray-200 p-5">
-                  <p className="text-bitcoin print:text-orange-700 text-xs font-semibold uppercase mb-2">Common claim</p>
-                  <p className="text-white print:text-black font-semibold text-sm mb-3 italic">&quot;{fact.claim}&quot;</p>
-                  <p className="text-xs text-green-400 print:text-green-700 font-semibold uppercase mb-1">The reality</p>
-                  <p className="text-dark-200 print:text-gray-700 text-sm leading-relaxed mb-3">{fact.reality}</p>
-                  <p className="text-dark-400 print:text-gray-500 text-xs">Source: {fact.source}</p>
+                  <p className="text-eb-gold print:text-orange-700 text-xs font-semibold uppercase tracking-wider mb-2">
+                    Common claim
+                  </p>
+                  <p className="text-eb-navy print:text-black font-serif font-semibold text-sm mb-3 italic">
+                    &quot;{fact.claim}&quot;
+                  </p>
+                  <p className="text-xs text-eb-green print:text-green-700 font-semibold uppercase tracking-wider mb-1">
+                    The evidence
+                  </p>
+                  <p className="text-eb-slate print:text-gray-700 text-sm leading-relaxed mb-3">
+                    {fact.reality}
+                  </p>
+                  <p className="text-eb-subtle print:text-gray-500 text-xs">
+                    Source: {fact.source}
+                  </p>
                 </div>
               ))}
             </div>
@@ -364,35 +370,37 @@ export default function GuidePage() {
 
         {/* 13. References */}
         <section className="mb-12 print:break-before-page">
-          <h2 className="text-2xl font-bold text-white print:text-black mb-6 flex items-baseline gap-3">
-            <span className="text-bitcoin">13.</span> Key Sources &amp; References
+          <h2 className="font-serif text-2xl font-bold text-eb-navy print:text-black mb-6 flex items-baseline gap-3">
+            <span className="text-eb-gold print:text-orange-700">13.</span> Key Sources &amp; References
           </h2>
           <div className="card print:border print:border-gray-200 p-5">
-            <ul className="space-y-3 text-sm text-dark-200 print:text-gray-700">
-              <li><strong className="text-white print:text-black">Cambridge University CBECI</strong> — ccaf.io/cbnsi/cbeci — The gold standard for Bitcoin energy data</li>
-              <li><strong className="text-white print:text-black">Daniel Batten / BEEST Model</strong> — batcoinz.com — Open-source Bitcoin sustainability tracker</li>
-              <li><strong className="text-white print:text-black">WooCharts ESG Tracker</strong> — woocharts.com/esg-bitcoin-mining-sustainability — Live sustainability data</li>
-              <li><strong className="text-white print:text-black">Sai &amp; Vranken (2023)</strong> — &quot;A critique of Bitcoin energy consumption estimates&quot; — Debunked de Vries&apos; methodology</li>
-              <li><strong className="text-white print:text-black">Digital Assets Research Institute</strong> — da-ri.org — Independent Bitcoin mining research</li>
-              <li><strong className="text-white print:text-black">ERCOT / Brad Jones</strong> — Former interim CEO testimony on Bitcoin mining&apos;s grid benefits</li>
-              <li><strong className="text-white print:text-black">Duke University</strong> — Whitepaper on Controllable Load Resources and grid stability</li>
-              <li><strong className="text-white print:text-black">Lai &amp; You, Cornell University</strong> — Bitcoin mining and renewable energy utilization</li>
-              <li><strong className="text-white print:text-black">Moghimi et al</strong> — Microgrid integration and 46.5% cost reduction</li>
-              <li><strong className="text-white print:text-black">Chainalysis 2024</strong> — Crypto Crime Report showing 0.34% illicit activity</li>
-              <li><strong className="text-white print:text-black">Nuno Barbosa, Unicarbo</strong> — Landfill gas and Bitcoin mining economics</li>
-              <li><strong className="text-white print:text-black">Gridless</strong> — Renewable energy access in Africa via Bitcoin mining</li>
+            <ul className="space-y-3 text-sm text-eb-slate print:text-gray-700">
+              <li><strong className="text-eb-navy print:text-black">Cambridge University CBECI</strong> — ccaf.io/cbnsi/cbeci — The gold standard for Bitcoin energy data</li>
+              <li><strong className="text-eb-navy print:text-black">Daniel Batten / BEEST Model</strong> — batcoinz.com — Open-source Bitcoin sustainability tracker</li>
+              <li><strong className="text-eb-navy print:text-black">WooCharts ESG Tracker</strong> — woocharts.com/esg-bitcoin-mining-sustainability — Live sustainability data</li>
+              <li><strong className="text-eb-navy print:text-black">Sai &amp; Vranken (2023)</strong> — &quot;A critique of Bitcoin energy consumption estimates&quot; — Debunked de Vries&apos; methodology</li>
+              <li><strong className="text-eb-navy print:text-black">Digital Assets Research Institute</strong> — da-ri.org — Independent Bitcoin mining research</li>
+              <li><strong className="text-eb-navy print:text-black">ERCOT / Brad Jones</strong> — Former interim CEO testimony on Bitcoin mining&apos;s grid benefits</li>
+              <li><strong className="text-eb-navy print:text-black">Duke University</strong> — Whitepaper on Controllable Load Resources and grid stability</li>
+              <li><strong className="text-eb-navy print:text-black">Lai &amp; You, Cornell University</strong> — Bitcoin mining and renewable energy utilization</li>
+              <li><strong className="text-eb-navy print:text-black">Moghimi et al</strong> — Microgrid integration and 46.5% cost reduction</li>
+              <li><strong className="text-eb-navy print:text-black">Chainalysis 2024</strong> — Crypto Crime Report showing 0.34% illicit activity</li>
+              <li><strong className="text-eb-navy print:text-black">Nuno Barbosa, Unicarbo</strong> — Landfill gas and Bitcoin mining economics</li>
+              <li><strong className="text-eb-navy print:text-black">Gridless</strong> — Renewable energy access in Africa via Bitcoin mining</li>
             </ul>
           </div>
         </section>
 
         {/* Footer */}
-        <div className="text-center pt-8 border-t border-dark-700 print:border-gray-300">
-          <p className="text-dark-400 print:text-gray-500 text-sm mb-1">Bitcoin FUD Buster — The Complete Guide</p>
-          <p className="text-dark-500 print:text-gray-400 text-xs">
+        <div className="text-center pt-8 border-t border-eb-border print:border-gray-300">
+          <p className="text-eb-muted print:text-gray-500 text-sm mb-1">
+            The Bitcoin Evidence Base — The Complete Guide
+          </p>
+          <p className="text-eb-subtle print:text-gray-400 text-xs">
             Version 1.0 — March 2026 — Published by Beyond 66
           </p>
-          <p className="text-dark-500 print:text-gray-400 text-xs mt-1">
-            bitcoinbeyond66.com — facts.bitcoinbeyond66.com
+          <p className="text-eb-subtle print:text-gray-400 text-xs mt-1">
+            bitcoinbeyond66.com
           </p>
         </div>
       </div>

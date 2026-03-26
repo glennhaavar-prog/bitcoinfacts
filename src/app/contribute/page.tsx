@@ -10,7 +10,7 @@ import {
   Edit3,
   Save,
   ArrowRight,
-  Zap,
+  Sparkles,
   Database,
   Users,
 } from "lucide-react";
@@ -103,20 +103,21 @@ export default function ContributePage() {
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
       <div className="text-center mb-8">
-        <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">
-          Contribute <span className="gradient-text">Facts</span>
+        <p className="section-label mb-2">Community</p>
+        <h1 className="font-serif text-3xl sm:text-4xl font-bold text-eb-navy mb-2">
+          Contribute Facts
         </h1>
-        <p className="text-dark-300 max-w-lg mx-auto">
-          Help us build the world&apos;s best Bitcoin fact database. Share an article, a claim, or a complete fact.
+        <p className="text-eb-muted max-w-lg mx-auto leading-relaxed">
+          Help us build the world&apos;s best Bitcoin evidence database. Share an article, a claim, or a complete fact.
         </p>
         <div className="flex justify-center gap-6 mt-4">
-          <div className="flex items-center gap-2 text-dark-400 text-sm">
-            <Database className="w-4 h-4 text-bitcoin" />
-            <span><strong className="text-white">{stats.total}</strong> facts in the database</span>
+          <div className="flex items-center gap-2 text-eb-muted text-sm">
+            <Database className="w-4 h-4 text-eb-gold" />
+            <span><strong className="text-eb-navy">{stats.total}</strong> facts in the database</span>
           </div>
-          <div className="flex items-center gap-2 text-dark-400 text-sm">
-            <Users className="w-4 h-4 text-bitcoin" />
-            <span><strong className="text-white">{stats.community}</strong> from community</span>
+          <div className="flex items-center gap-2 text-eb-muted text-sm">
+            <Users className="w-4 h-4 text-eb-gold" />
+            <span><strong className="text-eb-navy">{stats.community}</strong> from community</span>
           </div>
         </div>
       </div>
@@ -125,11 +126,11 @@ export default function ContributePage() {
         <div className="flex items-center justify-center gap-2 mb-8">
           {steps.map((s, i) => (
             <div key={s.key} className="flex items-center gap-2">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${stepOrder.indexOf(s.key) <= currentIndex ? "bg-bitcoin text-dark-950" : "bg-dark-700 text-dark-400"}`}>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${stepOrder.indexOf(s.key) <= currentIndex ? "bg-eb-gold text-white" : "bg-eb-surface-2 text-eb-subtle border border-eb-border"}`}>
                 {stepOrder.indexOf(s.key) < currentIndex ? <Check className="w-4 h-4" /> : i + 1}
               </div>
-              <span className={`text-xs hidden sm:block ${stepOrder.indexOf(s.key) <= currentIndex ? "text-dark-200" : "text-dark-500"}`}>{s.label}</span>
-              {i < steps.length - 1 && <div className={`w-8 h-0.5 ${stepOrder.indexOf(s.key) < currentIndex ? "bg-bitcoin" : "bg-dark-700"}`} />}
+              <span className={`text-xs hidden sm:block ${stepOrder.indexOf(s.key) <= currentIndex ? "text-eb-slate" : "text-eb-subtle"}`}>{s.label}</span>
+              {i < steps.length - 1 && <div className={`w-8 h-0.5 ${stepOrder.indexOf(s.key) < currentIndex ? "bg-eb-gold" : "bg-eb-border"}`} />}
             </div>
           ))}
         </div>
@@ -140,113 +141,134 @@ export default function ContributePage() {
           <div className="flex gap-2 mb-6">
             {([{ value: "url" as const, label: "URL", icon: LinkIcon }, { value: "text" as const, label: "Text", icon: FileText }, { value: "fact" as const, label: "Fact", icon: FormInput }]).map((m) => (
               <button key={m.value} onClick={() => setMode(m.value)}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${mode === m.value ? "bg-bitcoin text-dark-950" : "bg-dark-700 text-dark-300 hover:text-white"}`}>
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${mode === m.value ? "bg-eb-gold text-white" : "bg-eb-surface-2 text-eb-muted hover:text-eb-slate border border-eb-border"}`}>
                 <m.icon className="w-4 h-4" />{m.label}
               </button>
             ))}
           </div>
 
           {mode === "url" && (<>
-            <label className="block text-sm text-dark-300 mb-2">Paste a URL to an article with Bitcoin facts</label>
+            <label className="block text-sm text-eb-muted mb-2">Paste a URL to an article with Bitcoin facts</label>
             <input type="url" value={inputUrl} onChange={(e) => setInputUrl(e.target.value)} placeholder="https://..."
-              className="w-full bg-dark-700 border border-dark-600 rounded-lg px-4 py-3 text-sm text-dark-100 placeholder:text-dark-500 focus:outline-none focus:border-bitcoin" />
+              className="input-field" />
             <button onClick={handleExtract} disabled={!inputUrl.trim()}
-              className="mt-4 flex items-center gap-2 px-6 py-3 bg-bitcoin hover:bg-bitcoin-dark disabled:opacity-50 text-dark-950 font-semibold rounded-lg transition-colors">
-              <Zap className="w-4 h-4" />Extract facts with AI
+              className="mt-4 flex items-center gap-2 px-6 py-3 bg-eb-gold hover:bg-eb-gold-dark disabled:opacity-50 text-white font-semibold rounded-lg transition-colors">
+              <Sparkles className="w-4 h-4" />Extract facts with AI
             </button>
           </>)}
 
           {mode === "text" && (<>
-            <label className="block text-sm text-dark-300 mb-2">Write or paste text with claims and facts</label>
+            <label className="block text-sm text-eb-muted mb-2">Write or paste text with claims and facts</label>
             <textarea value={inputText} onChange={(e) => setInputText(e.target.value)} placeholder="Bitcoin mining now uses over 50% sustainable energy according to..." rows={6}
-              className="w-full bg-dark-700 border border-dark-600 rounded-lg px-4 py-3 text-sm text-dark-100 placeholder:text-dark-500 resize-none focus:outline-none focus:border-bitcoin" />
+              className="input-field resize-none" />
             <button onClick={handleExtract} disabled={!inputText.trim()}
-              className="mt-4 flex items-center gap-2 px-6 py-3 bg-bitcoin hover:bg-bitcoin-dark disabled:opacity-50 text-dark-950 font-semibold rounded-lg transition-colors">
-              <Zap className="w-4 h-4" />Extract facts with AI
+              className="mt-4 flex items-center gap-2 px-6 py-3 bg-eb-gold hover:bg-eb-gold-dark disabled:opacity-50 text-white font-semibold rounded-lg transition-colors">
+              <Sparkles className="w-4 h-4" />Extract facts with AI
             </button>
           </>)}
 
           {mode === "fact" && (<>
             <div className="space-y-3">
-              <div><label className="block text-xs text-dark-400 mb-1">Claim (English) *</label>
+              <div>
+                <label className="block text-xs text-eb-muted mb-1">Claim (English) *</label>
                 <input value={manualFact.claim_en} onChange={(e) => setManualFact({ ...manualFact, claim_en: e.target.value })} placeholder="Bitcoin mining uses 52.4% sustainable energy"
-                  className="w-full bg-dark-700 border border-dark-600 rounded-lg px-4 py-2.5 text-sm text-dark-100 placeholder:text-dark-500 focus:outline-none focus:border-bitcoin" /></div>
-              <div className="grid grid-cols-2 gap-3">
-                <div><label className="block text-xs text-dark-400 mb-1">Source *</label>
-                  <input value={manualFact.source_name} onChange={(e) => setManualFact({ ...manualFact, source_name: e.target.value })} placeholder="Cambridge University"
-                    className="w-full bg-dark-700 border border-dark-600 rounded-lg px-4 py-2.5 text-sm text-dark-100 placeholder:text-dark-500 focus:outline-none focus:border-bitcoin" /></div>
-                <div><label className="block text-xs text-dark-400 mb-1">Source URL</label>
-                  <input value={manualFact.source_url} onChange={(e) => setManualFact({ ...manualFact, source_url: e.target.value })} placeholder="https://..."
-                    className="w-full bg-dark-700 border border-dark-600 rounded-lg px-4 py-2.5 text-sm text-dark-100 placeholder:text-dark-500 focus:outline-none focus:border-bitcoin" /></div>
+                  className="input-field" />
               </div>
               <div className="grid grid-cols-2 gap-3">
-                <div><label className="block text-xs text-dark-400 mb-1">Date</label>
+                <div>
+                  <label className="block text-xs text-eb-muted mb-1">Source *</label>
+                  <input value={manualFact.source_name} onChange={(e) => setManualFact({ ...manualFact, source_name: e.target.value })} placeholder="Cambridge University"
+                    className="input-field" />
+                </div>
+                <div>
+                  <label className="block text-xs text-eb-muted mb-1">Source URL</label>
+                  <input value={manualFact.source_url} onChange={(e) => setManualFact({ ...manualFact, source_url: e.target.value })} placeholder="https://..."
+                    className="input-field" />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs text-eb-muted mb-1">Date</label>
                   <input type="date" value={manualFact.source_date} onChange={(e) => setManualFact({ ...manualFact, source_date: e.target.value })}
-                    className="w-full bg-dark-700 border border-dark-600 rounded-lg px-4 py-2.5 text-sm text-dark-100 focus:outline-none focus:border-bitcoin" /></div>
-                <div><label className="block text-xs text-dark-400 mb-1">Category</label>
+                    className="input-field" />
+                </div>
+                <div>
+                  <label className="block text-xs text-eb-muted mb-1">Category</label>
                   <select value={manualFact.category_slug} onChange={(e) => setManualFact({ ...manualFact, category_slug: e.target.value })}
-                    className="w-full bg-dark-700 border border-dark-600 rounded-lg px-4 py-2.5 text-sm text-dark-100 focus:outline-none focus:border-bitcoin">
-                    <option value="energy">Energy</option><option value="environment">Environment</option><option value="grid">Grid</option>
-                    <option value="price">Prices</option><option value="adoption">Adoption</option><option value="academic">Academic</option><option value="myths">Myths</option>
-                  </select></div>
+                    className="input-field">
+                    <option value="energy">Energy</option>
+                    <option value="environment">Environment</option>
+                    <option value="grid">Grid</option>
+                    <option value="price">Prices</option>
+                    <option value="adoption">Adoption</option>
+                    <option value="academic">Academic</option>
+                    <option value="myths">Myths</option>
+                  </select>
+                </div>
               </div>
             </div>
             <button onClick={handleManualFact} disabled={!manualFact.claim_en.trim() || !manualFact.source_name.trim()}
-              className="mt-4 flex items-center gap-2 px-6 py-3 bg-bitcoin hover:bg-bitcoin-dark disabled:opacity-50 text-dark-950 font-semibold rounded-lg transition-colors">
+              className="mt-4 flex items-center gap-2 px-6 py-3 bg-eb-gold hover:bg-eb-gold-dark disabled:opacity-50 text-white font-semibold rounded-lg transition-colors">
               <ArrowRight className="w-4 h-4" />Preview
             </button>
           </>)}
-          {error && <p className="mt-3 text-red-400 text-sm">{error}</p>}
+          {error && <p className="mt-3 text-eb-red text-sm">{error}</p>}
         </div>
       )}
 
       {step === "processing" && (
         <div className="card p-12 text-center">
-          <Loader2 className="w-10 h-10 text-bitcoin animate-spin mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-white mb-2">AI analyzing...</h3>
-          <p className="text-dark-400 text-sm">Extracting facts from your content. This usually takes 10-30 seconds.</p>
+          <Loader2 className="w-10 h-10 text-eb-gold animate-spin mx-auto mb-4" />
+          <h3 className="font-serif text-lg font-semibold text-eb-navy mb-2">AI analyzing...</h3>
+          <p className="text-eb-muted text-sm">Extracting facts from your content. This usually takes 10–30 seconds.</p>
         </div>
       )}
 
       {step === "preview" && (
         <div className="space-y-6">
-          <div className="card p-4 bg-bitcoin/5 border-bitcoin/20 text-center">
-            <p className="text-bitcoin text-sm font-medium">We found {extractedFacts.length} fact(s)! Edit if needed, add your name, and submit.</p>
+          <div className="card p-4 bg-eb-gold-faint border-eb-gold/20 text-center">
+            <p className="text-eb-gold text-sm font-medium">We found {extractedFacts.length} fact(s)! Edit if needed, add your name, and submit.</p>
           </div>
           {extractedFacts.map((fact, i) => (
             <div key={i} className="card p-5">
               {editingIndex === i ? (
                 <div className="space-y-3">
                   <input value={fact.claim_en} onChange={(e) => updateFact(i, { claim_en: e.target.value })}
-                    className="w-full bg-dark-700 border border-dark-600 rounded px-3 py-2 text-sm text-dark-100 focus:outline-none focus:border-bitcoin" />
-                  <button onClick={() => setEditingIndex(null)} className="flex items-center gap-1 px-3 py-1.5 bg-bitcoin text-dark-950 text-sm font-medium rounded-lg"><Save className="w-3.5 h-3.5" /> Done</button>
+                    className="input-field" />
+                  <button onClick={() => setEditingIndex(null)} className="flex items-center gap-1 px-3 py-1.5 bg-eb-gold text-white text-sm font-medium rounded-lg">
+                    <Save className="w-3.5 h-3.5" /> Done
+                  </button>
                 </div>
               ) : (
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="px-2 py-0.5 rounded bg-bitcoin/10 text-bitcoin text-xs">{fact.category_slug}</span>
-                      <span className={`px-2 py-0.5 rounded text-xs ${fact.confidence === "high" ? "bg-green-400/10 text-green-400" : fact.confidence === "medium" ? "bg-yellow-400/10 text-yellow-400" : "bg-red-400/10 text-red-400"}`}>{fact.confidence}</span>
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="badge-gold">{fact.category_slug}</span>
+                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${fact.confidence === "high" ? "bg-eb-green-faint text-eb-green" : fact.confidence === "medium" ? "bg-yellow-50 text-yellow-700" : "bg-eb-red-faint text-eb-red"}`}>
+                        {fact.confidence}
+                      </span>
                     </div>
-                    <p className="text-white text-sm font-medium">{fact.claim_en || fact.claim_no}</p>
-                    <p className="text-dark-400 text-xs mt-1">{fact.source_name}</p>
+                    <p className="text-eb-navy text-sm font-medium font-serif">{fact.claim_en || fact.claim_no}</p>
+                    <p className="text-eb-muted text-xs mt-1">{fact.source_name}</p>
                   </div>
-                  <button onClick={() => setEditingIndex(i)} className="p-2 rounded-lg hover:bg-dark-700 text-dark-400 hover:text-white"><Edit3 className="w-4 h-4" /></button>
+                  <button onClick={() => setEditingIndex(i)} className="p-2 rounded-lg hover:bg-eb-surface-2 text-eb-subtle hover:text-eb-slate transition-colors">
+                    <Edit3 className="w-4 h-4" />
+                  </button>
                 </div>
               )}
             </div>
           ))}
           <div className="card p-6">
-            <h3 className="text-sm font-semibold text-white mb-3">Your details (optional)</h3>
+            <h3 className="font-serif text-sm font-semibold text-eb-navy mb-3">Your details (optional)</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <input value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder="Name / nickname"
-                className="bg-dark-700 border border-dark-600 rounded-lg px-4 py-2.5 text-sm text-dark-100 placeholder:text-dark-500 focus:outline-none focus:border-bitcoin" />
+                className="input-field" />
               <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email (for notifications)"
-                className="bg-dark-700 border border-dark-600 rounded-lg px-4 py-2.5 text-sm text-dark-100 placeholder:text-dark-500 focus:outline-none focus:border-bitcoin" />
+                className="input-field" />
             </div>
             <input type="text" value={honeypot} onChange={(e) => setHoneypot(e.target.value)} className="absolute -left-[9999px] opacity-0" tabIndex={-1} autoComplete="off" aria-hidden="true" />
-            {error && <p className="mt-2 text-red-400 text-sm">{error}</p>}
-            <button onClick={handleSubmit} className="mt-4 w-full flex items-center justify-center gap-2 px-6 py-3 bg-bitcoin hover:bg-bitcoin-dark text-dark-950 font-semibold rounded-lg transition-colors">
+            {error && <p className="mt-2 text-eb-red text-sm">{error}</p>}
+            <button onClick={handleSubmit} className="mt-4 w-full flex items-center justify-center gap-2 px-6 py-3 bg-eb-gold hover:bg-eb-gold-dark text-white font-semibold rounded-lg transition-colors">
               <ArrowRight className="w-4 h-4" />Submit for review
             </button>
           </div>
@@ -254,16 +276,25 @@ export default function ContributePage() {
       )}
 
       {step === "submit" && (
-        <div className="card p-12 text-center"><Loader2 className="w-10 h-10 text-bitcoin animate-spin mx-auto mb-4" /><p className="text-dark-300">Submitting...</p></div>
+        <div className="card p-12 text-center">
+          <Loader2 className="w-10 h-10 text-eb-gold animate-spin mx-auto mb-4" />
+          <p className="text-eb-muted">Submitting...</p>
+        </div>
       )}
 
       {step === "done" && (
         <div className="card p-12 text-center">
-          <div className="w-16 h-16 rounded-2xl bg-green-400/10 flex items-center justify-center mx-auto mb-4"><Check className="w-8 h-8 text-green-400" /></div>
-          <h3 className="text-xl font-bold text-white mb-2">Thank you!</h3>
-          <p className="text-dark-300 text-sm max-w-md mx-auto mb-4">Your contribution has been submitted and will be reviewed by an administrator. Expect a response within 24-48 hours.</p>
+          <div className="w-16 h-16 rounded-2xl bg-eb-green-faint border border-eb-green/20 flex items-center justify-center mx-auto mb-4">
+            <Check className="w-8 h-8 text-eb-green" />
+          </div>
+          <h3 className="font-serif text-xl font-bold text-eb-navy mb-2">Thank you!</h3>
+          <p className="text-eb-muted text-sm max-w-md mx-auto mb-6 leading-relaxed">
+            Your contribution has been submitted and will be reviewed by an administrator. Expect a response within 24–48 hours.
+          </p>
           <button onClick={() => { setStep("input"); setExtractedFacts([]); setInputUrl(""); setInputText(""); setError(null); }}
-            className="px-6 py-2.5 bg-dark-700 hover:bg-dark-600 text-dark-200 rounded-lg text-sm font-medium transition-colors">Submit more facts</button>
+            className="px-6 py-2.5 bg-eb-surface-2 hover:bg-eb-border text-eb-slate rounded-lg text-sm font-medium transition-colors border border-eb-border">
+            Submit more facts
+          </button>
         </div>
       )}
     </div>

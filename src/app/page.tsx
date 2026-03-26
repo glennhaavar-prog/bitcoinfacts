@@ -1,25 +1,42 @@
 import Link from "next/link";
-import { ArrowRight, Copy, MessageSquare, Zap, Target, Shield, TrendingUp, Leaf, Globe } from "lucide-react";
+import {
+  ArrowRight,
+  BookOpen,
+  MessageSquare,
+  Copy,
+  Target,
+  Zap,
+  Shield,
+  TrendingUp,
+  Leaf,
+  Globe,
+} from "lucide-react";
 
 const steps = [
   {
     icon: MessageSquare,
-    title: "1. Paste the FUD",
-    description: "Copy a comment from social media and paste it into the agent.",
+    number: "01",
+    title: "Paste the claim",
+    description:
+      "Copy a comment from social media or paste any Bitcoin criticism into the research tool.",
   },
   {
     icon: Target,
-    title: "2. Choose platform",
-    description: "The agent adapts the response for X, LinkedIn, Facebook or general format.",
+    number: "02",
+    title: "Choose platform & tone",
+    description:
+      "The tool adapts the response for X, LinkedIn, Facebook or general use.",
   },
   {
     icon: Copy,
-    title: "3. Copy the response",
-    description: "Get a fact-based, well-crafted response ready to paste — in seconds.",
+    number: "03",
+    title: "Copy the response",
+    description:
+      "Get a fact-based, source-backed response ready to use — in seconds.",
   },
 ];
 
-const didYouKnow = [
+const researchHighlights = [
   {
     icon: Zap,
     fact: "Bitcoin mining uses 52.4% sustainable energy — the only global industry verified above the 50% threshold.",
@@ -56,104 +73,139 @@ export default function HomePage() {
   return (
     <>
       {/* Hero */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-bitcoin/5 via-transparent to-transparent" />
+      <section className="relative overflow-hidden bg-eb-bg">
+        {/* Subtle paper texture gradient */}
+        <div className="absolute inset-0 bg-gradient-to-b from-eb-gold/4 via-transparent to-transparent pointer-events-none" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-32 relative">
           <div className="max-w-3xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-bitcoin/10 border border-bitcoin/20 text-bitcoin text-sm mb-6">
-              <Zap className="w-4 h-4" />
-              Facts beat FUD
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-eb-gold-faint border border-eb-gold-border text-eb-gold text-xs font-semibold mb-6 uppercase tracking-wider">
+              <BookOpen className="w-3.5 h-3.5" />
+              Evidence-based research
             </div>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-tight">
-              Someone you know posting{" "}
-              <span className="gradient-text">Bitcoin FUD?</span>
+            <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-eb-navy leading-tight">
+              The Bitcoin{" "}
+              <span className="gradient-text">Evidence Base</span>
             </h1>
-            <p className="mt-6 text-lg sm:text-xl text-dark-200 max-w-2xl mx-auto">
-              Get a fact-based, well-crafted response in seconds. Built with
-              Daniel Batten&apos;s communication playbook and verified research.
+            <p className="mt-4 text-lg sm:text-xl text-eb-muted max-w-2xl mx-auto leading-relaxed">
+              Peer-reviewed facts about Bitcoin mining. Analyse claims with
+              verified evidence from Cambridge University, ERCOT, and 22+
+              academic studies.
+            </p>
+            <p className="mt-3 text-sm text-eb-subtle max-w-xl mx-auto">
+              Built on Daniel Batten&apos;s communication playbook — designed
+              to inform, not persuade.
             </p>
             <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 href="/agent"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 bg-bitcoin hover:bg-bitcoin-dark text-dark-950 font-bold text-lg rounded-xl transition-all hover:scale-105 glow-bitcoin"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-eb-gold hover:bg-eb-gold-dark text-white font-semibold text-base rounded-xl transition-all hover:shadow-card-md"
               >
-                Bust some FUD
-                <ArrowRight className="w-5 h-5" />
+                Open Research Tool
+                <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
                 href="/facts"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 bg-dark-800 hover:bg-dark-700 text-white font-semibold text-lg rounded-xl border border-dark-700 transition-all"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-white hover:bg-eb-surface-2 text-eb-navy font-semibold text-base rounded-xl border border-eb-border transition-all hover:border-eb-gold/40"
               >
-                Explore facts
+                Browse Evidence Database
               </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 3-step explanation */}
-      <section className="py-20 border-t border-dark-800">
+      {/* Divider rule — academic style */}
+      <div className="border-t border-eb-border" />
+
+      {/* How it works */}
+      <section className="py-20 bg-eb-bg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl sm:text-3xl font-bold text-white text-center mb-12">
-            How it works
-          </h2>
+          <div className="text-center mb-12">
+            <p className="section-label mb-2">Methodology</p>
+            <h2 className="font-serif text-2xl sm:text-3xl font-bold text-eb-navy">
+              How the Research Tool works
+            </h2>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {steps.map((step) => (
-              <div key={step.title} className="card p-8 text-center">
-                <div className="w-14 h-14 rounded-xl bg-bitcoin/10 flex items-center justify-center mx-auto mb-5">
-                  <step.icon className="w-7 h-7 text-bitcoin" />
+              <div key={step.title} className="card p-8 text-center relative">
+                <div className="absolute top-5 right-5 font-mono text-xs font-bold text-eb-border-strong">
+                  {step.number}
                 </div>
-                <h3 className="text-lg font-semibold text-white mb-2">
+                <div className="w-12 h-12 rounded-xl bg-eb-gold-faint border border-eb-gold-border flex items-center justify-center mx-auto mb-5">
+                  <step.icon className="w-6 h-6 text-eb-gold" />
+                </div>
+                <h3 className="font-serif text-base font-bold text-eb-navy mb-2">
                   {step.title}
                 </h3>
-                <p className="text-dark-300 text-sm">{step.description}</p>
+                <p className="text-eb-muted text-sm leading-relaxed">
+                  {step.description}
+                </p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Did you know */}
-      <section className="py-20 border-t border-dark-800 bg-dark-900/50">
+      {/* Research Highlights */}
+      <div className="border-t border-eb-border" />
+      <section className="py-20 bg-eb-surface-2">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl sm:text-3xl font-bold text-white text-center mb-4">
-            Did you know...?
-          </h2>
-          <p className="text-dark-300 text-center mb-12 max-w-2xl mx-auto">
-            Surprising facts about Bitcoin mining that most people don&apos;t know.
-          </p>
+          <div className="text-center mb-12">
+            <p className="section-label mb-2">Research Highlights</p>
+            <h2 className="font-serif text-2xl sm:text-3xl font-bold text-eb-navy mb-3">
+              What the evidence shows
+            </h2>
+            <p className="text-eb-muted max-w-2xl mx-auto text-sm leading-relaxed">
+              Key findings from peer-reviewed research on Bitcoin mining,
+              energy, and environmental impact.
+            </p>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {didYouKnow.map((item, i) => (
+            {researchHighlights.map((item, i) => (
               <div key={i} className="card-hover p-6">
-                <div className="w-10 h-10 rounded-lg bg-bitcoin/10 flex items-center justify-center mb-4">
-                  <item.icon className="w-5 h-5 text-bitcoin" />
+                <div className="w-9 h-9 rounded-lg bg-eb-gold-faint border border-eb-gold-border flex items-center justify-center mb-4">
+                  <item.icon className="w-4 h-4 text-eb-gold" />
                 </div>
-                <p className="text-dark-100 text-sm leading-relaxed mb-3">
+                <p className="text-eb-navy text-sm leading-relaxed mb-3 font-medium">
                   {item.fact}
                 </p>
-                <p className="text-dark-400 text-xs">Source: {item.source}</p>
+                <p className="text-eb-subtle text-xs">
+                  Source: {item.source}
+                </p>
               </div>
             ))}
+          </div>
+          <div className="text-center mt-10">
+            <Link
+              href="/facts"
+              className="inline-flex items-center gap-2 text-sm text-eb-gold hover:text-eb-gold-dark font-semibold transition-colors"
+            >
+              View full Evidence Database
+              <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
         </div>
       </section>
 
       {/* CTA */}
-      <section className="py-20 border-t border-dark-800">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
-            Ready to respond with facts?
+      <div className="border-t border-eb-border" />
+      <section className="py-20 bg-eb-bg">
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <p className="section-label mb-3">Get started</p>
+          <h2 className="font-serif text-2xl sm:text-3xl font-bold text-eb-navy mb-4">
+            Ready to examine the evidence?
           </h2>
-          <p className="text-dark-300 mb-8">
-            Paste a FUD comment and get a professional, source-backed response
-            you can use immediately.
+          <p className="text-eb-muted mb-8 leading-relaxed">
+            Paste any claim about Bitcoin and get a professional, source-backed
+            response based on peer-reviewed research.
           </p>
           <Link
             href="/agent"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-bitcoin hover:bg-bitcoin-dark text-dark-950 font-bold text-lg rounded-xl transition-all hover:scale-105 glow-bitcoin"
+            className="inline-flex items-center gap-2 px-8 py-3.5 bg-eb-gold hover:bg-eb-gold-dark text-white font-semibold text-base rounded-xl transition-all hover:shadow-card-md"
           >
-            Start FUD Buster
-            <ArrowRight className="w-5 h-5" />
+            Open Research Tool
+            <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </section>

@@ -10,9 +10,33 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        bitcoin: "#F7931A",
-        "bitcoin-dark": "#E8850F",
-        "bitcoin-light": "#FFB84D",
+        // Evidence Base design system — academic journal palette
+        eb: {
+          bg: "#FDFAF5",            // warm cream (like aged paper)
+          surface: "#FFFFFF",        // white card surfaces
+          "surface-2": "#F3EDE3",    // slightly warmer alt sections
+          border: "#E3D9C8",         // warm gray border
+          "border-strong": "#C4B8A4", // stronger border
+          navy: "#1C2B47",           // deep navy — primary headings
+          "navy-light": "#2D4060",   // slightly lighter navy
+          slate: "#3D4F6E",          // slate blue — body text
+          muted: "#6B7A90",          // muted text
+          subtle: "#9BA5B5",         // very subtle / metadata
+          gold: "#B07820",           // warm amber/gold — primary accent
+          "gold-dark": "#8E6010",    // darker gold for hover
+          "gold-light": "#C8923A",   // lighter gold
+          "gold-faint": "#FEF6E6",   // very light gold tint
+          "gold-border": "#DEB870",  // gold border
+          green: "#2E6B52",          // forest green — verified/truth
+          "green-faint": "#EFF7F3",  // light green tint
+          red: "#8B3028",            // muted red
+          "red-faint": "#FEF0EE",    // light red tint
+        },
+        // Remap bitcoin → gold so all existing bg-bitcoin/text-bitcoin use gold
+        bitcoin: "#B07820",
+        "bitcoin-dark": "#8E6010",
+        "bitcoin-light": "#C8923A",
+        // Keep dark palette for admin pages (internal tool stays dark)
         dark: {
           950: "#0a0a0a",
           900: "#111111",
@@ -27,8 +51,9 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
-        mono: ["JetBrains Mono", "monospace"],
+        serif: ["var(--font-playfair)", "Georgia", "'Times New Roman'", "serif"],
+        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+        mono: ["JetBrains Mono", "Consolas", "monospace"],
       },
     },
   },

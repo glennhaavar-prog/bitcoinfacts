@@ -1,4 +1,4 @@
-import { ExternalLink, Heart, Zap, Play } from "lucide-react";
+import { ExternalLink, BookOpen, Scale, Play } from "lucide-react";
 
 const sources = [
   {
@@ -37,11 +37,12 @@ export default function AboutPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
       <div className="text-center mb-12">
-        <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">
-          About <span className="gradient-text">FUD Buster</span>
+        <p className="section-label mb-2">About this project</p>
+        <h1 className="font-serif text-3xl sm:text-4xl font-bold text-eb-navy mb-3">
+          The Bitcoin Evidence Base
         </h1>
-        <p className="text-dark-300 max-w-2xl mx-auto">
-          Why this project exists and who&apos;s behind it.
+        <p className="text-eb-muted max-w-2xl mx-auto leading-relaxed">
+          Why this project exists, how it works, and who&apos;s behind it.
         </p>
       </div>
 
@@ -53,77 +54,106 @@ export default function AboutPage() {
           rel="noopener noreferrer"
           className="card-hover p-6 flex flex-col sm:flex-row items-center gap-5 group block"
         >
-          <div className="w-full sm:w-48 h-32 sm:h-28 rounded-lg bg-dark-700 flex items-center justify-center flex-shrink-0 relative overflow-hidden">
+          <div className="w-full sm:w-48 h-32 sm:h-28 rounded-lg bg-eb-surface-2 border border-eb-border flex items-center justify-center flex-shrink-0 relative overflow-hidden">
             <img
               src="https://img.youtube.com/vi/Zak12xxYg0k/hqdefault.jpg"
               alt="Daniel Batten - Bitcoin and Energy"
-              className="w-full h-full object-cover rounded-lg opacity-80 group-hover:opacity-100 transition-opacity"
+              className="w-full h-full object-cover rounded-lg opacity-90 group-hover:opacity-100 transition-opacity"
             />
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-12 h-12 rounded-full bg-bitcoin/90 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Play className="w-5 h-5 text-dark-950 ml-0.5" />
+              <div className="w-12 h-12 rounded-full bg-eb-gold/90 flex items-center justify-center group-hover:scale-110 transition-transform shadow-card-md">
+                <Play className="w-5 h-5 text-white ml-0.5" />
               </div>
             </div>
           </div>
           <div>
-            <p className="text-[10px] text-bitcoin font-semibold uppercase tracking-wider mb-1">Featured Video</p>
-            <h2 className="text-lg font-bold text-white group-hover:text-bitcoin transition-colors">
+            <p className="section-label mb-1">Featured Video</p>
+            <h2 className="font-serif text-lg font-bold text-eb-navy group-hover:text-eb-gold transition-colors">
               Daniel Batten — Bitcoin &amp; the Environment
             </h2>
-            <p className="text-dark-300 text-sm mt-1">
-              The essential talk on why Bitcoin mining is not what most people think. Data-driven, nuanced, and eye-opening.
+            <p className="text-eb-muted text-sm mt-1 leading-relaxed">
+              The essential talk on why Bitcoin mining is not what most people
+              think. Data-driven, nuanced, and eye-opening.
             </p>
           </div>
         </a>
       </section>
 
       {/* Mission */}
-      <section className="card p-8 mb-8">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-xl bg-bitcoin/10 flex items-center justify-center">
-            <Zap className="w-5 h-5 text-bitcoin" />
+      <section className="card p-8 mb-6">
+        <div className="flex items-center gap-3 mb-5">
+          <div className="w-10 h-10 rounded-xl bg-eb-gold-faint border border-eb-gold-border flex items-center justify-center">
+            <BookOpen className="w-5 h-5 text-eb-gold" />
           </div>
-          <h2 className="text-xl font-bold text-white">The Mission</h2>
+          <h2 className="font-serif text-xl font-bold text-eb-navy">The Mission</h2>
         </div>
-        <div className="space-y-4 text-dark-200 text-sm leading-relaxed">
+        <div className="space-y-4 text-eb-slate text-sm leading-relaxed">
           <p>
-            Bitcoin mining is surrounded by misconceptions. Much of the criticism
-            is based on outdated data, methodologically weak studies, or plain
-            lack of knowledge. Meanwhile, a growing body of peer-reviewed research
-            shows that Bitcoin mining can have significant environmental benefits.
+            Bitcoin mining is surrounded by misconceptions. Much of the
+            criticism is based on outdated data, methodologically weak studies,
+            or plain lack of knowledge. Meanwhile, a growing body of
+            peer-reviewed research shows that Bitcoin mining can have
+            significant environmental benefits.
           </p>
           <p>
             The problem is that most people don&apos;t have time to read 22+
-            peer-reviewed papers, Cambridge reports and ERCOT data. When someone
-            posts FUD on social media, you need a good response — fast.
+            peer-reviewed papers, Cambridge reports and ERCOT data. When
+            someone posts criticism on social media, you need a credible
+            response — fast.
           </p>
           <p>
-            FUD Buster solves this. It combines Daniel Batten&apos;s communication
-            playbook with a curated fact database and an AI agent that generates
-            fact-based, platform-adapted responses you can copy and paste directly.
+            The Bitcoin Evidence Base solves this. It combines Daniel
+            Batten&apos;s communication playbook with a curated fact database
+            and an AI research tool that generates fact-based, platform-adapted
+            responses you can copy and paste directly.
           </p>
         </div>
       </section>
 
       {/* Method */}
-      <section className="card p-8 mb-8">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-xl bg-green-400/10 flex items-center justify-center">
-            <Heart className="w-5 h-5 text-green-400" />
+      <section className="card p-8 mb-6">
+        <div className="flex items-center gap-3 mb-5">
+          <div className="w-10 h-10 rounded-xl bg-eb-green-faint border border-eb-green/20 flex items-center justify-center">
+            <Scale className="w-5 h-5 text-eb-green" />
           </div>
-          <h2 className="text-xl font-bold text-white">The Method</h2>
+          <h2 className="font-serif text-xl font-bold text-eb-navy">The Method</h2>
         </div>
-        <div className="space-y-4 text-dark-200 text-sm leading-relaxed">
+        <div className="space-y-4 text-eb-slate text-sm leading-relaxed">
           <p>
-            FUD Buster is built on Daniel Batten&apos;s communication method, which
-            emphasizes truth, empathy and source-backed evidence. The agent follows
-            four principles:
+            This tool is built on Daniel Batten&apos;s communication method,
+            which emphasises truth, empathy and source-backed evidence. The
+            agent follows four principles:
           </p>
-          <ol className="list-decimal list-inside space-y-2 pl-2">
-            <li><strong className="text-white">Truth first</strong> — Never exaggerate. Acknowledge what is true.</li>
-            <li><strong className="text-white">Influence, don&apos;t just inform</strong> — Emotional connection before data.</li>
-            <li><strong className="text-white">Check your intention</strong> — Is this to educate, or to win?</li>
-            <li><strong className="text-white">Authority + humility</strong> — Cite evidence confidently. Be humble about complexity.</li>
+          <ol className="space-y-3 pl-2">
+            {[
+              {
+                title: "Truth first",
+                desc: "Never exaggerate. Acknowledge what is true in the criticism.",
+              },
+              {
+                title: "Influence, don't just inform",
+                desc: "Create emotional connection before presenting data.",
+              },
+              {
+                title: "Check your intention",
+                desc: "Is this to educate and serve — or to win an argument?",
+              },
+              {
+                title: "Authority + humility",
+                desc: "Cite evidence confidently. Be humble about complexity.",
+              },
+            ].map((item, i) => (
+              <li key={i} className="flex items-start gap-3">
+                <span className="font-mono text-xs font-bold text-eb-gold mt-0.5 flex-shrink-0">
+                  0{i + 1}
+                </span>
+                <span>
+                  <strong className="text-eb-navy font-semibold">{item.title}</strong>
+                  {" — "}
+                  {item.desc}
+                </span>
+              </li>
+            ))}
           </ol>
           <p>
             All facts in the database are sourced from peer-reviewed studies,
@@ -134,7 +164,9 @@ export default function AboutPage() {
 
       {/* Key Sources */}
       <section className="mb-8">
-        <h2 className="text-xl font-bold text-white mb-4">Key Sources</h2>
+        <h2 className="font-serif text-xl font-bold text-eb-navy mb-4">
+          Key Sources
+        </h2>
         <div className="space-y-3">
           {sources.map((source) => (
             <a
@@ -144,10 +176,14 @@ export default function AboutPage() {
               rel="noopener noreferrer"
               className="card-hover p-4 flex items-start gap-4 group block"
             >
-              <ExternalLink className="w-5 h-5 text-bitcoin flex-shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
+              <ExternalLink className="w-4 h-4 text-eb-gold flex-shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
               <div>
-                <h3 className="text-white font-medium text-sm group-hover:text-bitcoin transition-colors">{source.name}</h3>
-                <p className="text-dark-400 text-xs mt-1">{source.description}</p>
+                <h3 className="text-eb-navy font-semibold text-sm group-hover:text-eb-gold transition-colors">
+                  {source.name}
+                </h3>
+                <p className="text-eb-muted text-xs mt-1 leading-relaxed">
+                  {source.description}
+                </p>
               </div>
             </a>
           ))}
@@ -155,20 +191,22 @@ export default function AboutPage() {
       </section>
 
       {/* Beyond 66 */}
-      <section className="card p-8 text-center">
-        <div className="w-10 h-10 rounded-xl bg-bitcoin/10 flex items-center justify-center mx-auto mb-4">
-          <Zap className="w-5 h-5 text-bitcoin" />
+      <section className="card p-8 text-center border-eb-gold/20">
+        <div className="w-10 h-10 rounded-xl bg-eb-gold-faint border border-eb-gold-border flex items-center justify-center mx-auto mb-4">
+          <BookOpen className="w-5 h-5 text-eb-gold" />
         </div>
-        <h2 className="text-xl font-bold text-white mb-2">Built by Beyond 66</h2>
-        <p className="text-dark-300 text-sm max-w-md mx-auto mb-4">
-          FUD Buster is a project by Beyond 66 — advancing Bitcoin adoption
-          through education, tools and research.
+        <h2 className="font-serif text-xl font-bold text-eb-navy mb-2">
+          Built by Beyond 66
+        </h2>
+        <p className="text-eb-muted text-sm max-w-md mx-auto mb-5 leading-relaxed">
+          The Bitcoin Evidence Base is a project by Beyond 66 — advancing
+          Bitcoin adoption through education, tools and research.
         </p>
         <a
           href="https://www.bitcoinbeyond66.com"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 px-6 py-2.5 bg-bitcoin hover:bg-bitcoin-dark text-dark-950 font-semibold text-sm rounded-lg transition-colors"
+          className="inline-flex items-center gap-2 px-6 py-2.5 bg-eb-gold hover:bg-eb-gold-dark text-white font-semibold text-sm rounded-lg transition-colors"
         >
           Visit bitcoinbeyond66.com
           <ExternalLink className="w-4 h-4" />

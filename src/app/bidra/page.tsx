@@ -10,7 +10,7 @@ import {
   Edit3,
   Save,
   ArrowRight,
-  Zap,
+  Sparkles,
   Database,
   Users,
 } from "lucide-react";
@@ -40,20 +40,16 @@ export default function BidraPage() {
   const [honeypot, setHoneypot] = useState("");
   const [stats, setStats] = useState({ total: 0, community: 0 });
 
-  // Load stats
   useEffect(() => {
     async function loadStats() {
       try {
         const res = await fetch("/api/facts?count=true");
         if (res.ok) {
           const data = await res.json();
-          setStats({
-            total: data.total || 0,
-            community: data.community || 0,
-          });
+          setStats({ total: data.total || 0, community: data.community || 0 });
         }
       } catch {
-        // Silent fail
+        // silent
       }
     }
     loadStats();
@@ -62,10 +58,8 @@ export default function BidraPage() {
   async function handleExtract() {
     if (mode === "url" && !inputUrl.trim()) return;
     if (mode === "text" && !inputText.trim()) return;
-
     setStep("processing");
     setError(null);
-
     try {
       const res = await fetch("/api/submissions/extract", {
         method: "POST",
@@ -76,12 +70,10 @@ export default function BidraPage() {
           input_text: mode === "text" ? inputText : undefined,
         }),
       });
-
       if (!res.ok) {
         const data = await res.json();
         throw new Error(data.error || "Extraction failed");
       }
-
       const data = await res.json();
       setExtractedFacts(data.facts || []);
       setStep("preview");
@@ -93,27 +85,22 @@ export default function BidraPage() {
 
   function handleManualFact() {
     if (!manualFact.claim_no.trim() || !manualFact.source_name.trim()) return;
-
-    setExtractedFacts([
-      {
-        claim_no: manualFact.claim_no,
-        claim_en: manualFact.claim_en || manualFact.claim_no,
-        source_name: manualFact.source_name,
-        source_date: manualFact.source_date || undefined,
-        category_slug: manualFact.category_slug,
-        tags: [],
-        confidence: "needs-verification",
-      },
-    ]);
+    setExtractedFacts([{
+      claim_no: manualFact.claim_no,
+      claim_en: manualFact.claim_en || manualFact.claim_no,
+      source_name: manualFact.source_name,
+      source_date: manualFact.source_date || undefined,
+      category_slug: manualFact.category_slug,
+      tags: [],
+      confidence: "needs-verification",
+    }]);
     setStep("preview");
   }
 
   async function handleSubmit() {
-    if (honeypot) return; // Bot trap
-
+    if (honeypot) return;
     setStep("submit");
     setError(null);
-
     try {
       const res = await fetch("/api/submissions", {
         method: "POST",
@@ -127,12 +114,10 @@ export default function BidraPage() {
           extracted_facts: extractedFacts,
         }),
       });
-
       if (!res.ok) {
         const data = await res.json();
         throw new Error(data.error || "Submission failed");
       }
-
       setStep("done");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Noe gikk galt");
@@ -146,7 +131,6 @@ export default function BidraPage() {
     );
   }
 
-  // Stepper
   const steps = [
     { key: "input", label: "Lim inn" },
     { key: "processing", label: "AI prosesserer" },
@@ -160,34 +144,30 @@ export default function BidraPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
       <div className="text-center mb-8">
-        <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">
-          Bidra med <span className="gradient-text">fakta</span>
+        <p className="section-label mb-2">Community</p>
+        <h1 className="font-serif text-3xl sm:text-4xl font-bold text-eb-navy mb-2">
+          Bidra med fakta
         </h1>
-        <p className="text-dark-300 max-w-lg mx-auto">
+        <p className="text-eb-muted max-w-lg mx-auto leading-relaxed">
           Hjelp oss bygge verdens beste Bitcoin-faktadatabase. Del en artikkel,
           en påstand eller et ferdig faktum.
         </p>
-
-        {/* Stats */}
         <div className="flex justify-center gap-6 mt-4">
-          <div className="flex items-center gap-2 text-dark-400 text-sm">
-            <Database className="w-4 h-4 text-bitcoin" />
+          <div className="flex items-center gap-2 text-eb-muted text-sm">
+            <Database className="w-4 h-4 text-eb-gold" />
             <span>
-              <strong className="text-white">{stats.total}</strong> fakta i
-              databasen
+              <strong className="text-eb-navy">{stats.total}</strong> fakta i databasen
             </span>
           </div>
-          <div className="flex items-center gap-2 text-dark-400 text-sm">
-            <Users className="w-4 h-4 text-bitcoin" />
+          <div className="flex items-center gap-2 text-eb-muted text-sm">
+            <Users className="w-4 h-4 text-eb-gold" />
             <span>
-              <strong className="text-white">{stats.community}</strong> fra
-              community
+              <strong className="text-eb-navy">{stats.community}</strong> fra community
             </span>
           </div>
         </div>
       </div>
 
-      {/* Stepper */}
       {step !== "done" && (
         <div className="flex items-center justify-center gap-2 mb-8">
           {steps.map((s, i) => (
@@ -195,8 +175,8 @@ export default function BidraPage() {
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${
                   stepOrder.indexOf(s.key) <= currentIndex
-                    ? "bg-bitcoin text-dark-950"
-                    : "bg-dark-700 text-dark-400"
+                    ? "bg-eb-gold text-white"
+                    : "bg-eb-surface-2 text-eb-subtle border border-eb-border"
                 }`}
               >
                 {stepOrder.indexOf(s.key) < currentIndex ? (
@@ -208,8 +188,8 @@ export default function BidraPage() {
               <span
                 className={`text-xs hidden sm:block ${
                   stepOrder.indexOf(s.key) <= currentIndex
-                    ? "text-dark-200"
-                    : "text-dark-500"
+                    ? "text-eb-slate"
+                    : "text-eb-subtle"
                 }`}
               >
                 {s.label}
@@ -218,8 +198,8 @@ export default function BidraPage() {
                 <div
                   className={`w-8 h-0.5 ${
                     stepOrder.indexOf(s.key) < currentIndex
-                      ? "bg-bitcoin"
-                      : "bg-dark-700"
+                      ? "bg-eb-gold"
+                      : "bg-eb-border"
                   }`}
                 />
               )}
@@ -228,10 +208,8 @@ export default function BidraPage() {
         </div>
       )}
 
-      {/* Step: Input */}
       {step === "input" && (
         <div className="card p-6">
-          {/* Mode selector */}
           <div className="flex gap-2 mb-6">
             {[
               { value: "url" as const, label: "URL", icon: LinkIcon },
@@ -243,8 +221,8 @@ export default function BidraPage() {
                 onClick={() => setMode(m.value)}
                 className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                   mode === m.value
-                    ? "bg-bitcoin text-dark-950"
-                    : "bg-dark-700 text-dark-300 hover:text-white"
+                    ? "bg-eb-gold text-white"
+                    : "bg-eb-surface-2 text-eb-muted hover:text-eb-slate border border-eb-border"
                 }`}
               >
                 <m.icon className="w-4 h-4" />
@@ -255,7 +233,7 @@ export default function BidraPage() {
 
           {mode === "url" && (
             <>
-              <label className="block text-sm text-dark-300 mb-2">
+              <label className="block text-sm text-eb-muted mb-2">
                 Lim inn en URL til en artikkel med Bitcoin-fakta
               </label>
               <input
@@ -263,14 +241,14 @@ export default function BidraPage() {
                 value={inputUrl}
                 onChange={(e) => setInputUrl(e.target.value)}
                 placeholder="https://..."
-                className="w-full bg-dark-700 border border-dark-600 rounded-lg px-4 py-3 text-sm text-dark-100 placeholder:text-dark-500 focus:outline-none focus:border-bitcoin"
+                className="input-field"
               />
               <button
                 onClick={handleExtract}
                 disabled={!inputUrl.trim()}
-                className="mt-4 flex items-center gap-2 px-6 py-3 bg-bitcoin hover:bg-bitcoin-dark disabled:opacity-50 text-dark-950 font-semibold rounded-lg transition-colors"
+                className="mt-4 flex items-center gap-2 px-6 py-3 bg-eb-gold hover:bg-eb-gold-dark disabled:opacity-50 text-white font-semibold rounded-lg transition-colors"
               >
-                <Zap className="w-4 h-4" />
+                <Sparkles className="w-4 h-4" />
                 Ekstraher fakta med AI
               </button>
             </>
@@ -278,7 +256,7 @@ export default function BidraPage() {
 
           {mode === "text" && (
             <>
-              <label className="block text-sm text-dark-300 mb-2">
+              <label className="block text-sm text-eb-muted mb-2">
                 Skriv eller lim inn tekst med påstander og fakta
               </label>
               <textarea
@@ -286,14 +264,14 @@ export default function BidraPage() {
                 onChange={(e) => setInputText(e.target.value)}
                 placeholder="Bitcoin-mining bruker nå over 50% bærekraftig energi ifølge..."
                 rows={6}
-                className="w-full bg-dark-700 border border-dark-600 rounded-lg px-4 py-3 text-sm text-dark-100 placeholder:text-dark-500 resize-none focus:outline-none focus:border-bitcoin"
+                className="input-field resize-none"
               />
               <button
                 onClick={handleExtract}
                 disabled={!inputText.trim()}
-                className="mt-4 flex items-center gap-2 px-6 py-3 bg-bitcoin hover:bg-bitcoin-dark disabled:opacity-50 text-dark-950 font-semibold rounded-lg transition-colors"
+                className="mt-4 flex items-center gap-2 px-6 py-3 bg-eb-gold hover:bg-eb-gold-dark disabled:opacity-50 text-white font-semibold rounded-lg transition-colors"
               >
-                <Zap className="w-4 h-4" />
+                <Sparkles className="w-4 h-4" />
                 Ekstraher fakta med AI
               </button>
             </>
@@ -303,7 +281,7 @@ export default function BidraPage() {
             <>
               <div className="space-y-3">
                 <div>
-                  <label className="block text-xs text-dark-400 mb-1">
+                  <label className="block text-xs text-eb-muted mb-1">
                     Påstand (norsk) *
                   </label>
                   <input
@@ -312,11 +290,11 @@ export default function BidraPage() {
                       setManualFact({ ...manualFact, claim_no: e.target.value })
                     }
                     placeholder="Bitcoin-mining bruker 52,4% bærekraftig energi"
-                    className="w-full bg-dark-700 border border-dark-600 rounded-lg px-4 py-2.5 text-sm text-dark-100 placeholder:text-dark-500 focus:outline-none focus:border-bitcoin"
+                    className="input-field"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs text-dark-400 mb-1">
+                  <label className="block text-xs text-eb-muted mb-1">
                     Claim (English)
                   </label>
                   <input
@@ -325,92 +303,73 @@ export default function BidraPage() {
                       setManualFact({ ...manualFact, claim_en: e.target.value })
                     }
                     placeholder="Bitcoin mining uses 52.4% sustainable energy"
-                    className="w-full bg-dark-700 border border-dark-600 rounded-lg px-4 py-2.5 text-sm text-dark-100 placeholder:text-dark-500 focus:outline-none focus:border-bitcoin"
+                    className="input-field"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs text-dark-400 mb-1">
+                    <label className="block text-xs text-eb-muted mb-1">
                       Kilde *
                     </label>
                     <input
                       value={manualFact.source_name}
                       onChange={(e) =>
-                        setManualFact({
-                          ...manualFact,
-                          source_name: e.target.value,
-                        })
+                        setManualFact({ ...manualFact, source_name: e.target.value })
                       }
                       placeholder="Cambridge University"
-                      className="w-full bg-dark-700 border border-dark-600 rounded-lg px-4 py-2.5 text-sm text-dark-100 placeholder:text-dark-500 focus:outline-none focus:border-bitcoin"
+                      className="input-field"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs text-dark-400 mb-1">
+                    <label className="block text-xs text-eb-muted mb-1">
                       Kilde-URL
                     </label>
                     <input
                       value={manualFact.source_url}
                       onChange={(e) =>
-                        setManualFact({
-                          ...manualFact,
-                          source_url: e.target.value,
-                        })
+                        setManualFact({ ...manualFact, source_url: e.target.value })
                       }
                       placeholder="https://..."
-                      className="w-full bg-dark-700 border border-dark-600 rounded-lg px-4 py-2.5 text-sm text-dark-100 placeholder:text-dark-500 focus:outline-none focus:border-bitcoin"
+                      className="input-field"
                     />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs text-dark-400 mb-1">
-                      Dato
-                    </label>
+                    <label className="block text-xs text-eb-muted mb-1">Dato</label>
                     <input
                       type="date"
                       value={manualFact.source_date}
                       onChange={(e) =>
-                        setManualFact({
-                          ...manualFact,
-                          source_date: e.target.value,
-                        })
+                        setManualFact({ ...manualFact, source_date: e.target.value })
                       }
-                      className="w-full bg-dark-700 border border-dark-600 rounded-lg px-4 py-2.5 text-sm text-dark-100 focus:outline-none focus:border-bitcoin"
+                      className="input-field"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs text-dark-400 mb-1">
-                      Kategori
-                    </label>
+                    <label className="block text-xs text-eb-muted mb-1">Kategori</label>
                     <select
                       value={manualFact.category_slug}
                       onChange={(e) =>
-                        setManualFact({
-                          ...manualFact,
-                          category_slug: e.target.value,
-                        })
+                        setManualFact({ ...manualFact, category_slug: e.target.value })
                       }
-                      className="w-full bg-dark-700 border border-dark-600 rounded-lg px-4 py-2.5 text-sm text-dark-100 focus:outline-none focus:border-bitcoin"
+                      className="input-field"
                     >
-                      <option value="energy">⚡ Energi</option>
-                      <option value="environment">🌱 Miljø</option>
-                      <option value="grid">🔌 Strømnett</option>
-                      <option value="price">💰 Priser</option>
-                      <option value="adoption">🌍 Adopsjon</option>
-                      <option value="academic">📚 Akademisk</option>
-                      <option value="myths">🔍 Myter</option>
+                      <option value="energy">Energi</option>
+                      <option value="environment">Miljø</option>
+                      <option value="grid">Strømnett</option>
+                      <option value="price">Priser</option>
+                      <option value="adoption">Adopsjon</option>
+                      <option value="academic">Akademisk</option>
+                      <option value="myths">Myter</option>
                     </select>
                   </div>
                 </div>
               </div>
               <button
                 onClick={handleManualFact}
-                disabled={
-                  !manualFact.claim_no.trim() ||
-                  !manualFact.source_name.trim()
-                }
-                className="mt-4 flex items-center gap-2 px-6 py-3 bg-bitcoin hover:bg-bitcoin-dark disabled:opacity-50 text-dark-950 font-semibold rounded-lg transition-colors"
+                disabled={!manualFact.claim_no.trim() || !manualFact.source_name.trim()}
+                className="mt-4 flex items-center gap-2 px-6 py-3 bg-eb-gold hover:bg-eb-gold-dark disabled:opacity-50 text-white font-semibold rounded-lg transition-colors"
               >
                 <ArrowRight className="w-4 h-4" />
                 Forhåndsvis
@@ -418,31 +377,26 @@ export default function BidraPage() {
             </>
           )}
 
-          {error && (
-            <p className="mt-3 text-red-400 text-sm">{error}</p>
-          )}
+          {error && <p className="mt-3 text-eb-red text-sm">{error}</p>}
         </div>
       )}
 
-      {/* Step: Processing */}
       {step === "processing" && (
         <div className="card p-12 text-center">
-          <Loader2 className="w-10 h-10 text-bitcoin animate-spin mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-white mb-2">
+          <Loader2 className="w-10 h-10 text-eb-gold animate-spin mx-auto mb-4" />
+          <h3 className="font-serif text-lg font-semibold text-eb-navy mb-2">
             AI analyserer...
           </h3>
-          <p className="text-dark-400 text-sm">
-            Vi ekstraherer fakta fra innholdet ditt. Dette tar vanligvis 10-30
-            sekunder.
+          <p className="text-eb-muted text-sm">
+            Vi ekstraherer fakta fra innholdet ditt. Dette tar vanligvis 10–30 sekunder.
           </p>
         </div>
       )}
 
-      {/* Step: Preview */}
       {step === "preview" && (
         <div className="space-y-6">
-          <div className="card p-4 bg-bitcoin/5 border-bitcoin/20 text-center">
-            <p className="text-bitcoin text-sm font-medium">
+          <div className="card p-4 bg-eb-gold-faint border-eb-gold/20 text-center">
+            <p className="text-eb-gold text-sm font-medium">
               Vi fant {extractedFacts.length} fakta! Rediger om nødvendig, legg
               til ditt navn, og send inn.
             </p>
@@ -454,21 +408,17 @@ export default function BidraPage() {
                 <div className="space-y-3">
                   <input
                     value={fact.claim_no}
-                    onChange={(e) =>
-                      updateFact(i, { claim_no: e.target.value })
-                    }
-                    className="w-full bg-dark-700 border border-dark-600 rounded px-3 py-2 text-sm text-dark-100 focus:outline-none focus:border-bitcoin"
+                    onChange={(e) => updateFact(i, { claim_no: e.target.value })}
+                    className="input-field"
                   />
                   <input
                     value={fact.claim_en}
-                    onChange={(e) =>
-                      updateFact(i, { claim_en: e.target.value })
-                    }
-                    className="w-full bg-dark-700 border border-dark-600 rounded px-3 py-2 text-sm text-dark-100 focus:outline-none focus:border-bitcoin"
+                    onChange={(e) => updateFact(i, { claim_en: e.target.value })}
+                    className="input-field"
                   />
                   <button
                     onClick={() => setEditingIndex(null)}
-                    className="flex items-center gap-1 px-3 py-1.5 bg-bitcoin text-dark-950 text-sm font-medium rounded-lg"
+                    className="flex items-center gap-1 px-3 py-1.5 bg-eb-gold text-white text-sm font-medium rounded-lg"
                   >
                     <Save className="w-3.5 h-3.5" /> Ferdig
                   </button>
@@ -476,32 +426,28 @@ export default function BidraPage() {
               ) : (
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="px-2 py-0.5 rounded bg-bitcoin/10 text-bitcoin text-xs">
-                        {fact.category_slug}
-                      </span>
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="badge-gold">{fact.category_slug}</span>
                       <span
-                        className={`px-2 py-0.5 rounded text-xs ${
+                        className={`px-2 py-0.5 rounded-full text-xs font-medium ${
                           fact.confidence === "high"
-                            ? "bg-green-400/10 text-green-400"
+                            ? "bg-eb-green-faint text-eb-green"
                             : fact.confidence === "medium"
-                            ? "bg-yellow-400/10 text-yellow-400"
-                            : "bg-red-400/10 text-red-400"
+                            ? "bg-yellow-50 text-yellow-700"
+                            : "bg-eb-red-faint text-eb-red"
                         }`}
                       >
                         {fact.confidence}
                       </span>
                     </div>
-                    <p className="text-white text-sm font-medium">
+                    <p className="text-eb-navy text-sm font-medium font-serif">
                       {fact.claim_no || fact.claim_en}
                     </p>
-                    <p className="text-dark-400 text-xs mt-1">
-                      {fact.source_name}
-                    </p>
+                    <p className="text-eb-muted text-xs mt-1">{fact.source_name}</p>
                   </div>
                   <button
                     onClick={() => setEditingIndex(i)}
-                    className="p-2 rounded-lg hover:bg-dark-700 text-dark-400 hover:text-white"
+                    className="p-2 rounded-lg hover:bg-eb-surface-2 text-eb-subtle hover:text-eb-slate transition-colors"
                   >
                     <Edit3 className="w-4 h-4" />
                   </button>
@@ -510,9 +456,8 @@ export default function BidraPage() {
             </div>
           ))}
 
-          {/* Contributor info */}
           <div className="card p-6">
-            <h3 className="text-sm font-semibold text-white mb-3">
+            <h3 className="font-serif text-sm font-semibold text-eb-navy mb-3">
               Dine detaljer (valgfritt)
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -520,18 +465,16 @@ export default function BidraPage() {
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
                 placeholder="Navn / kallenavn"
-                className="bg-dark-700 border border-dark-600 rounded-lg px-4 py-2.5 text-sm text-dark-100 placeholder:text-dark-500 focus:outline-none focus:border-bitcoin"
+                className="input-field"
               />
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="E-post (for notifikasjon)"
-                className="bg-dark-700 border border-dark-600 rounded-lg px-4 py-2.5 text-sm text-dark-100 placeholder:text-dark-500 focus:outline-none focus:border-bitcoin"
+                className="input-field"
               />
             </div>
-
-            {/* Honeypot */}
             <input
               type="text"
               value={honeypot}
@@ -541,14 +484,10 @@ export default function BidraPage() {
               autoComplete="off"
               aria-hidden="true"
             />
-
-            {error && (
-              <p className="mt-2 text-red-400 text-sm">{error}</p>
-            )}
-
+            {error && <p className="mt-2 text-eb-red text-sm">{error}</p>}
             <button
               onClick={handleSubmit}
-              className="mt-4 w-full flex items-center justify-center gap-2 px-6 py-3 bg-bitcoin hover:bg-bitcoin-dark text-dark-950 font-semibold rounded-lg transition-colors"
+              className="mt-4 w-full flex items-center justify-center gap-2 px-6 py-3 bg-eb-gold hover:bg-eb-gold-dark text-white font-semibold rounded-lg transition-colors"
             >
               <ArrowRight className="w-4 h-4" />
               Send inn til godkjenning
@@ -557,24 +496,22 @@ export default function BidraPage() {
         </div>
       )}
 
-      {/* Step: Submitting */}
       {step === "submit" && (
         <div className="card p-12 text-center">
-          <Loader2 className="w-10 h-10 text-bitcoin animate-spin mx-auto mb-4" />
-          <p className="text-dark-300">Sender inn...</p>
+          <Loader2 className="w-10 h-10 text-eb-gold animate-spin mx-auto mb-4" />
+          <p className="text-eb-muted">Sender inn...</p>
         </div>
       )}
 
-      {/* Step: Done */}
       {step === "done" && (
         <div className="card p-12 text-center">
-          <div className="w-16 h-16 rounded-2xl bg-green-400/10 flex items-center justify-center mx-auto mb-4">
-            <Check className="w-8 h-8 text-green-400" />
+          <div className="w-16 h-16 rounded-2xl bg-eb-green-faint border border-eb-green/20 flex items-center justify-center mx-auto mb-4">
+            <Check className="w-8 h-8 text-eb-green" />
           </div>
-          <h3 className="text-xl font-bold text-white mb-2">Takk!</h3>
-          <p className="text-dark-300 text-sm max-w-md mx-auto mb-4">
+          <h3 className="font-serif text-xl font-bold text-eb-navy mb-2">Takk!</h3>
+          <p className="text-eb-muted text-sm max-w-md mx-auto mb-6 leading-relaxed">
             Bidraget ditt er sendt inn og vil bli gjennomgått av en
-            administrator. Du kan forvente et svar innen 24-48 timer.
+            administrator. Du kan forvente et svar innen 24–48 timer.
           </p>
           <button
             onClick={() => {
@@ -584,7 +521,7 @@ export default function BidraPage() {
               setInputText("");
               setError(null);
             }}
-            className="px-6 py-2.5 bg-dark-700 hover:bg-dark-600 text-dark-200 rounded-lg text-sm font-medium transition-colors"
+            className="px-6 py-2.5 bg-eb-surface-2 hover:bg-eb-border text-eb-slate rounded-lg text-sm font-medium transition-colors border border-eb-border"
           >
             Send inn flere fakta
           </button>

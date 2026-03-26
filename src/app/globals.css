@@ -1,62 +1,100 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
-  :root {
-    --bitcoin: #F7931A;
-  }
-
   body {
-    @apply bg-dark-950 text-dark-100 antialiased;
+    @apply bg-eb-bg text-eb-slate antialiased;
+    font-family: var(--font-inter), system-ui, sans-serif;
   }
 
   ::selection {
-    @apply bg-bitcoin/30 text-white;
+    @apply bg-eb-gold/20 text-eb-navy;
   }
 }
 
 @layer components {
-  .gradient-text {
-    @apply bg-gradient-to-r from-bitcoin to-bitcoin-light bg-clip-text text-transparent;
-  }
-
-  .glow-bitcoin {
-    box-shadow: 0 0 20px rgba(247, 147, 26, 0.15),
-                0 0 60px rgba(247, 147, 26, 0.05);
-  }
-
+  /* ── Cards ─────────────────────────────────────────────────────────── */
+  /* Light mode (public pages) */
   .card {
-    @apply bg-dark-800 border border-dark-700 rounded-xl;
+    @apply bg-eb-surface border border-eb-border rounded-xl shadow-card;
   }
 
   .card-hover {
-    @apply card transition-all duration-300 hover:border-bitcoin/30 hover:glow-bitcoin;
+    @apply bg-eb-surface border border-eb-border rounded-xl shadow-card
+           transition-all duration-200
+           hover:shadow-card-md hover:border-eb-gold/50 cursor-pointer;
+  }
+
+  /* Dark mode overrides for admin pages (wrapped in .dark) */
+  .dark .card {
+    @apply bg-dark-800 border-dark-700 shadow-none;
+  }
+
+  .dark .card-hover {
+    @apply bg-dark-800 border-dark-700 shadow-none
+           hover:border-bitcoin/30 hover:shadow-none;
+  }
+
+  /* ── Typography ─────────────────────────────────────────────────────── */
+  .gradient-text {
+    @apply bg-gradient-to-r from-eb-gold to-eb-gold-light bg-clip-text text-transparent;
+  }
+
+  /* ── Decorative ─────────────────────────────────────────────────────── */
+  .glow-bitcoin {
+    box-shadow: 0 0 20px rgba(176, 120, 32, 0.12),
+                0 0 40px rgba(176, 120, 32, 0.05);
+  }
+
+  /* Section label above headings */
+  .section-label {
+    @apply text-xs font-semibold uppercase tracking-widest text-eb-gold;
+  }
+
+  /* Gold badge */
+  .badge-gold {
+    @apply px-2.5 py-1 rounded-full bg-eb-gold-faint text-eb-gold
+           border border-eb-gold-border text-xs font-medium;
+  }
+
+  /* ── Form inputs — light mode ────────────────────────────────────────── */
+  .input-field {
+    @apply w-full bg-eb-surface-2 border border-eb-border rounded-lg
+           px-4 py-2.5 text-sm text-eb-navy
+           placeholder:text-eb-subtle
+           focus:outline-none focus:border-eb-gold focus:ring-1 focus:ring-eb-gold/20
+           transition-colors;
+  }
+
+  /* Dark mode input (admin) */
+  .dark .input-field {
+    @apply bg-dark-700 border-dark-600 text-dark-100
+           placeholder:text-dark-500
+           focus:border-bitcoin focus:ring-bitcoin/10;
   }
 }
 
-/* Scrollbar */
+/* ── Scrollbar ──────────────────────────────────────────────────────────── */
 ::-webkit-scrollbar {
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  @apply bg-dark-900;
+  background: #F3EDE3;
 }
 ::-webkit-scrollbar-thumb {
-  @apply bg-dark-600 rounded-full;
+  background: #C4B8A4;
+  border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-dark-500;
+  background: #6B7A90;
 }
 
-/* Smooth scroll */
 html {
   scroll-behavior: smooth;
 }
 
-/* Print styles for /guide PDF export */
+/* ── Print styles for /guide PDF export ─────────────────────────────────── */
 @media print {
   body {
     background: white !important;
@@ -64,7 +102,7 @@ html {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
-  header, footer, .print\\:hidden {
+  header, footer, .print\:hidden {
     display: none !important;
   }
   main {
@@ -77,7 +115,7 @@ html {
   }
   .gradient-text {
     background: none !important;
-    -webkit-text-fill-color: #F7931A !important;
-    color: #F7931A !important;
+    -webkit-text-fill-color: #B07820 !important;
+    color: #B07820 !important;
   }
 }
