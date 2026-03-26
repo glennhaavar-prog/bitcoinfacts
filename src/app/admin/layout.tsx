@@ -48,12 +48,31 @@ export default function AdminLayout({
       } = await supabase.auth.getSession();
 
       if (session) {
-        // Verify user is admin and get role
-        const { data: admin } = await supabase
+        // Try by auth_user_id first
+        let { data: admin } = await supabase
           .from("admins")
-          .select("id, role")
+          .select("id, role, auth_user_id")
           .eq("auth_user_id", session.user.id)
           .single();
+
+        // Fallback: match by email and auto-link auth_user_id
+        if (!admin && session.user.email) {
+          const { data: byEmail } = await supabase
+            .from("admins")
+            .select("id, role, auth_user_id")
+            .eq("email", session.user.email)
+            .single();
+
+          if (byEmail && !byEmail.auth_user_id) {
+            await supabase
+              .from("admins")
+              .update({ auth_user_id: session.user.id })
+              .eq("id", byEmail.id);
+            admin = { ...byEmail, auth_user_id: session.user.id };
+          } else if (byEmail) {
+            admin = byEmail;
+          }
+        }
 
         if (admin) {
           setAuthenticated(true);
@@ -70,11 +89,29 @@ export default function AdminLayout({
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === "SIGNED_IN" && session) {
-        const { data: admin } = await supabase
+        let { data: admin } = await supabase
           .from("admins")
-          .select("id, role")
+          .select("id, role, auth_user_id")
           .eq("auth_user_id", session.user.id)
           .single();
+
+        if (!admin && session.user.email) {
+          const { data: byEmail } = await supabase
+            .from("admins")
+            .select("id, role, auth_user_id")
+            .eq("email", session.user.email)
+            .single();
+
+          if (byEmail && !byEmail.auth_user_id) {
+            await supabase
+              .from("admins")
+              .update({ auth_user_id: session.user.id })
+              .eq("id", byEmail.id);
+            admin = { ...byEmail, auth_user_id: session.user.id };
+          } else if (byEmail) {
+            admin = byEmail;
+          }
+        }
 
         if (admin) {
           setAuthenticated(true);
