@@ -55,6 +55,10 @@ const config: Config = {
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],
         mono: ["JetBrains Mono", "Consolas", "monospace"],
       },
+      boxShadow: {
+        card: "0 1px 3px rgba(28, 43, 71, 0.06), 0 1px 2px rgba(28, 43, 71, 0.04)",
+        "card-md": "0 4px 12px rgba(28, 43, 71, 0.10), 0 2px 4px rgba(28, 43, 71, 0.06)",
+      },
     },
   },
   plugins: [],
