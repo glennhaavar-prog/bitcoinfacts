@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
@@ -20,7 +20,7 @@ type AdminRole = "admin" | "moderator" | "trainer";
 const allNavItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, roles: ["admin", "moderator"] as AdminRole[] },
   { href: "/admin/submissions", label: "Submissions", icon: Inbox, roles: ["admin", "moderator"] as AdminRole[] },
-  { href: "/admin/fakta", label: "Fakta", icon: Database, roles: ["admin", "moderator", "trainer"] as AdminRole[] },
+  { href: "/admin/facts", label: "Facts", icon: Database, roles: ["admin", "moderator", "trainer"] as AdminRole[] },
   { href: "/admin/quick-add", label: "Quick Add", icon: PlusCircle, roles: ["admin"] as AdminRole[] },
   { href: "/admin/examples", label: "Examples", icon: MessageSquare, roles: ["admin", "trainer"] as AdminRole[] },
 ];
@@ -39,7 +39,7 @@ export default function AdminLayout({
   const [loginError, setLoginError] = useState("");
   const router = useRouter();
   const pathname = usePathname();
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
 
   useEffect(() => {
     async function checkAuth() {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { SubmissionRow, ExtractedFact } from "@/lib/supabase/types";
 import {
@@ -20,21 +20,28 @@ export default function SubmissionsPage() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [reviewNote, setReviewNote] = useState("");
   const [actionLoading, setActionLoading] = useState<string | null>(null);
-  const supabase = createClient();
+  const [error, setError] = useState<string | null>(null);
+  const supabase = useMemo(() => createClient(), []);
 
   useEffect(() => {
     loadSubmissions();
   }, []);
 
   async function loadSubmissions() {
-    const { data } = await supabase
-      .from("submissions")
-      .select("*")
-      .in("status", ["pending", "ready_for_review", "processing"])
-      .order("created_at", { ascending: false });
-
-    setSubmissions(data || []);
-    setLoading(false);
+    try {
+      const { data, error: queryErr } = await supabase
+        .from("submissions")
+        .select("*")
+        .in("status", ["pending", "ready_for_review", "processing"])
+        .order("created_at", { ascending: false });
+      if (queryErr) throw queryErr;
+      setSubmissions(data || []);
+    } catch (err) {
+      console.error("Submissions load error:", err);
+      setError("Could not load submissions. Check that the submissions table exists.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function handleAction(
@@ -68,6 +75,15 @@ export default function SubmissionsPage() {
     return (
       <div className="flex items-center justify-center py-20">
         <Loader2 className="w-8 h-8 text-bitcoin animate-spin" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="card p-8 text-center">
+        <AlertTriangle className="w-8 h-8 text-yellow-400 mx-auto mb-3" />
+        <p className="text-dark-200">{error}</p>
       </div>
     );
   }

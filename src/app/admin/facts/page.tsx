@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type {
   FactRow,
@@ -31,33 +31,46 @@ export default function AdminFaktaPage() {
   const [editData, setEditData] = useState<Partial<FactRow>>({});
   const [saving, setSaving] = useState(false);
   const [verifying, setVerifying] = useState<string | null>(null);
-  const supabase = createClient();
+  const [error, setError] = useState<string | null>(null);
+  const supabase = useMemo(() => createClient(), []);
 
   const loadFacts = useCallback(async () => {
-    let query = supabase
-      .from("facts")
-      .select("*, categories(*)")
-      .order("created_at", { ascending: false });
+    try {
+      let query = supabase
+        .from("facts")
+        .select("*, categories(*)")
+        .order("created_at", { ascending: false });
 
-    if (statusFilter !== "all") {
-      query = query.eq("status", statusFilter);
-    }
-    if (categoryFilter !== "all") {
-      query = query.eq("category_id", categoryFilter);
-    }
+      if (statusFilter !== "all") {
+        query = query.eq("status", statusFilter);
+      }
+      if (categoryFilter !== "all") {
+        query = query.eq("category_id", categoryFilter);
+      }
 
-    const { data } = await query;
-    setFacts((data as (FactRow & { categories: CategoryRow })[]) || []);
-    setLoading(false);
+      const { data, error: queryErr } = await query;
+      if (queryErr) throw queryErr;
+      setFacts((data as (FactRow & { categories: CategoryRow })[]) || []);
+    } catch (err) {
+      console.error("Facts load error:", err);
+      setError("Could not load facts. Check that Supabase tables exist.");
+    } finally {
+      setLoading(false);
+    }
   }, [supabase, statusFilter, categoryFilter]);
 
   useEffect(() => {
     async function loadCategories() {
-      const { data } = await supabase
-        .from("categories")
-        .select("*")
-        .order("sort_order");
-      setCategories(data || []);
+      try {
+        const { data, error: catErr } = await supabase
+          .from("categories")
+          .select("*")
+          .order("sort_order");
+        if (catErr) throw catErr;
+        setCategories(data || []);
+      } catch (err) {
+        console.error("Categories load error:", err);
+      }
     }
     loadCategories();
   }, [supabase]);
@@ -141,6 +154,15 @@ export default function AdminFaktaPage() {
     return (
       <div className="flex items-center justify-center py-20">
         <Loader2 className="w-8 h-8 text-bitcoin animate-spin" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="card p-8 text-center">
+        <AlertTriangle className="w-8 h-8 text-yellow-400 mx-auto mb-3" />
+        <p className="text-dark-200">{error}</p>
       </div>
     );
   }

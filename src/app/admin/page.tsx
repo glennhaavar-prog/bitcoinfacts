@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import {
   Database,
@@ -20,60 +20,65 @@ interface DashboardStats {
 export default function AdminDashboard() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
-  const supabase = createClient();
+  const [error, setError] = useState<string | null>(null);
+  const supabase = useMemo(() => createClient(), []);
 
   useEffect(() => {
     async function loadStats() {
-      // Total published facts
-      const { count: totalFacts } = await supabase
-        .from("facts")
-        .select("*", { count: "exact", head: true })
-        .eq("status", "published");
+      try {
+        const { count: totalFacts, error: factsErr } = await supabase
+          .from("facts")
+          .select("*", { count: "exact", head: true })
+          .eq("status", "published");
+        if (factsErr) throw factsErr;
 
-      // Facts by category
-      const { data: categories } = await supabase
-        .from("categories")
-        .select("id, name_no, icon, slug")
-        .order("sort_order");
+        const { data: categories, error: catErr } = await supabase
+          .from("categories")
+          .select("id, name_no, icon, slug")
+          .order("sort_order");
+        if (catErr) throw catErr;
 
-      const factsByCategory: DashboardStats["factsByCategory"] = [];
-      if (categories) {
-        for (const cat of categories) {
-          const { count } = await supabase
-            .from("facts")
-            .select("*", { count: "exact", head: true })
-            .eq("category_id", cat.id)
-            .eq("status", "published");
-          factsByCategory.push({
-            name_no: cat.name_no,
-            count: count || 0,
-            icon: cat.icon,
-          });
+        const factsByCategory: DashboardStats["factsByCategory"] = [];
+        if (categories) {
+          for (const cat of categories) {
+            const { count } = await supabase
+              .from("facts")
+              .select("*", { count: "exact", head: true })
+              .eq("category_id", cat.id)
+              .eq("status", "published");
+            factsByCategory.push({
+              name_no: cat.name_no,
+              count: count || 0,
+              icon: cat.icon,
+            });
+          }
         }
+
+        const { count: pendingSubmissions } = await supabase
+          .from("submissions")
+          .select("*", { count: "exact", head: true })
+          .in("status", ["pending", "ready_for_review"]);
+
+        const sixMonthsAgo = new Date();
+        sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+        const { count: needsVerification } = await supabase
+          .from("facts")
+          .select("*", { count: "exact", head: true })
+          .eq("status", "published")
+          .lt("verified_date", sixMonthsAgo.toISOString().split("T")[0]);
+
+        setStats({
+          totalFacts: totalFacts || 0,
+          factsByCategory,
+          pendingSubmissions: pendingSubmissions || 0,
+          needsVerification: needsVerification || 0,
+        });
+      } catch (err) {
+        console.error("Dashboard load error:", err);
+        setError("Could not load dashboard data. Check that Supabase tables exist.");
+      } finally {
+        setLoading(false);
       }
-
-      // Pending submissions
-      const { count: pendingSubmissions } = await supabase
-        .from("submissions")
-        .select("*", { count: "exact", head: true })
-        .in("status", ["pending", "ready_for_review"]);
-
-      // Needs verification (verified_date > 6 months ago)
-      const sixMonthsAgo = new Date();
-      sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
-      const { count: needsVerification } = await supabase
-        .from("facts")
-        .select("*", { count: "exact", head: true })
-        .eq("status", "published")
-        .lt("verified_date", sixMonthsAgo.toISOString().split("T")[0]);
-
-      setStats({
-        totalFacts: totalFacts || 0,
-        factsByCategory,
-        pendingSubmissions: pendingSubmissions || 0,
-        needsVerification: needsVerification || 0,
-      });
-      setLoading(false);
     }
 
     loadStats();
@@ -83,6 +88,15 @@ export default function AdminDashboard() {
     return (
       <div className="flex items-center justify-center py-20">
         <Loader2 className="w-8 h-8 text-bitcoin animate-spin" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="card p-8 text-center">
+        <AlertTriangle className="w-8 h-8 text-yellow-400 mx-auto mb-3" />
+        <p className="text-dark-200">{error}</p>
       </div>
     );
   }
