@@ -166,7 +166,10 @@ export default function AgentPage() {
     setExpandedPanel(null);
 
     const userMessage: ChatMessage = { role: "user", content: fudText };
-    setMessages((prev) => [...prev, userMessage]);
+    // Add user message AND an empty assistant placeholder in the same update so
+    // the thinking-indicator renders immediately — otherwise the user stares at
+    // a blank chat for 2-5s while the server warms up and looks like it froze.
+    setMessages((prev) => [...prev, userMessage, { role: "assistant", content: "" }]);
     setIsLoading(true);
 
     try {
@@ -187,9 +190,6 @@ export default function AgentPage() {
       const decoder = new TextDecoder();
       let fullText = "";
       lastStreamUpdateRef.current = Date.now();
-
-      // Add empty assistant message to fill during streaming
-      setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
 
       while (true) {
         const { done, value } = await reader.read();
@@ -519,11 +519,20 @@ export default function AgentPage() {
             </div>
           ))}
 
-          {/* Streaming indicator */}
+          {/* Thinking indicator — shown while waiting for first stream token.
+              Uses animated dots + text so users don't think the app froze. */}
           {isLoading && messages[messages.length - 1]?.content === "" && (
             <div className="flex justify-start">
-              <div className="bg-white border border-eb-border rounded-xl px-3 py-2.5 shadow-card">
+              <div className="bg-white border border-eb-border rounded-xl px-3 py-2.5 shadow-card inline-flex items-center gap-2">
                 <Loader2 className="w-4 h-4 text-eb-gold animate-spin" />
+                <span className="text-[13px] text-eb-muted">
+                  {language === "no" ? "Analyserer FUD" : "Analyzing FUD"}
+                </span>
+                <span className="inline-flex gap-0.5">
+                  <span className="w-1 h-1 rounded-full bg-eb-gold animate-bounce" style={{ animationDelay: "0ms" }} />
+                  <span className="w-1 h-1 rounded-full bg-eb-gold animate-bounce" style={{ animationDelay: "150ms" }} />
+                  <span className="w-1 h-1 rounded-full bg-eb-gold animate-bounce" style={{ animationDelay: "300ms" }} />
+                </span>
               </div>
             </div>
           )}
