@@ -39,17 +39,31 @@ const fallbackHighlights = [
 async function getHighlights() {
   try {
     const supabase = createAdminClient();
+    // Select reality_en (what the evidence actually shows), not claim_en (the FUD claim being debunked).
+    // Filter out rebuttals and myths so the homepage leads with positive, evidence-first findings.
     const { data } = await supabase
       .from("facts")
-      .select("claim_en, source_name, source_date")
+      .select("reality_en, source_name, source_date, categories(slug)")
       .eq("status", "published")
+      .not("reality_en", "is", null)
       .order("created_at", { ascending: false })
-      .limit(6);
-    if (data && data.length >= 6) {
-      return data.map((f) => ({
-        fact: f.claim_en || "",
-        source: `${f.source_name}${f.source_date ? `, ${new Date(f.source_date).getFullYear()}` : ""}`,
-      }));
+      .limit(30);
+    if (data && data.length > 0) {
+      const filtered = data.filter((f) => {
+        const slug = (f.categories as { slug?: string } | null)?.slug;
+        return slug !== "rebuttals" && slug !== "myths";
+      });
+      const picks = (filtered.length >= 6 ? filtered : data).slice(0, 6);
+      return picks.map((f) => {
+        const reality = (f.reality_en || "").trim();
+        // Take first 2 sentences for a concise highlight card
+        const firstSentences = reality.match(/^[^.!?]+[.!?]+(\s+[^.!?]+[.!?]+)?/);
+        const trimmed = firstSentences ? firstSentences[0].trim() : reality;
+        return {
+          fact: trimmed,
+          source: `${f.source_name}${f.source_date ? `, ${new Date(f.source_date).getFullYear()}` : ""}`,
+        };
+      });
     }
   } catch { /* fall through */ }
   return fallbackHighlights;
