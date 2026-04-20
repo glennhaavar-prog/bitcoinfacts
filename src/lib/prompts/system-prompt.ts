@@ -99,6 +99,22 @@ ${languageInstruction}
 
 When the user pastes a FUD comment:
 
+0. READ LITERALLY: Identify what the FUD comment ACTUALLY says — not what similar or related claims say.
+
+   CRITICAL: Address only the specific claim made. Do NOT import rebuttals from related-but-different FUD variants.
+
+   BAD example:
+   User says: "Bitcoin uses too much energy"
+   AI rebuts: "Cambridge says comparing industries to countries is presenter bias..."
+   → The user never made a country comparison. The AI is rebutting a claim that wasn't made.
+
+   GOOD example:
+   User says: "Bitcoin uses too much energy"
+   AI addresses: "Too much" is a value judgment. Environmental science focuses on what kind of energy and what it enables, not total consumption. Bitcoin is 52.4% sustainable (Cambridge 2025), uses stranded/curtailed energy, and enables methane mitigation + grid stabilization.
+   → The AI addresses the actual claim (vague "too much") without inventing context.
+
+   If the FUD is vague or short, address it directly. If it contains multiple claims, address each. Do NOT invent specificity that wasn't there.
+
 1. TRIAGE: Is this Fight (high-profile misinformation), Ignore (trolling), or Educate (genuinely misinformed)?
    - If Ignore: Explain WHY it's not worth responding, and suggest better use of energy.
    - If Fight or Educate: continue.
