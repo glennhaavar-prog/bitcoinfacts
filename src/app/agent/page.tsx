@@ -56,28 +56,67 @@ const principleLabels: Record<PrincipleKey, { name: string; icon: string; color:
 };
 
 const TEXT_COLLAPSE_LENGTH = 280;
+// Rough expected reply length in characters — used to estimate streaming progress.
+// Most FUD responses come in around 1200-1800 chars. Calibrated so the bar
+// reaches ~90% around when the response actually finishes.
+const EXPECTED_REPLY_LENGTH = 1500;
 
-function CollapsibleText({ text, className }: { text: string; className?: string }) {
+function CollapsibleText({
+  text,
+  className,
+  isStreaming = false,
+}: {
+  text: string;
+  className?: string;
+  isStreaming?: boolean;
+}) {
   const [expanded, setExpanded] = useState(false);
   const needsCollapse = text.length > TEXT_COLLAPSE_LENGTH;
 
-  if (!needsCollapse) return <p className={className}>{text}</p>;
+  // While streaming, always show full text so users can watch it grow in real time.
+  // The "Read more" collapse only kicks in once the response is complete.
+  const showFull = isStreaming || expanded || !needsCollapse;
 
   return (
     <div>
       <p className={className}>
-        {expanded ? text : `${text.slice(0, TEXT_COLLAPSE_LENGTH)}...`}
-      </p>
-      <button
-        onClick={() => setExpanded(!expanded)}
-        className="mt-1.5 text-eb-gold text-xs font-medium hover:text-eb-gold-dark transition-colors inline-flex items-center gap-1"
-      >
-        {expanded ? (
-          <><ChevronUp className="w-3 h-3" /> Show less</>
-        ) : (
-          <><ChevronDown className="w-3 h-3" /> Read more</>
+        {showFull ? text : `${text.slice(0, TEXT_COLLAPSE_LENGTH)}...`}
+        {isStreaming && (
+          <span className="inline-block w-[2px] h-[14px] bg-eb-gold ml-0.5 align-middle animate-pulse" />
         )}
-      </button>
+      </p>
+      {needsCollapse && !isStreaming && (
+        <button
+          onClick={() => setExpanded(!expanded)}
+          className="mt-1.5 text-eb-gold text-xs font-medium hover:text-eb-gold-dark transition-colors inline-flex items-center gap-1"
+        >
+          {expanded ? (
+            <><ChevronUp className="w-3 h-3" /> Show less</>
+          ) : (
+            <><ChevronDown className="w-3 h-3" /> Read more</>
+          )}
+        </button>
+      )}
+    </div>
+  );
+}
+
+// Progress bar shown below a streaming message. Gives users visual confirmation
+// that work is happening, even once characters are flowing.
+function StreamingProgress({ charCount, language }: { charCount: number; language: Language }) {
+  // Logarithmic-feeling curve: fast start, slows as we approach 90%, finishes at full when message ends.
+  const pct = Math.min(90, Math.round((charCount / EXPECTED_REPLY_LENGTH) * 90));
+  return (
+    <div className="mt-2 flex items-center gap-2">
+      <div className="flex-1 h-1 rounded-full bg-eb-surface-2 overflow-hidden">
+        <div
+          className="h-full bg-eb-gold transition-all duration-200"
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+      <span className="text-[10px] text-eb-muted tabular-nums whitespace-nowrap">
+        {language === "no" ? "Skriver" : "Writing"} · {charCount}
+      </span>
     </div>
   );
 }
@@ -440,14 +479,29 @@ export default function AgentPage() {
                   </div>
                 )}
 
-                {/* Message text */}
-                <CollapsibleText
-                  text={msg.content}
-                  className="text-[13px] sm:text-sm leading-relaxed whitespace-pre-wrap"
-                />
+                {/* Message text.
+                    isStreaming = true for the last assistant message while we're still loading —
+                    in that case CollapsibleText stays fully expanded and shows a blinking cursor. */}
+                {(() => {
+                  const isLastAssistant =
+                    msg.role === "assistant" && i === messages.length - 1;
+                  const isStreamingThis = isLastAssistant && isLoading && !!msg.content;
+                  return (
+                    <>
+                      <CollapsibleText
+                        text={msg.content}
+                        className="text-[13px] sm:text-sm leading-relaxed whitespace-pre-wrap"
+                        isStreaming={isStreamingThis}
+                      />
+                      {isStreamingThis && (
+                        <StreamingProgress charCount={msg.content.length} language={language} />
+                      )}
+                    </>
+                  );
+                })()}
 
-                {/* Action buttons */}
-                {msg.role === "assistant" && msg.content && (
+                {/* Action buttons — hidden while streaming so the progress bar owns the bottom */}
+                {msg.role === "assistant" && msg.content && !(i === messages.length - 1 && isLoading) && (
                   <div className="mt-2 pt-2 border-t border-eb-border flex items-center gap-1.5 flex-wrap">
                     <button
                       onClick={() => copyToClipboard(msg.content)}
