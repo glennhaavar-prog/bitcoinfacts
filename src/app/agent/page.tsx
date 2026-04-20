@@ -207,12 +207,20 @@ export default function AgentPage() {
                 // Throttle state updates to ~20fps to prevent textarea lag
                 const now = Date.now();
                 if (now - lastStreamUpdateRef.current >= 50) {
-                  const snapshot = fullText;
+                  // Extract the partial "reply" field from the streaming JSON
+                  // so users see clean text appearing progressively, not raw
+                  // JSON fragments like {"triageResult":"educate","reply":"...
+                  // If we haven't seen "reply":" yet, keep content empty so the
+                  // thinking indicator stays visible instead of showing JSON.
+                  const replyMatch = fullText.match(/"reply"\s*:\s*"((?:[^"\\]|\\.)*)/);
+                  const progressiveReply = replyMatch
+                    ? replyMatch[1].replace(/\\n/g, "\n").replace(/\\"/g, '"').replace(/\\\\/g, "\\")
+                    : "";
                   setMessages((prev) => {
                     const updated = [...prev];
                     updated[updated.length - 1] = {
                       ...updated[updated.length - 1],
-                      content: snapshot,
+                      content: progressiveReply,
                     };
                     return updated;
                   });
