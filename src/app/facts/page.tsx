@@ -8,6 +8,8 @@ import {
   ExternalLink,
   Lightbulb,
   Loader2,
+  AlertCircle,
+  CheckCircle2,
 } from "lucide-react";
 import { facts as staticFacts, factCategories as staticCategories } from "@/lib/prompts/facts-database";
 import { createClient } from "@/lib/supabase/client";
@@ -122,11 +124,12 @@ export default function FactsPage() {
       <div className="text-center mb-10">
         <p className="section-label mb-2">Research database</p>
         <h1 className="font-serif text-3xl sm:text-4xl font-bold text-eb-navy mb-3">
-          Evidence Database
+          Common Claims About Bitcoin — and What the Evidence Shows
         </h1>
         <p className="text-eb-muted max-w-2xl mx-auto leading-relaxed">
-          Curated, source-backed facts about Bitcoin mining. Search, filter and
-          learn how to use them in discussions.
+          Each entry below starts with a <strong>common claim</strong> made
+          about Bitcoin mining, followed by what peer-reviewed research and
+          primary data actually show. Search, filter, and learn how to respond.
         </p>
       </div>
 
@@ -189,6 +192,13 @@ export default function FactsPage() {
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2 flex-wrap">
+                      {/* Explicit CLAIM badge so visitors don't read the headline
+                          quote as something the site asserts. Pairs with the
+                          "Evidence" label below. */}
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-50 border border-red-200 text-red-700 text-[10px] font-bold uppercase tracking-wider">
+                        <AlertCircle className="w-3 h-3" />
+                        Claim
+                      </span>
                       {category && (
                         <span className="badge-gold">
                           {category.icon} {category.name}
@@ -198,13 +208,17 @@ export default function FactsPage() {
                         <span className="text-eb-subtle text-xs">{fact.date}</span>
                       )}
                     </div>
-                    <h3 className="font-serif text-base font-semibold text-eb-navy">
+                    <h3 className="font-serif text-base font-semibold text-eb-navy italic">
                       &ldquo;{fact.claim}&rdquo;
                     </h3>
                     {!isExpanded && (
-                      <p className="mt-2 text-eb-muted text-sm line-clamp-2">
-                        {fact.reality}
-                      </p>
+                      <div className="mt-3 flex items-start gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-eb-gold flex-shrink-0 mt-0.5" />
+                        <p className="text-eb-slate text-sm line-clamp-2">
+                          <span className="font-semibold text-eb-gold">Evidence:</span>{" "}
+                          {fact.reality}
+                        </p>
+                      </div>
                     )}
                   </div>
                   {isExpanded ? (
@@ -218,9 +232,10 @@ export default function FactsPage() {
               {isExpanded && (
                 <div className="px-5 pb-5 space-y-4">
                   {/* Reality */}
-                  <div className="p-4 rounded-lg bg-eb-surface-2 border border-eb-border">
-                    <h4 className="text-xs font-semibold text-eb-gold uppercase tracking-wider mb-2">
-                      The Evidence
+                  <div className="p-4 rounded-lg bg-green-50 border border-green-200">
+                    <h4 className="text-xs font-semibold text-green-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      What the Evidence Actually Shows
                     </h4>
                     <p className="text-eb-slate text-sm leading-relaxed">{fact.reality}</p>
                   </div>
