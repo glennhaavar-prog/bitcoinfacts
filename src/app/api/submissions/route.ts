@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { sendSubmissionEmail } from "@/lib/email";
 
 // Rate limit: 3 per hour per IP
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
@@ -35,45 +36,62 @@ export async function POST(request: NextRequest) {
       input_text,
       display_name,
       email,
-      extracted_facts,
     } = body;
 
-    if (!input_type || !["url", "text", "fact"].includes(input_type)) {
+    if (!input_type || !["url", "text"].includes(input_type)) {
       return NextResponse.json(
         { error: "Invalid input type." },
         { status: 400 }
       );
     }
 
+    // Require either a URL or non-empty text — submissions without content
+    // are useless and almost always bot/empty-form noise.
+    const hasContent =
+      (input_type === "url" && input_url?.trim()) ||
+      (input_type === "text" && input_text?.trim());
+    if (!hasContent) {
+      return NextResponse.json(
+        { error: "Please provide a link or text." },
+        { status: 400 }
+      );
+    }
+
     const supabase = createAdminClient();
 
-    // Create or find contributor
+    // Create or find contributor (best-effort — failures shouldn't block the submission)
     let contributorId: string | null = null;
     if (display_name) {
-      const { data: existing } = email
-        ? await supabase
-            .from("contributors")
-            .select("id")
-            .eq("email", email)
-            .single()
-        : { data: null };
+      try {
+        const { data: existing } = email
+          ? await supabase
+              .from("contributors")
+              .select("id")
+              .eq("email", email)
+              .single()
+          : { data: null };
 
-      if (existing) {
-        contributorId = existing.id;
-      } else {
-        const { data: newContributor } = await supabase
-          .from("contributors")
-          .insert({
-            display_name: display_name || "Anonym",
-            email: email || null,
-          })
-          .select("id")
-          .single();
-        contributorId = newContributor?.id || null;
+        if (existing) {
+          contributorId = existing.id;
+        } else {
+          const { data: newContributor } = await supabase
+            .from("contributors")
+            .insert({
+              display_name: display_name || "Anonymous",
+              email: email || null,
+            })
+            .select("id")
+            .single();
+          contributorId = newContributor?.id || null;
+        }
+      } catch (e) {
+        console.warn("Contributor lookup/insert failed:", e);
       }
     }
 
-    // Create submission
+    // Create submission. Note: ai_extracted_facts is left NULL — admin handles
+    // extraction manually now (via Claude chat or /admin/quick-add) for higher
+    // quality output than what the public extraction endpoint produces.
     const { data, error } = await supabase
       .from("submissions")
       .insert({
@@ -82,7 +100,6 @@ export async function POST(request: NextRequest) {
         input_text: input_text || null,
         contributor_id: contributorId,
         status: "ready_for_review",
-        ai_extracted_facts: extracted_facts || null,
       })
       .select("id")
       .single();
@@ -90,6 +107,17 @@ export async function POST(request: NextRequest) {
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
+
+    // Email the admin so they can act on the submission immediately.
+    // Fire-and-forget — don't block the user's response on email delivery.
+    sendSubmissionEmail({
+      inputType: input_type,
+      inputUrl: input_url,
+      inputText: input_text,
+      displayName: display_name,
+      contributorEmail: email,
+      submissionId: data.id,
+    });
 
     return NextResponse.json({ id: data.id, status: "submitted" });
   } catch {

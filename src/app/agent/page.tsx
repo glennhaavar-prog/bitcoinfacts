@@ -53,6 +53,7 @@ const principleLabels: Record<PrincipleKey, { name: string; icon: string; color:
   influence: { name: "Influence, Don't Just Inform", icon: "💗", color: "text-pink-600 bg-pink-50 border-pink-200" },
   check_intention: { name: "Check Intention", icon: "🎯", color: "text-blue-600 bg-blue-50 border-blue-200" },
   authority_humility: { name: "Authority + Humility", icon: "🏅", color: "text-eb-gold bg-eb-gold-faint border-eb-gold-border" },
+  yes_and: { name: "Yes, And — Never Yes, But", icon: "🌉", color: "text-purple-700 bg-purple-50 border-purple-200" },
 };
 
 const TEXT_COLLAPSE_LENGTH = 280;
