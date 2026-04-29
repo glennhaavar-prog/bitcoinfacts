@@ -84,13 +84,13 @@ export default async function HomePage() {
               Evidence-based research
             </div>
             <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-eb-navy leading-tight">
-              The Bitcoin Mining{" "}
+              The Bitcoin{" "}
               <span className="gradient-text">Evidence Base</span>
             </h1>
             <p className="mt-4 text-lg sm:text-xl text-eb-muted max-w-2xl mx-auto leading-relaxed">
-              Peer-reviewed facts about Bitcoin mining. Analyse claims with
-              verified evidence from Cambridge University, ERCOT, and 22+
-              academic studies.
+              Common claims about Bitcoin — and what peer-reviewed research
+              actually shows. Verified evidence from Cambridge University,
+              ERCOT, and 22+ academic studies.
             </p>
             <p className="mt-3 text-sm text-eb-subtle max-w-xl mx-auto">
               Built on Daniel Batten&apos;s communication playbook — designed
@@ -158,8 +158,8 @@ export default async function HomePage() {
               What the evidence shows
             </h2>
             <p className="text-eb-muted max-w-2xl mx-auto text-sm leading-relaxed">
-              Key findings from peer-reviewed research on Bitcoin mining,
-              energy, and environmental impact.
+              Key findings from peer-reviewed research on Bitcoin — energy,
+              environment, security, adoption and more.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
