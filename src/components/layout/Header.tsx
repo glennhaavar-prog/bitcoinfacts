@@ -31,7 +31,7 @@ export default function Header() {
             </div>
             <div className="hidden sm:block leading-none">
               <span className="font-serif font-bold text-[15px] text-eb-navy block">
-                The Bitcoin Mining
+                The Bitcoin
               </span>
               <span className="font-serif font-semibold text-[15px] text-eb-gold block">
                 Evidence Base

@@ -20,9 +20,9 @@ export default function Footer() {
               </div>
             </div>
             <p className="text-eb-muted text-sm max-w-md leading-relaxed">
-              A curated database of peer-reviewed research on Bitcoin mining,
-              energy use, and environmental impact. Evidence-based, not
-              rhetoric.
+              A curated database of peer-reviewed research and primary data on
+              Bitcoin — energy, environment, security, adoption and more.
+              Evidence-based, not rhetoric.
             </p>
             <a
               href="https://www.bitcoinbeyond66.com"

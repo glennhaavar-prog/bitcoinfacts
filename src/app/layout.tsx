@@ -18,13 +18,13 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "The Bitcoin Evidence Base — Evidence-based analysis of Bitcoin and energy",
+  title: "The Bitcoin Evidence Base — Evidence-based answers to claims about Bitcoin",
   description:
-    "A curated database of peer-reviewed research on Bitcoin mining, energy use, and environmental impact. Analyse claims with verified evidence from Cambridge University, ERCOT, and 22+ peer-reviewed studies.",
+    "A curated database of peer-reviewed research and primary data on Bitcoin — energy, environment, security, adoption and more. Analyse claims with verified evidence from Cambridge University, ERCOT, and 22+ peer-reviewed studies.",
   openGraph: {
     title: "The Bitcoin Evidence Base",
     description:
-      "Evidence-based analysis of Bitcoin mining — peer-reviewed research, not rhetoric.",
+      "Common claims about Bitcoin — and what peer-reviewed research actually shows.",
     type: "website",
   },
 };
