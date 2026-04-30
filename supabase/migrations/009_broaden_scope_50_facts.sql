@@ -22,9 +22,8 @@ INSERT INTO categories (slug, name_no, name_en, icon, description_no, descriptio
   ('comparison',     'Sammenligningsstudier',    'Comparison Studies',      '📊', 'Bitcoin sammenlignet med gull, banksystemet og andre kryptovalutaer',     'Bitcoin compared to gold, banking system and other cryptocurrencies',       18)
 ON CONFLICT (slug) DO NOTHING;
 
-
 -- ═══════════════════════════════════════════════════════════════════════════════
--- MONETARY (10)
+-- FACTS (50) — split into individual INSERT statements for safer execution
 -- ═══════════════════════════════════════════════════════════════════════════════
 
 INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
@@ -36,8 +35,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'Lyn Alden / Carl Menger / Adam Smith', 'https://www.lynalden.com/what-is-money/', '2024-01-01', CURRENT_DATE,
  'Counter with: "What is the intrinsic value of a US dollar?" Then explain that monetary goods derive value from network effects, not industrial use.',
  'Kontrer med: "Hva er den iboende verdien av en US-dollar?" Forklar at monetære goder henter verdi fra nettverkseffekter, ikke industriell bruk.',
- ARRAY['intrinsic-value','store-of-value','austrian-economics','adam-smith'], 'high'),
+ ARRAY['intrinsic-value','store-of-value','austrian-economics','adam-smith'], 'high');
 
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='monetary'), 'published',
  'Bitcoin is too volatile to be money',
  'Bitcoin er for volatil til å være penger',
@@ -46,8 +46,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'Glassnode / Bloomberg Intelligence', 'https://glassnode.com/', '2025-01-01', CURRENT_DATE,
  'Show the trend: volatility roughly halves every cycle. Then point out that long-term holders (HODL >4 years) have never lost money.',
  'Vis trenden: volatilitet halveres omtrent hver syklus. Påpek at langsiktige holdere (HODL >4 år) aldri har tapt penger.',
- ARRAY['volatility','hodl','price-discovery','adoption-curve'], 'high'),
+ ARRAY['volatility','hodl','price-discovery','adoption-curve'], 'high');
 
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='monetary'), 'published',
  'Gold is a better store of value than Bitcoin',
  'Gull er et bedre verdilager enn Bitcoin',
@@ -56,8 +57,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'World Gold Council / Bitcoin price history', 'https://www.gold.org/', '2025-01-01', CURRENT_DATE,
  'Frame as "yes, and" — gold is great, AND Bitcoin solves problems gold cannot (portability, divisibility, instant verification).',
  'Bruk "ja, og" — gull er fint, OG Bitcoin løser problemer gull ikke kan (portabilitet, delbarhet, øyeblikkelig verifikasjon).',
- ARRAY['gold','store-of-value','digital-gold','portability'], 'high'),
+ ARRAY['gold','store-of-value','digital-gold','portability'], 'high');
 
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='monetary'), 'published',
  'Bitcoin generates no yield, so it has no value',
  'Bitcoin gir ingen avkastning, så det har ingen verdi',
@@ -66,8 +68,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'Lyn Alden — "Broken Money"', 'https://www.lynalden.com/broken-money/', '2023-09-01', CURRENT_DATE,
  'Ask: "Does gold have yield? Does cash have yield?" Money is supposed to preserve value, not generate it. Yield is what you do WITH money.',
  'Spør: "Har gull avkastning? Har kontanter avkastning?" Penger skal bevare verdi, ikke generere den. Avkastning er hva du gjør MED penger.',
- ARRAY['yield','cashflow','store-of-value','monetary-good'], 'high'),
+ ARRAY['yield','cashflow','store-of-value','monetary-good'], 'high');
 
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='monetary'), 'published',
  'Bitcoin failed as inflation hedge in 2022',
  'Bitcoin sviktet som inflasjonsbeskyttelse i 2022',
@@ -76,8 +79,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'Federal Reserve data / BLS CPI / Bitcoin price', 'https://fred.stlouisfed.org/', '2025-01-01', CURRENT_DATE,
  'Concede the 2022 point honestly, then expand the timeframe. From 2020-2025 Bitcoin beat inflation by 200%+. Single calendar years are noise.',
  'Innrøm 2022-poenget ærlig, utvid så tidsrammen. Fra 2020-2025 slo Bitcoin inflasjon med 200%+. Enkeltkalenderår er støy.',
- ARRAY['inflation','macro','liquidity','fed','rate-hikes'], 'high'),
+ ARRAY['inflation','macro','liquidity','fed','rate-hikes'], 'high');
 
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='monetary'), 'published',
  'Bitcoin is just greater fool theory',
  'Bitcoin er bare "greater fool"-teori',
@@ -86,8 +90,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'Metcalfe''s Law / network effect research', 'https://www.lynalden.com/', '2024-01-01', CURRENT_DATE,
  'Ask "what utility do you think it lacks?" Then list real-world uses: remittances, dissident funding, hyperinflation escape, ETF flows.',
  'Spør "hvilken nytte mener du den mangler?" List så reelle bruksområder: remitteringer, dissidentstøtte, hyperinflasjonsflukt, ETF-flyt.',
- ARRAY['greater-fool','metcalfe','network-effects','utility'], 'high'),
+ ARRAY['greater-fool','metcalfe','network-effects','utility'], 'high');
 
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='monetary'), 'published',
  'Bitcoin price is manipulated by whales',
  'Bitcoin-prisen manipuleres av "whales"',
@@ -96,8 +101,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'Glassnode / SEC filings', 'https://studio.glassnode.com/charts/distribution', '2025-01-01', CURRENT_DATE,
  'Point out that "whale" addresses are mostly pooled retail holdings via exchanges and ETFs — millions of people, not individuals.',
  'Påpek at "whale"-adresser stort sett er samlede småinvestor-beholdninger via børser og ETF-er — millioner av folk, ikke enkeltindivider.',
- ARRAY['whales','distribution','on-chain','etf'], 'medium'),
+ ARRAY['whales','distribution','on-chain','etf'], 'medium');
 
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='monetary'), 'published',
  'Bitcoin will go to zero',
  'Bitcoin går til null',
@@ -106,8 +112,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  '99bitcoins obituary tracker', 'https://99bitcoins.com/bitcoin-obituaries/', '2025-01-01', CURRENT_DATE,
  'List the specific infrastructure that would have to fail simultaneously. The "zero" claim is a thought-terminator, not analysis.',
  'List den spesifikke infrastrukturen som måtte feile samtidig. "Null"-påstanden er en tankesperre, ikke analyse.',
- ARRAY['bitcoin-obituaries','zero','infrastructure','etf'], 'high'),
+ ARRAY['bitcoin-obituaries','zero','infrastructure','etf'], 'high');
 
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='monetary'), 'published',
  'Bitcoin is just speculation, no productive use',
  'Bitcoin er bare spekulasjon, ingen produktiv bruk',
@@ -116,8 +123,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'World Bank Remittance Prices Worldwide / HRF Financial Freedom Report', 'https://remittanceprices.worldbank.org/', '2025-01-01', CURRENT_DATE,
  'Open with the 6.2% remittance fee statistic — it instantly reframes Bitcoin as an answer to a real, expensive problem.',
  'Åpne med 6,2%-remitteringsgebyret — det reframer Bitcoin som svar på et reelt, kostbart problem.',
- ARRAY['remittances','productive-use','lightning','financial-inclusion'], 'high'),
+ ARRAY['remittances','productive-use','lightning','financial-inclusion'], 'high');
 
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='monetary'), 'published',
  'Bitcoin will be replaced by a better cryptocurrency',
  'Bitcoin vil erstattes av en bedre kryptovaluta',
@@ -126,13 +134,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'SEC ETF approval letter / Cambridge CCAF', 'https://www.sec.gov/', '2024-01-10', CURRENT_DATE,
  'List the moats: hashrate, decentralisation, no founder, commodity status. New chains often trade these away for features.',
  'List vollgravene: hashrate, desentralisering, ingen grunnlegger, vare-status. Nye kjeder bytter ofte bort disse for funksjoner.',
- ARRAY['bitcoin-maximalism','altcoins','network-effects','moats'], 'high'),
+ ARRAY['bitcoin-maximalism','altcoins','network-effects','moats'], 'high');
 
-
--- ═══════════════════════════════════════════════════════════════════════════════
--- SECURITY (10) — incl. quantum, AI, slow-network FUD
--- ═══════════════════════════════════════════════════════════════════════════════
-
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='security'), 'published',
  'Quantum computers will break Bitcoin',
  'Kvantedatamaskiner vil knekke Bitcoin',
@@ -141,8 +145,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'NIST PQC Standardization / Microsoft Research (Webber et al., 2022)', 'https://csrc.nist.gov/projects/post-quantum-cryptography', '2024-08-13', CURRENT_DATE,
  'Concede quantum is real long-term, then point out: NIST already standardized the fix (Aug 2024), Bitcoin can soft-fork it in, and untouched addresses are already safe. Timeline: 10+ years.',
  'Innrøm at kvante er reelt langsiktig, men: NIST har allerede standardisert løsningen (aug 2024), Bitcoin kan soft-forke den inn, og uberørte adresser er allerede trygge. Tidshorisont: 10+ år.',
- ARRAY['quantum','nist','post-quantum','ecdsa','sha-256'], 'high'),
+ ARRAY['quantum','nist','post-quantum','ecdsa','sha-256'], 'high');
 
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='security'), 'published',
  'AI will crack Bitcoin',
  'AI vil knekke Bitcoin',
@@ -151,8 +156,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'Cryptography research / Schneier on Security', 'https://www.schneier.com/', '2024-01-01', CURRENT_DATE,
  'AI is great at language, terrible at cryptography. SHA-256 by design has no patterns. The problem is mathematical hardness, not pattern-matching.',
  'AI er flink på språk, dårlig på kryptografi. SHA-256 er designet uten mønstre. Problemet er matematisk vanskelighet, ikke mønstergjenkjenning.',
- ARRAY['ai','llm','cryptography','sha-256','brute-force'], 'high'),
+ ARRAY['ai','llm','cryptography','sha-256','brute-force'], 'high');
 
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='security'), 'published',
  'Bitcoin has been hacked',
  'Bitcoin har blitt hacket',
@@ -161,8 +167,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'Bitcoin Core changelog / Glassnode network uptime', 'https://github.com/bitcoin/bitcoin', '2025-01-01', CURRENT_DATE,
  'Use the email analogy: "An email account got compromised" doesn''t mean "the internet was hacked." Same with Bitcoin and exchanges.',
  'Bruk e-post-analogien: "En e-postkonto ble kompromittert" betyr ikke "internett ble hacket." Samme med Bitcoin og børser.',
- ARRAY['hack','exchange','protocol','uptime'], 'high'),
+ ARRAY['hack','exchange','protocol','uptime'], 'high');
 
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='security'), 'published',
  'A 51% attack would destroy Bitcoin',
  '51%-angrep ville ødelagt Bitcoin',
@@ -171,8 +178,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'Cambridge CCAF mining map / hashrate.com', 'https://ccaf.io/cbnsi/cbeci/mining_map', '2025-12-01', CURRENT_DATE,
  'Three points: (1) capex is $20B+, (2) attack only enables double-spend, not theft of existing coins or supply change, (3) success destroys the attacker''s investment.',
  'Tre poenger: (1) capex er $20mrd+, (2) angrep gir kun dobbeltbruk, ikke tyveri av eksisterende mynter eller endring av tilbud, (3) suksess ødelegger angriperens egen investering.',
- ARRAY['51-attack','hashrate','game-theory','double-spend'], 'high'),
+ ARRAY['51-attack','hashrate','game-theory','double-spend'], 'high');
 
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='security'), 'published',
  'Mt. Gox and FTX show Bitcoin is unsafe',
  'Mt. Gox og FTX viser at Bitcoin er usikkert',
@@ -181,8 +189,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'Self-custody documentation / FTX bankruptcy filings', 'https://bitcoin.org/en/secure-your-wallet', '2024-01-01', CURRENT_DATE,
  'Reframe: Mt. Gox/FTX failed BECAUSE of centralisation — the exact thing Bitcoin was designed to remove. Self-custody users were unaffected.',
  'Omdefiner: Mt. Gox/FTX feilet PÅ GRUNN AV sentralisering — det Bitcoin er designet for å fjerne. Selvkustodi-brukere var uberørt.',
- ARRAY['self-custody','exchange','mt-gox','ftx','centralization'], 'high'),
+ ARRAY['self-custody','exchange','mt-gox','ftx','centralization'], 'high');
 
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='security'), 'published',
  'The Bitcoin network has gone down multiple times',
  'Bitcoin-nettverket har gått ned flere ganger',
@@ -191,8 +200,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'Bitcoin Core changelog / network monitors', 'https://bitnodes.io/', '2025-01-01', CURRENT_DATE,
  'Two outages in 16 years, both fixed in hours, last one in 2013. Compare to bank weekends, AWS outages, Visa downtime.',
  'To nedetider på 16 år, begge fikset på timer, sist i 2013. Sammenlign med bankhelger, AWS-nedetid, Visa-nedetid.',
- ARRAY['uptime','reliability','outage','network'], 'high'),
+ ARRAY['uptime','reliability','outage','network'], 'high');
 
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='security'), 'published',
  'Lose your keys and you lose everything',
  'Mister du nøklene dine, mister du alt',
@@ -201,8 +211,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'Casa / Unchained Capital / Trezor documentation', 'https://casa.io/', '2025-01-01', CURRENT_DATE,
  'List the spectrum: hardware wallets, multisig, custodians, inheritance services. Banks lock people in one model — Bitcoin gives choice.',
  'List spekteret: hardware-lommebøker, multisig, depotbanker, arvetjenester. Banker låser folk i én modell — Bitcoin gir valg.',
- ARRAY['self-custody','multisig','hardware-wallet','recovery','inheritance'], 'high'),
+ ARRAY['self-custody','multisig','hardware-wallet','recovery','inheritance'], 'high');
 
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='security'), 'published',
  'Bitcoin Core has serious bugs',
  'Bitcoin Core har alvorlige feil',
@@ -211,8 +222,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'NIST CVE database / Bitcoin Core changelog', 'https://nvd.nist.gov/', '2025-01-01', CURRENT_DATE,
  'Two critical bugs in 16 years, both patched without exploitation. Linux has hundreds per year. Bitcoin is exceptionally well-tested.',
  'To kritiske feil på 16 år, begge patchet uten utnyttelse. Linux har hundrevis per år. Bitcoin er eksepsjonelt velprøvd.',
- ARRAY['bugs','cve','bitcoin-core','security-audit'], 'high'),
+ ARRAY['bugs','cve','bitcoin-core','security-audit'], 'high');
 
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='security'), 'published',
  'Government supercomputers can break Bitcoin',
  'Statlige superdatamaskiner kan knekke Bitcoin',
@@ -221,8 +233,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'NSA / NIST FIPS 180-4 / cryptanalysis literature', 'https://csrc.nist.gov/publications/fips', '2024-01-01', CURRENT_DATE,
  'NSA designed SHA-256 and uses it for Top Secret. If the NSA can''t crack it, neither can a foreign supercomputer.',
  'NSA designet SHA-256 og bruker det for Top Secret. Hvis NSA ikke kan knekke det, kan heller ikke utenlandske superdatamaskiner.',
- ARRAY['nsa','sha-256','supercomputer','classical-computing'], 'high'),
+ ARRAY['nsa','sha-256','supercomputer','classical-computing'], 'high');
 
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='security'), 'published',
  'SHA-256 will eventually be broken',
  'SHA-256 vil til slutt bli knekt',
@@ -231,13 +244,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'NIST PQC Standardization', 'https://csrc.nist.gov/projects/post-quantum-cryptography', '2024-08-13', CURRENT_DATE,
  'Bitcoin has soft-forked before (SegWit, Taproot). Post-quantum migration is well-understood and planned, not panic-prone.',
  'Bitcoin har soft-forket før (SegWit, Taproot). Post-kvante-migrasjon er velforstått og planlagt, ikke panikkpreget.',
- ARRAY['sha-256','post-quantum','soft-fork','taproot'], 'high'),
+ ARRAY['sha-256','post-quantum','soft-fork','taproot'], 'high');
 
-
--- ═══════════════════════════════════════════════════════════════════════════════
--- CRIME (8)
--- ═══════════════════════════════════════════════════════════════════════════════
-
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='crime'), 'published',
  'Bitcoin is mostly used by criminals',
  'Bitcoin brukes mest av kriminelle',
@@ -246,8 +255,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'Chainalysis 2024 Crypto Crime Report / UNODC', 'https://www.chainalysis.com/2024-crypto-crime-report/', '2024-02-01', CURRENT_DATE,
  'Lead with the 0.34% figure. Then compare to 2-5% for fiat. Bitcoin is dramatically less criminal than dollars.',
  'Led med 0,34%-tallet. Sammenlign så med 2-5% for fiat. Bitcoin er dramatisk mindre kriminelt enn dollar.',
- ARRAY['chainalysis','crypto-crime','illicit','unodc'], 'high'),
+ ARRAY['chainalysis','crypto-crime','illicit','unodc'], 'high');
 
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='crime'), 'published',
  'Bitcoin is the currency of ransomware',
  'Bitcoin er ransomware-valutaen',
@@ -256,8 +266,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'FBI / Chainalysis 2024 Crypto Crime Report', 'https://www.fbi.gov/news/press-releases/department-of-justice-seizes-23-million-in-cryptocurrency-paid-to-the-ransomware-extortionists-darkside', '2021-06-07', CURRENT_DATE,
  'FBI recovered $4.4M from Colonial Pipeline by tracing Bitcoin. Bitcoin is the WORST ransomware currency — every payment is a permanent forensic trail.',
  'FBI gjenvant $4,4M fra Colonial Pipeline ved å spore Bitcoin. Bitcoin er den DÅRLIGSTE ransomware-valutaen — hver betaling er et permanent etterforskningsspor.',
- ARRAY['ransomware','fbi','colonial-pipeline','traceability'], 'high'),
+ ARRAY['ransomware','fbi','colonial-pipeline','traceability'], 'high');
 
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='crime'), 'published',
  'Bitcoin enables money laundering',
  'Bitcoin muliggjør hvitvasking',
@@ -266,8 +277,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'Chainalysis 2024 / UNODC / DOJ press releases', 'https://www.chainalysis.com/', '2024-02-01', CURRENT_DATE,
  'Open with HSBC''s $1.9B fine in 2012. One bank in one year laundered more than all of crypto.',
  'Åpne med HSBC sin $1,9 mrd bot i 2012. Én bank på ett år hvitvasket mer enn hele krypto.',
- ARRAY['money-laundering','hsbc','danske-bank','wachovia','fiat-crime'], 'high'),
+ ARRAY['money-laundering','hsbc','danske-bank','wachovia','fiat-crime'], 'high');
 
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='crime'), 'published',
  'Bitcoin is for tax evasion',
  'Bitcoin er for skatteunndragelse',
@@ -276,8 +288,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'IRS Coinbase John Doe summons / CoinTracker', 'https://www.irs.gov/businesses/small-businesses-self-employed/virtual-currencies', '2024-01-01', CURRENT_DATE,
  'Bitcoin is the worst tax evasion tool — public ledger, KYC at on-ramps, automated tax software. Cash and offshore accounts are infinitely better.',
  'Bitcoin er det dårligste skatteunndragelsesverktøyet — offentlig hovedbok, KYC på rampen, automatisert skatteprogramvare. Kontanter og utenlandskonti er uendelig mye bedre.',
- ARRAY['irs','tax-evasion','coinbase','kyc','public-ledger'], 'high'),
+ ARRAY['irs','tax-evasion','coinbase','kyc','public-ledger'], 'high');
 
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='crime'), 'published',
  'Bitcoin is anonymous and that helps criminals',
  'Bitcoin er anonymt og det hjelper kriminelle',
@@ -286,8 +299,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'Chainalysis methodology / cryptography research', 'https://www.chainalysis.com/blog/', '2024-01-01', CURRENT_DATE,
  'Pseudonymous, not anonymous. Bitcoin is a permanent surveillance trail — opposite of cash, which is genuinely anonymous.',
  'Pseudonymt, ikke anonymt. Bitcoin er et permanent overvåkningsspor — motsatt av kontanter, som er ekte anonyme.',
- ARRAY['pseudonymous','privacy','chainalysis','coinjoin','monero'], 'high'),
+ ARRAY['pseudonymous','privacy','chainalysis','coinjoin','monero'], 'high');
 
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='crime'), 'published',
  'Silk Road shows Bitcoin enables crime',
  'Silk Road viser at Bitcoin muliggjør kriminalitet',
@@ -296,8 +310,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'United States v. Ross Ulbricht court records / FBI', 'https://www.justice.gov/usao-sdny/pr/ross-ulbricht-aka-dread-pirate-roberts-sentenced-manhattan-federal-court-life', '2015-05-29', CURRENT_DATE,
  'Silk Road was caught BECAUSE of Bitcoin''s traceability. The FBI seized 144,336 BTC. The case is a Bitcoin success story for law enforcement.',
  'Silk Road ble tatt PÅ GRUNN AV Bitcoins sporbarhet. FBI beslagla 144 336 BTC. Saken er en Bitcoin-suksesshistorie for rettshåndhevelse.',
- ARRAY['silk-road','fbi','ulbricht','seizure','traceability'], 'high'),
+ ARRAY['silk-road','fbi','ulbricht','seizure','traceability'], 'high');
 
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='crime'), 'published',
  'North Korea funds itself with stolen Bitcoin',
  'Nord-Korea finansierer seg med stjålet Bitcoin',
@@ -306,8 +321,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'Chainalysis North Korea report / US Treasury OFAC', 'https://www.chainalysis.com/blog/north-korea-cryptocurrency-hacks-2024/', '2024-12-01', CURRENT_DATE,
  'NK steals ~$1B/year in crypto out of $20-30B total revenue. Crypto is 5% of NK''s funding, not the main source.',
  'NK stjeler ~$1 mrd/år i krypto av $20-30 mrd total inntekt. Krypto er 5% av NKs finansiering, ikke hovedkilden.',
- ARRAY['north-korea','lazarus','state-hacking','sanctions'], 'high'),
+ ARRAY['north-korea','lazarus','state-hacking','sanctions'], 'high');
 
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='crime'), 'published',
  'Cash criminal use is dwarfed by crypto',
  'Kontant-kriminalitet er overgått av krypto',
@@ -316,13 +332,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'UNODC / Chainalysis / IMF', 'https://www.unodc.org/unodc/en/money-laundering/overview.html', '2024-01-01', CURRENT_DATE,
  'Cash criminal use is 100x larger than crypto. We hear about crypto crime because it''s the only kind that''s actually traceable.',
  'Kontant-kriminalitet er 100x større enn krypto. Vi hører om krypto-kriminalitet fordi det er den eneste typen som faktisk er sporbar.',
- ARRAY['unodc','cash','fiat-crime','traceability','reporting-bias'], 'high'),
+ ARRAY['unodc','cash','fiat-crime','traceability','reporting-bias'], 'high');
 
-
--- ═══════════════════════════════════════════════════════════════════════════════
--- REGULATION (7)
--- ═══════════════════════════════════════════════════════════════════════════════
-
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='regulation'), 'published',
  'China banned Bitcoin and that proved its weakness',
  'Kina forbød Bitcoin og det beviste svakheten',
@@ -331,8 +343,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'Cambridge CCAF mining map', 'https://ccaf.io/cbnsi/cbeci/mining_map', '2024-12-01', CURRENT_DATE,
  'China''s ban made Bitcoin MORE decentralised. Hashrate fully recovered in months, redistributed across 50+ countries. Antifragility in action.',
  'Kinas forbud gjorde Bitcoin MER desentralisert. Hashraten ble fullt gjenopprettet på måneder, fordelt over 50+ land. Antifragilitet i praksis.',
- ARRAY['china','mining-ban','decentralization','antifragility','hashrate'], 'high'),
+ ARRAY['china','mining-ban','decentralization','antifragility','hashrate'], 'high');
 
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='regulation'), 'published',
  'Governments will eventually ban Bitcoin',
  'Stater vil til slutt forby Bitcoin',
@@ -341,8 +354,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'SEC ETF approval / EU MiCA / legal tender announcements', 'https://www.sec.gov/news/press-release/2024-2', '2024-01-10', CURRENT_DATE,
  'List the trend: ETFs, legal tender, MiCA, sovereign reserves. Banning is what countries do when they''re late, not when they want to win.',
  'List trenden: ETF-er, legal tender, MiCA, statlige reserver. Forbud er hva land gjør når de er sent ute, ikke når de vil vinne.',
- ARRAY['etf','legal-tender','mica','regulation','sovereign-reserves'], 'high'),
+ ARRAY['etf','legal-tender','mica','regulation','sovereign-reserves'], 'high');
 
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='regulation'), 'published',
  'El Salvador''s Bitcoin experiment failed',
  'El Salvadors Bitcoin-eksperiment har feilet',
@@ -351,8 +365,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'El Salvador Treasury / Ministry of Tourism', 'https://nayibtracker.com/', '2025-01-01', CURRENT_DATE,
  'El Salvador''s treasury is profitable. Tourism up 30%. The "failure" narrative cherry-picks 2022 lows and ignores the recovery.',
  'El Salvadors statskasse er lønnsom. Turisme opp 30%. "Mislyktes"-narrativet plukker 2022-bunner og ignorerer gjenopprettingen.',
- ARRAY['el-salvador','legal-tender','treasury','tourism','imf'], 'medium'),
+ ARRAY['el-salvador','legal-tender','treasury','tourism','imf'], 'medium');
 
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='regulation'), 'published',
  'The SEC says Bitcoin is a security',
  'SEC sier Bitcoin er et verdipapir',
@@ -361,8 +376,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'SEC public statements / CFTC v. McDonnell / Bitcoin ETF approval', 'https://www.sec.gov/news/press-release/2024-2', '2024-01-10', CURRENT_DATE,
  'Bitcoin is the ONLY crypto both SEC and CFTC formally treat as a commodity. Other tokens have a much more uncertain legal status.',
  'Bitcoin er den ENESTE krypto både SEC og CFTC formelt behandler som vare. Andre tokens har mye mer usikker juridisk status.',
- ARRAY['sec','cftc','commodity','howey','etf'], 'high'),
+ ARRAY['sec','cftc','commodity','howey','etf'], 'high');
 
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='regulation'), 'published',
  'Spot Bitcoin ETFs are bad for Bitcoin',
  'Spot Bitcoin ETF-er er dårlige for Bitcoin',
@@ -371,8 +387,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'BlackRock IBIT prospectus / Glassnode wallet metrics', 'https://www.ishares.com/us/products/333011/ishares-bitcoin-trust-etf', '2024-01-10', CURRENT_DATE,
  'ETFs added a new audience without replacing self-custody. Both grew. ETFs are a convenience layer, not a takeover.',
  'ETF-er la til et nytt publikum uten å erstatte selvkustodi. Begge vokste. ETF-er er et bekvemmelighetslag, ikke en overtagelse.',
- ARRAY['etf','blackrock','self-custody','adoption','institutional'], 'high'),
+ ARRAY['etf','blackrock','self-custody','adoption','institutional'], 'high');
 
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='regulation'), 'published',
  'Bitcoin is unregulated',
  'Bitcoin er uregulert',
@@ -381,8 +398,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'SEC, CFTC, FinCEN, FCA, JFSA public regulations / EU MiCA', 'https://eur-lex.europa.eu/eli/reg/2023/1114/oj', '2024-12-30', CURRENT_DATE,
  'Bitcoin is regulated at every fiat interface — exchanges, ETFs, custodians. The protocol itself doesn''t need permission; that''s the design.',
  'Bitcoin er regulert ved hvert fiat-grensesnitt — børser, ETF-er, depotbanker. Protokollen selv trenger ikke tillatelse; det er designet.',
- ARRAY['regulation','sec','cftc','mica','kyc'], 'high'),
+ ARRAY['regulation','sec','cftc','mica','kyc'], 'high');
 
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='regulation'), 'published',
  'Bitcoin tax compliance is impossible',
  'Bitcoin-skatt er umulig å overholde',
@@ -391,13 +409,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'IRS Notice 2014-21 / Skatteetaten / CoinTracker', 'https://www.irs.gov/businesses/small-businesses-self-employed/virtual-currencies', '2023-01-01', CURRENT_DATE,
  'Tax software automates 95%+ of Bitcoin tax compliance. Easier than tracking a cash business or freelance income.',
  'Skatteprogramvare automatiserer 95%+ av Bitcoin-skatt. Enklere enn å spore en kontantbedrift eller freelance-inntekt.',
- ARRAY['tax','irs','skatteetaten','cointracker','compliance'], 'high'),
+ ARRAY['tax','irs','skatteetaten','cointracker','compliance'], 'high');
 
-
--- ═══════════════════════════════════════════════════════════════════════════════
--- SCALING (5)
--- ═══════════════════════════════════════════════════════════════════════════════
-
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='scaling'), 'published',
  'Bitcoin is too slow with 10-minute blocks',
  'Bitcoin er for tregt med 10-minutters blokker',
@@ -406,8 +420,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'Lightning Network capacity statistics / Visa annual report', 'https://1ml.com/statistics', '2025-01-01', CURRENT_DATE,
  'L1 is the settlement layer (Fedwire). Lightning is the payment layer (Visa). Both exist, both work — that''s how scaling is supposed to work.',
  'L1 er oppgjørslaget (Fedwire). Lightning er betalingslaget (Visa). Begge eksisterer, begge fungerer — sånn skalering skal fungere.',
- ARRAY['scaling','lightning','settlement','fedwire','tps'], 'high'),
+ ARRAY['scaling','lightning','settlement','fedwire','tps'], 'high');
 
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='scaling'), 'published',
  'Bitcoin can''t scale to global payments',
  'Bitcoin kan ikke skaleres til globale betalinger',
@@ -416,8 +431,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  '1ML / River Lightning report 2024', 'https://1ml.com/', '2025-01-01', CURRENT_DATE,
  'Lightning Network already processes millions of payments daily. The scaling is happening — just on layer 2, like the internet did.',
  'Lightning Network behandler allerede millioner av betalinger daglig. Skaleringen skjer — bare på lag 2, slik internett gjorde.',
- ARRAY['lightning','scaling','strike','cash-app','el-salvador'], 'high'),
+ ARRAY['lightning','scaling','strike','cash-app','el-salvador'], 'high');
 
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='scaling'), 'published',
  'Lightning Network doesn''t actually work',
  'Lightning Network fungerer ikke i praksis',
@@ -426,8 +442,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'River Financial Lightning report / wallet usage statistics', 'https://river.com/learn/files/river-lightning-report-2023.pdf', '2024-01-01', CURRENT_DATE,
  'Strike or Cash App, install in 30 seconds, send $0.01 to a friend instantly. That settles the "doesn''t work" claim.',
  'Strike eller Cash App, installer på 30 sekunder, send $0,01 til en venn øyeblikkelig. Det avgjør "fungerer ikke"-påstanden.',
- ARRAY['lightning','strike','cash-app','wallet','ux'], 'high'),
+ ARRAY['lightning','strike','cash-app','wallet','ux'], 'high');
 
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='scaling'), 'published',
  'Bitcoin transactions are too expensive',
  'Bitcoin-transaksjoner er for dyre',
@@ -436,8 +453,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'World Bank Remittance Prices / Lightning fee data', 'https://remittanceprices.worldbank.org/', '2024-12-01', CURRENT_DATE,
  'Lightning fees average <$0.01. Wire transfers: $25. Remittances: 6.2%. Bitcoin via Lightning is the cheapest international rail.',
  'Lightning-gebyrer i snitt <$0,01. Wire-overføringer: $25. Remitteringer: 6,2%. Bitcoin via Lightning er den billigste internasjonale skinnen.',
- ARRAY['fees','lightning','remittances','wire-transfer','world-bank'], 'high'),
+ ARRAY['fees','lightning','remittances','wire-transfer','world-bank'], 'high');
 
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='scaling'), 'published',
  'Visa does 65,000 TPS, Bitcoin does 7',
  'Visa gjør 65 000 TPS, Bitcoin gjør 7',
@@ -446,13 +464,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'Visa annual report / Lightning Network stats', 'https://usa.visa.com/about-visa/our_business.html', '2024-01-01', CURRENT_DATE,
  'Compare apples-to-apples: Bitcoin L1 = Fedwire (final settlement). Lightning = Visa (instant payment). Both layers exist.',
  'Sammenlign epler med epler: Bitcoin L1 = Fedwire (endelig oppgjør). Lightning = Visa (øyeblikkelig betaling). Begge lag eksisterer.',
- ARRAY['visa','tps','fedwire','lightning','settlement'], 'high'),
+ ARRAY['visa','tps','fedwire','lightning','settlement'], 'high');
 
-
--- ═══════════════════════════════════════════════════════════════════════════════
--- DECENTRALIZATION (4)
--- ═══════════════════════════════════════════════════════════════════════════════
-
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='decentralization'), 'published',
  'A few mining pools control Bitcoin',
  'Noen få mining-pools kontrollerer Bitcoin',
@@ -461,8 +475,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'mempool.space pool distribution / Stratum V2 spec', 'https://mempool.space/mining', '2025-01-01', CURRENT_DATE,
  'Pools coordinate, miners decide. Stratum V2 explicitly empowers individual miners. The pool concentration is misleading.',
  'Pools koordinerer, minere bestemmer. Stratum V2 gir individuelle minere makt. Pool-konsentrasjonen er villedende.',
- ARRAY['mining-pools','stratum-v2','foundry','consensus','decentralization'], 'high'),
+ ARRAY['mining-pools','stratum-v2','foundry','consensus','decentralization'], 'high');
 
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='decentralization'), 'published',
  'A few people own most of Bitcoin (whales)',
  'Få personer eier mesteparten av Bitcoin (whales)',
@@ -471,8 +486,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'Glassnode supply distribution / SEC ETF filings', 'https://studio.glassnode.com/', '2025-01-01', CURRENT_DATE,
  'Most "whale" addresses are exchange cold wallets and ETF custodians — millions of retail users pooled into one address.',
  'De fleste "whale"-adresser er børsenes kalde lommebøker og ETF-depotbanker — millioner av småinvestorer samlet i én adresse.',
- ARRAY['whales','distribution','gini','etf','exchange'], 'medium'),
+ ARRAY['whales','distribution','gini','etf','exchange'], 'medium');
 
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='decentralization'), 'published',
  'Bitcoin developers control everything',
  'Bitcoin-utviklere kontrollerer alt',
@@ -481,8 +497,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'Bitcoin Core repository / BIP activation history', 'https://github.com/bitcoin/bitcoin', '2025-01-01', CURRENT_DATE,
  'SegWit took 2 years of public debate. Taproot 4. The fork right means users always have final say — see Bitcoin Cash''s irrelevance.',
  'SegWit tok 2 års offentlig debatt. Taproot 4. Fork-retten betyr brukere har siste ord — se Bitcoin Cashs irrelevans.',
- ARRAY['governance','soft-fork','segwit','taproot','core'], 'high'),
+ ARRAY['governance','soft-fork','segwit','taproot','core'], 'high');
 
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='decentralization'), 'published',
  'Bitcoin is centralized in a few countries',
  'Bitcoin er sentralisert i få land',
@@ -491,13 +508,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'Cambridge CCAF mining map / Bitnodes / 1ML', 'https://ccaf.io/cbnsi/cbeci/mining_map', '2024-12-01', CURRENT_DATE,
  'Bitcoin operates in more countries than SWIFT. 50+ for mining, 100+ for nodes, every continent. Most decentralised money network ever.',
  'Bitcoin opererer i flere land enn SWIFT. 50+ for mining, 100+ for noder, hvert kontinent. Det mest desentraliserte pengenettverket noensinne.',
- ARRAY['geography','mining-distribution','nodes','swift','lightning'], 'high'),
+ ARRAY['geography','mining-distribution','nodes','swift','lightning'], 'high');
 
-
--- ═══════════════════════════════════════════════════════════════════════════════
--- HUMANITARIAN (3)
--- ═══════════════════════════════════════════════════════════════════════════════
-
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='humanitarian'), 'published',
  'Bitcoin only helps wealthy speculators',
  'Bitcoin hjelper kun rike spekulanter',
@@ -506,8 +519,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'HRF Financial Freedom Report / Alex Gladstein research', 'https://hrf.org/programs/financial-freedom/', '2024-01-01', CURRENT_DATE,
  'Cite specific cases: Iranian women, Belarusian dissidents, Argentine citizens. Bitcoin is escape velocity from failing systems.',
  'Sit konkrete saker: iranske kvinner, belarussiske dissidenter, argentinske borgere. Bitcoin er rømningshastighet fra sviktende systemer.',
- ARRAY['human-rights','dissidents','iran','belarus','argentina','hrf'], 'high'),
+ ARRAY['human-rights','dissidents','iran','belarus','argentina','hrf'], 'high');
 
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='humanitarian'), 'published',
  'The unbanked don''t need Bitcoin',
  'De ubankede trenger ikke Bitcoin',
@@ -516,8 +530,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'World Bank Global Findex 2021 / Chainalysis Geography of Crypto', 'https://www.worldbank.org/en/publication/globalfindex', '2022-06-01', CURRENT_DATE,
  'They''re already using it. Nigeria $1B+ annual P2P. Argentina against 200% inflation. The "they don''t need it" framing is paternalistic.',
  'De bruker det allerede. Nigeria $1mrd+ årlig P2P. Argentina mot 200% inflasjon. "De trenger det ikke"-rammen er paternalistisk.',
- ARRAY['unbanked','nigeria','argentina','lebanon','remittances','financial-inclusion'], 'high'),
+ ARRAY['unbanked','nigeria','argentina','lebanon','remittances','financial-inclusion'], 'high');
 
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='humanitarian'), 'published',
  'Bitcoin doesn''t actually help in autocracies',
  'Bitcoin hjelper egentlig ikke i autokratier',
@@ -526,13 +541,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'HRF case studies / Alex Gladstein "Check Your Financial Privilege"', 'https://hrf.org/programs/financial-freedom/', '2023-01-01', CURRENT_DATE,
  'Specific names. Specific countries. Bitcoin is the only money state actors cannot seize, freeze, or invalidate.',
  'Konkrete navn. Konkrete land. Bitcoin er den eneste pengeformen statlige aktører ikke kan beslaglegge, fryse eller ugyldiggjøre.',
- ARRAY['autocracy','iran','russia','belarus','cuba','venezuela','hrf'], 'high'),
+ ARRAY['autocracy','iran','russia','belarus','cuba','venezuela','hrf'], 'high');
 
-
--- ═══════════════════════════════════════════════════════════════════════════════
--- COMPARISON (3)
--- ═══════════════════════════════════════════════════════════════════════════════
-
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='comparison'), 'published',
  'Gold mining is more sustainable than Bitcoin mining',
  'Gullgruvedrift er mer bærekraftig enn Bitcoin-mining',
@@ -541,8 +552,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'World Gold Council Sustainability Report / Cambridge CCAF', 'https://www.gold.org/about-gold/gold-supply/responsible-gold/responsible-gold-mining-criteria', '2024-01-01', CURRENT_DATE,
  'Gold mining: 132 MtCO2 + mercury/cyanide + tailings disasters. Bitcoin: 40 MtCO2, zero chemicals, 52%+ sustainable. Gold loses on every metric.',
  'Gullgruvedrift: 132 MtCO2 + kvikksølv/cyanid + rødslam-katastrofer. Bitcoin: 40 MtCO2, ingen kjemikalier, 52%+ bærekraftig. Gull taper på hvert mål.',
- ARRAY['gold','sustainability','emissions','cyanide','brumadinho','comparison'], 'high'),
+ ARRAY['gold','sustainability','emissions','cyanide','brumadinho','comparison'], 'high');
 
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='comparison'), 'published',
  'Banking is more efficient than Bitcoin',
  'Banksektoren er mer effektiv enn Bitcoin',
@@ -551,8 +563,9 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'Galaxy Digital "On Bitcoin Energy Use" / Cambridge CCAF', 'https://docsend.com/view/adwmdeeyfvqwecj2', '2021-05-17', CURRENT_DATE,
  'Banking: 263 TWh + 700 Mt CO2. Bitcoin: 138 TWh + 40 Mt CO2. Banking is 2x the electricity, 17x the emissions.',
  'Banksektoren: 263 TWh + 700 Mt CO2. Bitcoin: 138 TWh + 40 Mt CO2. Banker bruker 2x så mye strøm og slipper ut 17x mer.',
- ARRAY['banking','galaxy','energy-comparison','emissions','swift'], 'high'),
+ ARRAY['banking','galaxy','energy-comparison','emissions','swift'], 'high');
 
+INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_no, source_name, source_url, source_date, verified_date, batten_tip_en, batten_tip_no, tags, confidence) VALUES
 ((SELECT id FROM categories WHERE slug='comparison'), 'published',
  'Other cryptocurrencies are technologically superior',
  'Andre kryptovalutaer er teknologisk overlegne',
@@ -562,3 +575,4 @@ INSERT INTO facts (category_id, status, claim_en, claim_no, reality_en, reality_
  'List the moats: hashrate, no founder, commodity status, sovereign holders, uptime. Other chains often trade these for features.',
  'List vollgravene: hashrate, ingen grunnlegger, vare-status, statlige eiere, oppetid. Andre kjeder bytter ofte bort disse for funksjoner.',
  ARRAY['altcoins','moats','ethereum','solana','bitcoin-maximalism','network-effects'], 'high');
+
