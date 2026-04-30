@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -40,6 +41,7 @@ export default function RootLayout({
         <Header />
         <main className="flex-1 pt-16">{children}</main>
         <Footer />
+        <Analytics />
       </body>
     </html>
   );
