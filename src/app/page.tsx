@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, BookOpen, MessageSquare, Copy, Target, Zap } from "lucide-react";
 import { createAdminClient } from "@/lib/supabase/admin";
+import NewsletterSignup from "@/components/NewsletterSignup";
 
 const steps = [
   {
@@ -186,6 +187,14 @@ export default async function HomePage() {
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
+        </div>
+      </section>
+
+      {/* Newsletter signup — placed after evidence preview so visitors see the value
+          (Cambridge data, ERCOT, peer-reviewed studies) before being asked to subscribe. */}
+      <section className="py-16 bg-eb-bg">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <NewsletterSignup source="homepage" variant="card" />
         </div>
       </section>
 

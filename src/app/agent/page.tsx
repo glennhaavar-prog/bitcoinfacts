@@ -22,6 +22,7 @@ import type {
   ChatMessage,
   PrincipleKey,
 } from "@/lib/types";
+import NewsletterSignup from "@/components/NewsletterSignup";
 
 const platforms: { value: Platform; label: string }[] = [
   { value: "x", label: "X / Twitter" },
@@ -597,6 +598,15 @@ export default function AgentPage() {
                   <span className="w-1 h-1 rounded-full bg-eb-gold animate-bounce" style={{ animationDelay: "300ms" }} />
                 </span>
               </div>
+            </div>
+          )}
+
+          {/* Newsletter prompt — appears after the user has received at least one
+              full response. They've experienced the tool's value, so we ask for
+              their email at the moment of peak interest. */}
+          {!isLoading && messages.some((m) => m.role === "assistant" && m.content) && (
+            <div className="my-4">
+              <NewsletterSignup source="agent" variant="card" />
             </div>
           )}
 

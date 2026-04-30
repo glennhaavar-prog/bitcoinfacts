@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BookOpen, ExternalLink } from "lucide-react";
+import NewsletterSignup from "@/components/NewsletterSignup";
 
 export default function Footer() {
   return (
@@ -7,7 +8,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
 
-          {/* Brand */}
+          {/* Brand + newsletter signup */}
           <div className="md:col-span-2">
             <div className="flex items-center gap-2.5 mb-4">
               <div className="w-8 h-8 rounded-lg bg-eb-gold flex items-center justify-center flex-shrink-0">
@@ -19,11 +20,13 @@ export default function Footer() {
                 </span>
               </div>
             </div>
-            <p className="text-eb-muted text-sm max-w-md leading-relaxed">
+            <p className="text-eb-muted text-sm max-w-md leading-relaxed mb-4">
               A curated database of peer-reviewed research and primary data on
               Bitcoin — energy, environment, security, adoption and more.
               Evidence-based, not rhetoric.
             </p>
+            <p className="text-eb-navy text-xs font-semibold uppercase tracking-wider mb-2">Daily newsletter</p>
+            <NewsletterSignup source="footer" variant="compact" />
             <a
               href="https://www.bitcoinbeyond66.com"
               target="_blank"
