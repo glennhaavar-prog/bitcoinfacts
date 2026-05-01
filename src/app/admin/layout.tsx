@@ -13,6 +13,7 @@ import {
   Loader2,
   Zap,
   MessageSquare,
+  Users,
 } from "lucide-react";
 
 type AdminRole = "admin" | "moderator" | "trainer";
@@ -23,6 +24,7 @@ const allNavItems = [
   { href: "/admin/facts", label: "Facts", icon: Database, roles: ["admin", "moderator", "trainer"] as AdminRole[] },
   { href: "/admin/quick-add", label: "Quick Add", icon: PlusCircle, roles: ["admin"] as AdminRole[] },
   { href: "/admin/examples", label: "Examples", icon: MessageSquare, roles: ["admin", "trainer"] as AdminRole[] },
+  { href: "/admin/subscribers", label: "Subscribers", icon: Users, roles: ["admin", "moderator"] as AdminRole[] },
 ];
 
 export default function AdminLayout({
