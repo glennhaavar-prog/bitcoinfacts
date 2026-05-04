@@ -47,6 +47,7 @@ export default function Footer() {
               {[
                 { href: "/agent", label: "Research Tool" },
                 { href: "/facts", label: "Evidence Database" },
+                { href: "/methodology", label: "Methodology" },
                 { href: "/playbook", label: "Playbook" },
                 { href: "/resources", label: "Resources" },
                 { href: "/contribute", label: "Contribute" },

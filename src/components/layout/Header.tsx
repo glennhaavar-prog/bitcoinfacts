@@ -9,9 +9,10 @@ const navLinks = [
   { href: "/", label: "Home" },
   { href: "/agent", label: "Research Tool" },
   { href: "/facts", label: "Evidence Database" },
+  { href: "/methodology", label: "Methodology" },
+  { href: "/playbook", label: "Playbook" },
   { href: "/subscribe", label: "Newsletter" },
   { href: "/contribute", label: "Contribute" },
-  { href: "/playbook", label: "Playbook" },
   { href: "/resources", label: "Resources" },
   { href: "/about", label: "About" },
 ];
