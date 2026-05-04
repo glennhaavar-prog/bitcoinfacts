@@ -590,7 +590,7 @@ export default function AgentPage() {
               <div className="bg-white border border-eb-border rounded-xl px-3 py-2.5 shadow-card inline-flex items-center gap-2">
                 <Loader2 className="w-4 h-4 text-eb-gold animate-spin" />
                 <span className="text-[13px] text-eb-muted">
-                  {language === "no" ? "Analyserer FUD" : "Analyzing FUD"}
+                  {language === "no" ? "Analyserer påstand" : "Analyzing claim"}
                 </span>
                 <span className="inline-flex gap-0.5">
                   <span className="w-1 h-1 rounded-full bg-eb-gold animate-bounce" style={{ animationDelay: "0ms" }} />
