@@ -75,6 +75,7 @@ export default function Footer() {
                 { href: "https://www.bitcoinbeyond66.com", label: "Bitcoin Beyond 66" },
                 { href: "https://batcoinz.com", label: "Daniel Batten" },
                 { href: "https://ccaf.io/cbnsi/cbeci", label: "Cambridge CBECI" },
+                { href: "https://fbce.io/find-bces", label: "Bitcoin Circular Economies" },
                 {
                   href: "https://woocharts.com/esg-bitcoin-mining-sustainability/",
                   label: "WooCharts ESG",
