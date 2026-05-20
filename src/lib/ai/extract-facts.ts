@@ -52,7 +52,7 @@ export async function extractFactsFromText(
   text: string
 ): Promise<ExtractionResult> {
   const response = await anthropic.messages.create({
-    model: "claude-sonnet-4-20250514",
+    model: "claude-sonnet-4-6",
     max_tokens: 4096,
     system: EXTRACTION_PROMPT,
     messages: [

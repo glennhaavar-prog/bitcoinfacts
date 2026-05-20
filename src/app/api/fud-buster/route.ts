@@ -7,31 +7,64 @@ import type { Platform, Language, Tone } from "@/lib/types";
 // --- Rate limiting ---
 // Per-IP limit: tighter than before (5 per hour, not 10 per minute) to stop bot abuse
 // while still feeling natural for real users exploring the tool.
-const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
-const RATE_LIMIT = 5;
-const RATE_WINDOW_MS = 60 * 60 * 1000; // 1 hour
+// A daily cap is layered on top so a single IP can't burn through 24 × 5 = 120
+// requests/day by patiently spreading load across hours.
+//
+// Note: this is in-memory and per-Vercel-instance. A bot that hits different
+// cold instances can bypass it. For real protection, the global daily cap
+// (Supabase-backed) is the hard ceiling.
+type RateEntry = {
+  hourCount: number;
+  hourResetTime: number;
+  dayCount: number;
+  dayResetTime: number;
+};
+const rateLimitMap = new Map<string, RateEntry>();
+const HOUR_LIMIT = 5;
+const HOUR_WINDOW_MS = 60 * 60 * 1000;
+const DAY_LIMIT = 15;
+const DAY_WINDOW_MS = 24 * 60 * 60 * 1000;
 
-function isRateLimited(ip: string): boolean {
+type RateLimitVerdict =
+  | { limited: false }
+  | { limited: true; scope: "hour" | "day" };
+
+function checkRateLimit(ip: string): RateLimitVerdict {
   const now = Date.now();
   const entry = rateLimitMap.get(ip);
 
-  if (!entry || now > entry.resetTime) {
-    rateLimitMap.set(ip, { count: 1, resetTime: now + RATE_WINDOW_MS });
-    return false;
+  if (!entry) {
+    rateLimitMap.set(ip, {
+      hourCount: 1,
+      hourResetTime: now + HOUR_WINDOW_MS,
+      dayCount: 1,
+      dayResetTime: now + DAY_WINDOW_MS,
+    });
+    return { limited: false };
   }
 
-  if (entry.count >= RATE_LIMIT) {
-    return true;
+  if (now > entry.hourResetTime) {
+    entry.hourCount = 0;
+    entry.hourResetTime = now + HOUR_WINDOW_MS;
+  }
+  if (now > entry.dayResetTime) {
+    entry.dayCount = 0;
+    entry.dayResetTime = now + DAY_WINDOW_MS;
   }
 
-  entry.count++;
-  return false;
+  if (entry.dayCount >= DAY_LIMIT) return { limited: true, scope: "day" };
+  if (entry.hourCount >= HOUR_LIMIT) return { limited: true, scope: "hour" };
+
+  entry.hourCount++;
+  entry.dayCount++;
+  return { limited: false };
 }
 
 // --- Daily global cap (circuit breaker) ---
 // Hard ceiling across ALL users to prevent runaway costs. If a post goes viral
 // or a bot evades per-IP limits, we stop serving until the next day.
-// At ~$0.07/query this caps daily AI spend at ~$70.
+// With Haiku 4.5 (~$0.025/query at full input price, far less with cache hits),
+// this caps daily AI spend at ~$25 in the worst case.
 const DAILY_CAP = 1000;
 
 async function checkAndIncrementDailyUsage(): Promise<{ allowed: boolean; count: number }> {
@@ -87,12 +120,14 @@ export async function POST(request: NextRequest) {
     request.headers.get("x-real-ip") ||
     "unknown";
 
-  // 2. Per-IP rate limit
-  if (isRateLimited(ip)) {
-    return NextResponse.json(
-      { error: "You have reached the hourly limit. Try again in an hour." },
-      { status: 429 }
-    );
+  // 2. Per-IP rate limit (hour + day)
+  const verdict = checkRateLimit(ip);
+  if (verdict.limited) {
+    const message =
+      verdict.scope === "day"
+        ? "You have reached the daily limit. Try again tomorrow."
+        : "You have reached the hourly limit. Try again in an hour.";
+    return NextResponse.json({ error: message }, { status: 429 });
   }
 
   // 3. Global daily cap
@@ -139,7 +174,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const systemPrompt = await buildSystemPrompt(language);
+    const { staticPrompt, dynamicSupplement } = await buildSystemPrompt(language);
 
     const userMessage = `Platform: ${platform}
 Tone: ${tone}
@@ -157,20 +192,25 @@ Respond with valid JSON only. No markdown, no code fences.`;
       async start(controller) {
         try {
           const response = await anthropic.messages.create({
-            model: "claude-sonnet-4-20250514",
+            model: "claude-haiku-4-5-20251001",
             // Lowered from 2048 to 1024 — responses fit comfortably in this budget
             // and this halves the per-query output cost.
             max_tokens: 1024,
-            // Prompt caching: the system prompt is large (~15-20K tokens) and rarely
-            // changes between requests. Anthropic caches it server-side and charges
-            // ~10% of normal input cost on cache hits, which is the dominant cost
-            // saving once traffic picks up.
+            // Prompt caching: split into a STATIC block (principles, workflow,
+            // baseline facts, tactics — changes only on deploy) and a DYNAMIC
+            // block (latest Supabase facts + curated examples — changes when admin
+            // publishes new content). Only the static prefix is cached, so edits
+            // in Supabase no longer invalidate the cached prefix. On cache hits
+            // Anthropic charges ~10% of normal input cost for the cached portion.
             system: [
               {
                 type: "text",
-                text: systemPrompt,
+                text: staticPrompt,
                 cache_control: { type: "ephemeral" },
               },
+              ...(dynamicSupplement
+                ? [{ type: "text" as const, text: dynamicSupplement }]
+                : []),
             ],
             messages: [{ role: "user", content: userMessage }],
             stream: true,

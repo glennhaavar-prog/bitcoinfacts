@@ -70,18 +70,25 @@ async function getExampleResponses(): Promise<string | null> {
   return null;
 }
 
-export async function buildSystemPrompt(language: "no" | "en"): Promise<string> {
+export interface SystemPromptParts {
+  // Stable across requests (only changes on deploy). Safe to mark with cache_control.
+  staticPrompt: string;
+  // Pulled from Supabase, can change between requests. Not cached.
+  dynamicSupplement: string;
+}
+
+export async function buildSystemPrompt(
+  language: "no" | "en"
+): Promise<SystemPromptParts> {
   const languageInstruction =
     language === "no"
       ? "Respond in Norwegian (Bokmål). All your replies, classifications, and source descriptions should be in Norwegian."
       : "Respond in English. All your replies, classifications, and source descriptions should be in English.";
 
-  // Try dynamic facts from Supabase, fall back to static
   const dynamicFacts = await getDynamicFacts();
-  const factsContent = dynamicFacts || factsForPrompt;
   const exampleResponses = await getExampleResponses();
 
-  return `You are Bitcoin FUD Buster — an AI assistant that helps people respond to Bitcoin criticism with facts, empathy, and effective communication.
+  const staticPrompt = `You are Bitcoin FUD Buster — an AI assistant that helps people respond to Bitcoin criticism with facts, empathy, and effective communication.
 
 ## Your Principles (Daniel Batten's Playbook)
 
@@ -204,19 +211,33 @@ General: Medium length. Neutral platform tone.
 - "balanced": Default. Mix empathy with data.
 - "soft": More empathetic, use more questions, be gentler in corrections.
 
-## Facts Database (Primary Source)
+## Facts Database (Primary Source — Baseline)
 
-${factsContent}
+${factsForPrompt}
 
 ## Tactical Reference
 
 ${tacticsContent}
-${exampleResponses ? `
-## Example Responses (Reference Style)
+`;
+
+  // Dynamic supplement: latest facts and curated examples from Supabase.
+  // Kept in a separate, uncached block so the static prefix above stays cache-stable.
+  const sections: string[] = [];
+  if (dynamicFacts) {
+    sections.push(`## Latest Facts (Live Updates)
+
+These supplement the baseline facts above with the most recently published entries from our editorial database. Treat them with equal authority.
+
+${dynamicFacts}`);
+  }
+  if (exampleResponses) {
+    sections.push(`## Example Responses (Reference Style)
 
 These are curated examples of excellent responses by Daniel Batten. Study the tone, structure, and framing — then match this style in your responses.
 
-${exampleResponses}
-` : ""}
-`;
+${exampleResponses}`);
+  }
+  const dynamicSupplement = sections.join("\n\n");
+
+  return { staticPrompt, dynamicSupplement };
 }
