@@ -1,5 +1,14 @@
 export type Platform = "x" | "linkedin" | "facebook" | "general";
-export type Language = "no" | "en";
+export type Language = "no" | "en" | "de" | "es" | "pt" | "fr";
+
+export const LANGUAGE_LABELS: Record<Language, string> = {
+  en: "English",
+  no: "Norsk",
+  de: "Deutsch",
+  es: "Español",
+  pt: "Português",
+  fr: "Français",
+};
 export type Tone = "direct" | "balanced" | "soft";
 export type TriageResult = "fight" | "ignore" | "educate";
 export type FudType =

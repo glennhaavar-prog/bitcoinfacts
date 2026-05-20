@@ -22,6 +22,7 @@ import type {
   ChatMessage,
   PrincipleKey,
 } from "@/lib/types";
+import { LANGUAGE_LABELS } from "@/lib/types";
 import NewsletterSignup from "@/components/NewsletterSignup";
 
 const platforms: { value: Platform; label: string }[] = [
@@ -351,7 +352,7 @@ export default function AgentPage() {
             <Settings2 className="w-3.5 h-3.5 text-eb-gold" />
             {platform === "general" ? "General" : platforms.find((p) => p.value === platform)?.label}
             {" · "}
-            {language === "en" ? "EN" : "NO"}
+            {language.toUpperCase()}
             {" · "}
             {tone.charAt(0).toUpperCase() + tone.slice(1)}
           </span>
@@ -393,8 +394,11 @@ export default function AgentPage() {
                   onChange={(e) => setLanguage(e.target.value as Language)}
                   className="w-full appearance-none bg-eb-surface-2 border border-eb-border text-eb-navy text-xs rounded-lg px-2 sm:px-2.5 py-2 pr-6 focus:outline-none focus:border-eb-gold"
                 >
-                  <option value="en">English</option>
-                  <option value="no">Norsk</option>
+                  {(Object.keys(LANGUAGE_LABELS) as Language[]).map((code) => (
+                    <option key={code} value={code}>
+                      {LANGUAGE_LABELS[code]}
+                    </option>
+                  ))}
                 </select>
                 <ChevronDown className="absolute right-1.5 top-1/2 -translate-y-1/2 w-3 h-3 text-eb-muted pointer-events-none" />
               </div>

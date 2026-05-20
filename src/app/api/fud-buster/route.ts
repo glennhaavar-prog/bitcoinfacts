@@ -4,6 +4,15 @@ import { buildSystemPrompt } from "@/lib/prompts/system-prompt";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { Platform, Language, Tone } from "@/lib/types";
 
+const LANGUAGE_NAME: Record<Language, string> = {
+  no: "Norwegian (Bokmål)",
+  en: "English",
+  de: "German (Hochdeutsch)",
+  es: "Spanish",
+  pt: "Portuguese",
+  fr: "French",
+};
+
 // --- Rate limiting ---
 // Per-IP limit: tighter than before (5 per hour, not 10 per minute) to stop bot abuse
 // while still feeling natural for real users exploring the tool.
@@ -178,7 +187,7 @@ export async function POST(request: NextRequest) {
 
     const userMessage = `Platform: ${platform}
 Tone: ${tone}
-Language: ${language === "no" ? "Norwegian (Bokmål)" : "English"}
+Language: ${LANGUAGE_NAME[language] ?? "English"}
 
 FUD comment to respond to:
 """

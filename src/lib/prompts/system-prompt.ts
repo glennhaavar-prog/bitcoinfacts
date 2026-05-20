@@ -1,6 +1,16 @@
 import { factsForPrompt } from "./facts-database";
 import { tacticsContent } from "./tactics";
 import { createAdminClient } from "@/lib/supabase/admin";
+import type { Language } from "@/lib/types";
+
+const LANGUAGE_INSTRUCTIONS: Record<Language, string> = {
+  no: "Respond in Norwegian (Bokmål). All your replies, classifications, and source descriptions should be in Norwegian.",
+  en: "Respond in English. All your replies, classifications, and source descriptions should be in English.",
+  de: "Respond in German (Hochdeutsch). All your replies, classifications, and source descriptions should be in German. Use the formal 'Sie' form by default unless the FUD comment is clearly casual (then 'du' is acceptable).",
+  es: "Respond in Spanish (neutral Latin American Spanish, understandable across Spain and the Americas). All your replies, classifications, and source descriptions should be in Spanish.",
+  pt: "Respond in Portuguese (Brazilian Portuguese by default, but use European Portuguese spelling if the FUD comment clearly uses it). All your replies, classifications, and source descriptions should be in Portuguese.",
+  fr: "Respond in French (standard metropolitan French). All your replies, classifications, and source descriptions should be in French. Use the formal 'vous' form by default.",
+};
 
 // Cache for dynamic facts and example responses from Supabase
 let cachedDynamicFacts: string | null = null;
@@ -78,12 +88,10 @@ export interface SystemPromptParts {
 }
 
 export async function buildSystemPrompt(
-  language: "no" | "en"
+  language: Language
 ): Promise<SystemPromptParts> {
   const languageInstruction =
-    language === "no"
-      ? "Respond in Norwegian (Bokmål). All your replies, classifications, and source descriptions should be in Norwegian."
-      : "Respond in English. All your replies, classifications, and source descriptions should be in English.";
+    LANGUAGE_INSTRUCTIONS[language] ?? LANGUAGE_INSTRUCTIONS.en;
 
   const dynamicFacts = await getDynamicFacts();
   const exampleResponses = await getExampleResponses();
