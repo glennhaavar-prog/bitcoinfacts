@@ -97,7 +97,13 @@ async function checkAndIncrementDailyUsage(): Promise<{ allowed: boolean; count:
 // Block requests that don't come from our own site. Real users hit the API via
 // the browser, which sends an Origin or Referer header matching our domain.
 // Bots hitting the API directly usually don't set these, or set them to something else.
+// Both domains accepted during the migration window. Old domain is kept here
+// so that the Vercel-level 301 redirect can be turned off later without
+// breaking the API briefly for in-flight requests that still carry the old
+// origin/referer header.
 const ALLOWED_ORIGINS = [
+  "https://bitcoinevidencebase.com",
+  "https://www.bitcoinevidencebase.com",
   "https://facts.bitcoinbeyond66.com",
   "http://localhost:3000",
 ];

@@ -12,7 +12,7 @@ function getClient(): Resend | null {
 
 const FROM = "Bitcoin Facts <notifications@bitcoinbeyond66.com>";
 const ADMIN_TO = "glenn@bitcoinbeyond66.com";
-const SITE_URL = "https://facts.bitcoinbeyond66.com";
+const SITE_URL = "https://bitcoinevidencebase.com";
 const CONFERENCE_URL = "https://www.bitcoinbeyond66.com";
 
 // ─── Submission notification (existing) ──────────────────────────────────────
@@ -119,7 +119,7 @@ function emailShell(content: string, unsubscribeUrl?: string): string {
       </a>
     </div>
     <div style="margin-top: 16px; text-align: center; font-size: 11px; color: #9b9387;">
-      <p style="margin: 0;">You're receiving this because you signed up at facts.bitcoinbeyond66.com.</p>
+      <p style="margin: 0;">You're receiving this because you signed up at bitcoinevidencebase.com.</p>
       ${unsubscribeUrl ? `<p style="margin: 8px 0 0 0;"><a href="${unsubscribeUrl}" style="color: #9b9387;">Unsubscribe</a></p>` : ""}
     </div>
   </div>
