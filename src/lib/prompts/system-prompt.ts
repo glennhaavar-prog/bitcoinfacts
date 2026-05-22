@@ -1,7 +1,7 @@
 import { factsForPrompt } from "./facts-database";
 import { tacticsContent } from "./tactics";
 import { createAdminClient } from "@/lib/supabase/admin";
-import type { Language } from "@/lib/types";
+import type { Language, AnswerMode } from "@/lib/types";
 
 const LANGUAGE_INSTRUCTIONS: Record<Language, string> = {
   no: "Respond in Norwegian (Bokmål). All your replies, classifications, and source descriptions should be in Norwegian.",
@@ -17,6 +17,8 @@ let cachedDynamicFacts: string | null = null;
 let factsCacheTimestamp = 0;
 let cachedExamples: string | null = null;
 let examplesCacheTimestamp = 0;
+let cachedArguments: string | null = null;
+let argumentsCacheTimestamp = 0;
 const CACHE_TTL_MS = 15 * 60 * 1000; // 15 minutes
 
 async function getDynamicFacts(): Promise<string | null> {
@@ -80,6 +82,37 @@ async function getExampleResponses(): Promise<string | null> {
   return null;
 }
 
+async function getArguments(): Promise<string | null> {
+  const now = Date.now();
+  if (cachedArguments && now - argumentsCacheTimestamp < CACHE_TTL_MS) {
+    return cachedArguments;
+  }
+
+  try {
+    const supabase = createAdminClient();
+    const { data } = await supabase
+      .from("arguments")
+      .select("title_en, title_no, thesis_en, thesis_no, reasoning_en, reasoning_no, source_name, source_chapter, fud_type")
+      .eq("status", "published")
+      .order("created_at", { ascending: false });
+
+    if (data && data.length > 0) {
+      cachedArguments = data
+        .map(
+          (a) =>
+            `### ${a.title_en || a.title_no}${a.fud_type ? ` (${a.fud_type})` : ""}\n**Thesis:** ${a.thesis_en || a.thesis_no || ""}\n**Reasoning:** ${a.reasoning_en || a.reasoning_no || ""}\n**Source:** ${a.source_name || ""}${a.source_chapter ? ` — ${a.source_chapter}` : ""}`
+        )
+        .join("\n\n");
+      argumentsCacheTimestamp = now;
+      return cachedArguments;
+    }
+  } catch {
+    // Supabase unavailable or table doesn't exist yet
+  }
+
+  return null;
+}
+
 export interface SystemPromptParts {
   // Stable across requests (only changes on deploy). Safe to mark with cache_control.
   staticPrompt: string;
@@ -88,12 +121,17 @@ export interface SystemPromptParts {
 }
 
 export async function buildSystemPrompt(
-  language: Language
+  language: Language,
+  mode: AnswerMode = "facts"
 ): Promise<SystemPromptParts> {
   const languageInstruction =
     LANGUAGE_INSTRUCTIONS[language] ?? LANGUAGE_INSTRUCTIONS.en;
 
-  const dynamicFacts = await getDynamicFacts();
+  // Mode decides which knowledge base feeds the (uncached) dynamic supplement:
+  // "facts" → empirical, sourced facts; "arguments" → logical/economic reasoning.
+  // The static prompt is identical for both modes so its cache stays stable.
+  const dynamicFacts = mode === "facts" ? await getDynamicFacts() : null;
+  const argumentsContent = mode === "arguments" ? await getArguments() : null;
   const exampleResponses = await getExampleResponses();
 
   const staticPrompt = `You are Bitcoin FUD Buster — an AI assistant that helps people respond to Bitcoin criticism with facts, empathy, and effective communication.
@@ -237,6 +275,13 @@ ${tacticsContent}
 These supplement the baseline facts above with the most recently published entries from our editorial database. Treat them with equal authority.
 
 ${dynamicFacts}`);
+  }
+  if (argumentsContent) {
+    sections.push(`## Logical Arguments (Reasoning Library)
+
+These are economic and logical arguments for Bitcoin as money, distinct from empirical facts. Use them when the FUD is about Bitcoin's monetary nature, value, or first principles (rather than energy/environment data). Attribute reasoning to its source when relevant.
+
+${argumentsContent}`);
   }
   if (exampleResponses) {
     sections.push(`## Example Responses (Reference Style)

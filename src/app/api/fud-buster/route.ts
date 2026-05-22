@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { anthropic } from "@/lib/anthropic";
 import { buildSystemPrompt } from "@/lib/prompts/system-prompt";
 import { createAdminClient } from "@/lib/supabase/admin";
-import type { Platform, Language, Tone } from "@/lib/types";
+import type { Platform, Language, Tone, AnswerMode } from "@/lib/types";
 
 const LANGUAGE_NAME: Record<Language, string> = {
   no: "Norwegian (Bokmål)",
@@ -168,12 +168,16 @@ export async function POST(request: NextRequest) {
       platform = "general",
       language = "no",
       tone = "balanced",
+      mode = "facts",
     }: {
       fudText: string;
       platform: Platform;
       language: Language;
       tone: Tone;
+      mode: AnswerMode;
     } = body;
+
+    const answerMode: AnswerMode = mode === "arguments" ? "arguments" : "facts";
 
     if (!fudText || typeof fudText !== "string" || fudText.trim().length === 0) {
       return NextResponse.json(
@@ -189,11 +193,20 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { staticPrompt, dynamicSupplement } = await buildSystemPrompt(language);
+    const { staticPrompt, dynamicSupplement } = await buildSystemPrompt(
+      language,
+      answerMode
+    );
+
+    const modeDirective =
+      answerMode === "arguments"
+        ? `Response mode: ARGUMENTS. Ground your reply primarily in logical and economic first-principles reasoning (the Reasoning Library in the system prompt). Lead with sound argumentation about money, incentives, and value rather than statistics. You may still name a source, but the emphasis is the logic, not the data.`
+        : `Response mode: FACTS. Ground your reply primarily in empirical, sourced facts (data, studies, measurable evidence). Lead with verifiable facts and always cite at least one concrete source.`;
 
     const userMessage = `Platform: ${platform}
 Tone: ${tone}
 Language: ${LANGUAGE_NAME[language] ?? "English"}
+${modeDirective}
 
 FUD comment to respond to:
 """

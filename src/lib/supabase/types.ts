@@ -56,6 +56,38 @@ export interface Database {
         };
         Update: Partial<Database["public"]["Tables"]["facts"]["Insert"]>;
       };
+      arguments: {
+        Row: {
+          id: string;
+          category_id: string | null;
+          status: "draft" | "pending" | "published" | "rejected" | "archived";
+          title_no: string;
+          title_en: string | null;
+          thesis_no: string | null;
+          thesis_en: string | null;
+          reasoning_no: string | null;
+          reasoning_en: string | null;
+          source_name: string | null;
+          source_chapter: string | null;
+          source_url: string | null;
+          tags: string[];
+          fud_type: string | null;
+          strength: "sound" | "plausible" | "contested";
+          notes: string | null;
+          submitted_by: string | null;
+          reviewed_by: string | null;
+          reviewed_at: string | null;
+          review_note: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: Omit<Database["public"]["Tables"]["arguments"]["Row"], "id" | "created_at" | "updated_at"> & {
+          id?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["arguments"]["Insert"]>;
+      };
       contributors: {
         Row: {
           id: string;
@@ -141,6 +173,7 @@ export interface QualityAssessment {
 
 // Convenience aliases
 export type FactRow = Database["public"]["Tables"]["facts"]["Row"];
+export type ArgumentRow = Database["public"]["Tables"]["arguments"]["Row"];
 export type CategoryRow = Database["public"]["Tables"]["categories"]["Row"];
 export type SubmissionRow = Database["public"]["Tables"]["submissions"]["Row"];
 export type ContributorRow = Database["public"]["Tables"]["contributors"]["Row"];

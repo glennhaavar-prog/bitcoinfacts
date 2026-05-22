@@ -13,11 +13,14 @@ import {
   Eye,
   Shield,
   Settings2,
+  Lightbulb,
+  FileText,
 } from "lucide-react";
 import type {
   Platform,
   Language,
   Tone,
+  AnswerMode,
   FudBusterResponse,
   ChatMessage,
   PrincipleKey,
@@ -191,6 +194,10 @@ export default function AgentPage() {
   const [expandedPanel, setExpandedPanel] = useState<string | null>(null);
   const [showSettings, setShowSettings] = useState(true);
 
+  // Knowledge-base mode for the AI answer. Default = facts. The user can flip to
+  // arguments before sending, or switch after an answer to re-run in the other mode.
+  const [mode, setMode] = useState<AnswerMode>("facts");
+
   // Scroll refs — no auto-scrolling, user controls scroll entirely
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -203,22 +210,30 @@ export default function AgentPage() {
     }
   }, [messages.length]);
 
-  const handleSubmit = useCallback(async (fudText: string) => {
+  // Runs a query in a given mode. When isRerun is true (user flipped the
+  // facts/arguments toggle after an answer), we reuse the previous question and
+  // append only a fresh assistant message instead of duplicating the user bubble.
+  const runQuery = useCallback(async (fudText: string, runMode: AnswerMode, isRerun = false) => {
     setError(null);
     setExpandedPanel(null);
 
-    const userMessage: ChatMessage = { role: "user", content: fudText };
-    // Add user message AND an empty assistant placeholder in the same update so
-    // the thinking-indicator renders immediately — otherwise the user stares at
-    // a blank chat for 2-5s while the server warms up and looks like it froze.
-    setMessages((prev) => [...prev, userMessage, { role: "assistant", content: "" }]);
+    // Add an empty assistant placeholder (and, for new questions, the user
+    // message) in one update so the thinking-indicator renders immediately —
+    // otherwise the user stares at a blank chat for 2-5s while the server warms
+    // up and it looks like it froze.
+    setMessages((prev) => {
+      const placeholder: ChatMessage = { role: "assistant", content: "", mode: runMode };
+      return isRerun
+        ? [...prev, placeholder]
+        : [...prev, { role: "user", content: fudText }, placeholder];
+    });
     setIsLoading(true);
 
     try {
       const res = await fetch("/api/fud-buster", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ fudText, platform, language, tone }),
+        body: JSON.stringify({ fudText, platform, language, tone, mode: runMode }),
       });
 
       if (!res.ok) {
@@ -291,6 +306,7 @@ export default function AgentPage() {
               sources: parsed.sources,
               triageResult: parsed.triageResult,
               principles: parsed.principles,
+              mode: runMode,
             };
             return updated;
           });
@@ -326,6 +342,12 @@ export default function AgentPage() {
     }
   }, [platform, language, tone]);
 
+  // New question from the input always uses the currently-selected mode.
+  const handleSubmit = useCallback(
+    (text: string) => runQuery(text, mode, false),
+    [runQuery, mode]
+  );
+
   async function copyToClipboard(text: string) {
     await navigator.clipboard.writeText(text);
     setCopied(true);
@@ -334,6 +356,20 @@ export default function AgentPage() {
 
   function togglePanel(panel: string) {
     setExpandedPanel(expandedPanel === panel ? null : panel);
+  }
+
+  // Most recent question the user asked — used to re-run when the mode is flipped.
+  const lastUserText =
+    [...messages].reverse().find((m) => m.role === "user")?.content ?? null;
+
+  // Switch knowledge base. If an answer already exists, immediately re-run the
+  // last question in the new mode so the user sees the alternative grounding.
+  function switchMode(next: AnswerMode) {
+    if (next === mode) return;
+    setMode(next);
+    if (!isLoading && lastUserText) {
+      runQuery(lastUserText, next, true);
+    }
   }
 
   return (
@@ -429,6 +465,39 @@ export default function AgentPage() {
         </div>
       </div>
 
+      {/* Knowledge-base mode — drives what the AI grounds its answer in.
+          Default = Facts. Switching after an answer re-runs the last question. */}
+      <div className="flex-shrink-0 mb-3 card px-3 py-2.5 flex items-center justify-between gap-2 flex-wrap">
+        <span className="text-xs font-medium text-eb-navy">
+          {language === "no" ? "Kunnskapsbase" : "Knowledge base"}
+        </span>
+        <div className="flex rounded-md border border-eb-border overflow-hidden">
+          {([
+            { value: "facts", label: language === "no" ? "Fakta" : "Facts", Icon: FileText },
+            { value: "arguments", label: language === "no" ? "Argumenter" : "Arguments", Icon: Lightbulb },
+          ] as { value: AnswerMode; label: string; Icon: typeof Lightbulb }[]).map((m) => (
+            <button
+              key={m.value}
+              onClick={() => switchMode(m.value)}
+              disabled={isLoading}
+              className={`flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+                mode === m.value
+                  ? "bg-eb-gold text-white"
+                  : "bg-eb-surface-2 text-eb-muted hover:text-eb-navy"
+              }`}
+            >
+              <m.Icon className="w-3.5 h-3.5" />
+              {m.label}
+            </button>
+          ))}
+        </div>
+        <p className="w-full text-[10px] text-eb-subtle">
+          {language === "no"
+            ? "Fakta = etterprøvbare påstander med kilde. Argumenter = logiske/økonomiske resonnementer. Bytt etter et svar for å kjøre samme spørsmål på nytt."
+            : "Facts = verifiable, sourced claims. Arguments = logical/economic reasoning. Switch after an answer to re-run the same question."}
+        </p>
+      </div>
+
       {/* Chat area */}
       <div className="card flex-1 flex flex-col min-h-0 mb-3 sm:mb-4 overflow-hidden">
         {/* Messages */}
@@ -480,6 +549,14 @@ export default function AgentPage() {
                     {msg.strategy && (
                       <span className="hidden sm:inline px-2 py-0.5 rounded-full bg-eb-surface-2 border border-eb-border text-eb-muted text-[10px]">
                         {msg.strategy}
+                      </span>
+                    )}
+                    {msg.mode && (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-eb-surface-2 border border-eb-border text-eb-muted text-[10px]">
+                        {msg.mode === "arguments" ? <Lightbulb className="w-3 h-3" /> : <FileText className="w-3 h-3" />}
+                        {msg.mode === "arguments"
+                          ? language === "no" ? "Argumenter" : "Arguments"
+                          : language === "no" ? "Fakta" : "Facts"}
                       </span>
                     )}
                   </div>

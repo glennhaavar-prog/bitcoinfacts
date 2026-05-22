@@ -10,6 +10,8 @@ export const LANGUAGE_LABELS: Record<Language, string> = {
   fr: "Français",
 };
 export type Tone = "direct" | "balanced" | "soft";
+// Which knowledge base the AI grounds its answer in.
+export type AnswerMode = "facts" | "arguments";
 export type TriageResult = "fight" | "ignore" | "educate";
 export type FudType =
   | "energy"
@@ -52,6 +54,8 @@ export interface ChatMessage {
   sources?: Array<{ name: string; description: string }>;
   triageResult?: TriageResult;
   principles?: AppliedPrinciple[];
+  // Which knowledge base produced this answer (assistant messages only).
+  mode?: AnswerMode;
 }
 
 export interface FactCategory {
