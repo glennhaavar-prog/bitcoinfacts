@@ -201,9 +201,10 @@ export default function AgentPage() {
   // arguments before sending, or switch after an answer to re-run in the other mode.
   const [mode, setMode] = useState<AnswerMode>("facts");
 
-  // Scroll refs — no auto-scrolling, user controls scroll entirely
+  // Scroll refs
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const lastUserMsgRef = useRef<HTMLDivElement>(null);
   const lastStreamUpdateRef = useRef(0);
 
   // Collapse settings on mobile after first message
@@ -211,6 +212,23 @@ export default function AgentPage() {
     if (messages.length > 0 && window.innerWidth < 640) {
       setShowSettings(false);
     }
+  }, [messages.length]);
+
+  // When a new exchange (or mode re-run) starts, pin the latest question to the
+  // top of the chat scroll area so it stays visible while the answer streams
+  // below it — instead of the question scrolling out of view.
+  const msgCountRef = useRef(0);
+  useEffect(() => {
+    if (messages.length > msgCountRef.current) {
+      requestAnimationFrame(() => {
+        const c = scrollContainerRef.current;
+        const el = lastUserMsgRef.current;
+        if (c && el) {
+          c.scrollTop += el.getBoundingClientRect().top - c.getBoundingClientRect().top - 8;
+        }
+      });
+    }
+    msgCountRef.current = messages.length;
   }, [messages.length]);
 
   // Runs a query in a given mode. When isRerun is true (user flipped the
@@ -364,6 +382,7 @@ export default function AgentPage() {
   // Most recent question the user asked — used to re-run when the mode is flipped.
   const lastUserText =
     [...messages].reverse().find((m) => m.role === "user")?.content ?? null;
+  const lastUserIndex = messages.map((m) => m.role).lastIndexOf("user");
 
   // Switch knowledge base. If an answer already exists, immediately re-run the
   // last question in the new mode so the user sees the alternative grounding.
@@ -376,6 +395,7 @@ export default function AgentPage() {
   }
 
   return (
+    <>
     <div
       className="max-w-6xl mx-auto px-3 sm:px-6 lg:px-8 flex flex-col lg:flex-row gap-3 lg:gap-4"
       style={{ height: "calc(100dvh - 4rem)" }}
@@ -530,7 +550,11 @@ export default function AgentPage() {
           )}
 
           {messages.map((msg, i) => (
-            <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+            <div
+              key={i}
+              ref={i === lastUserIndex ? lastUserMsgRef : undefined}
+              className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+            >
               <div
                 className={`max-w-[90%] sm:max-w-[85%] rounded-xl px-3 py-2.5 ${
                   msg.role === "user"
@@ -691,29 +715,6 @@ export default function AgentPage() {
             </div>
           )}
 
-          {/* Newsletter prompt — slim, dismissible bar shown once after the
-              first full answer, so it doesn't dominate or steal focus from the
-              response itself. */}
-          {!isLoading && !newsletterDismissed && messages.some((m) => m.role === "assistant" && m.content) && (
-            <div className="mt-3 rounded-lg border border-eb-border bg-eb-surface-2 px-3 py-2.5">
-              <div className="flex items-start justify-between gap-2 mb-2">
-                <p className="text-[11px] text-eb-muted leading-snug">
-                  {language === "no"
-                    ? "Vil du ha en daglig Bitcoin-faktasjekk på e-post?"
-                    : "Want a daily Bitcoin fact-check by email?"}
-                </p>
-                <button
-                  onClick={() => setNewsletterDismissed(true)}
-                  aria-label={language === "no" ? "Lukk" : "Dismiss"}
-                  className="flex-shrink-0 text-eb-subtle hover:text-eb-navy transition-colors"
-                >
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              </div>
-              <NewsletterSignup source="agent" variant="compact" />
-            </div>
-          )}
-
           <div ref={messagesEndRef} />
         </div>
 
@@ -729,5 +730,30 @@ export default function AgentPage() {
         </div>
       </div>
     </div>
+
+      {/* Newsletter — placed BELOW the tool so it never sits between the answer
+          and the input. Slim, dismissible, shown once after the first answer. */}
+      {!isLoading && !newsletterDismissed && messages.some((m) => m.role === "assistant" && m.content) && (
+        <div className="max-w-6xl mx-auto px-3 sm:px-6 lg:px-8 pb-5">
+          <div className="rounded-lg border border-eb-border bg-eb-surface-2 px-3 py-2.5">
+            <div className="flex items-start justify-between gap-2 mb-2">
+              <p className="text-[11px] text-eb-muted leading-snug">
+                {language === "no"
+                  ? "Vil du ha en daglig Bitcoin-faktasjekk på e-post?"
+                  : "Want a daily Bitcoin fact-check by email?"}
+              </p>
+              <button
+                onClick={() => setNewsletterDismissed(true)}
+                aria-label={language === "no" ? "Lukk" : "Dismiss"}
+                className="flex-shrink-0 text-eb-subtle hover:text-eb-navy transition-colors"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+            <NewsletterSignup source="agent" variant="compact" />
+          </div>
+        </div>
+      )}
+    </>
   );
 }
