@@ -23,6 +23,7 @@ import type {
   Tone,
   AnswerMode,
   TriageResult,
+  FudType,
   FudBusterResponse,
   ChatMessage,
   PrincipleKey,
@@ -404,6 +405,10 @@ export default function AgentPage() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const lastUserMsgRef = useRef<HTMLDivElement>(null);
   const lastStreamUpdateRef = useRef(0);
+  // Identifies the most recent query so a backgrounded run (still fetching
+  // sources/principles after its reply was shown) can't toggle loading/error
+  // state that belongs to a newer query.
+  const runIdRef = useRef(0);
 
   // Collapse settings on mobile after first message
   useEffect(() => {
@@ -436,17 +441,41 @@ export default function AgentPage() {
     setError(null);
     setExpandedPanel(null);
 
+    const myRunId = ++runIdRef.current;
+    const replyId =
+      typeof crypto !== "undefined" && crypto.randomUUID
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random()}`;
+
+    // Patch the assistant message by id — robust to newer messages being
+    // appended while sources/principles finish streaming in the background.
+    const patch = (p: Partial<ChatMessage>) =>
+      setMessages((prev) => prev.map((m) => (m.id === replyId ? { ...m, ...p } : m)));
+
+    // Decode a JSON-escaped string fragment into display text.
+    const decode = (esc: string) => {
+      try {
+        return JSON.parse(`"${esc}"`) as string;
+      } catch {
+        return esc.replace(/\\n/g, "\n").replace(/\\"/g, '"').replace(/\\\\/g, "\\");
+      }
+    };
+
     // Add an empty assistant placeholder (and, for new questions, the user
     // message) in one update so the thinking-indicator renders immediately —
     // otherwise the user stares at a blank chat for 2-5s while the server warms
     // up and it looks like it froze.
     setMessages((prev) => {
-      const placeholder: ChatMessage = { role: "assistant", content: "", mode: runMode };
+      const placeholder: ChatMessage = { role: "assistant", content: "", mode: runMode, id: replyId };
       return isRerun
         ? [...prev, placeholder]
         : [...prev, { role: "user", content: fudText }, placeholder];
     });
     setIsLoading(true);
+
+    // Once the reply text is fully streamed we show it and end the loading
+    // state immediately — sources/principles keep arriving in the background.
+    let replyShown = false;
 
     try {
       const res = await fetch("/api/fud-buster", {
@@ -472,92 +501,82 @@ export default function AgentPage() {
         if (done) break;
         const chunk = decoder.decode(value);
         for (const line of chunk.split("\n")) {
-          if (line.startsWith("data: ")) {
-            const data = line.slice(6);
-            if (data === "[DONE]") break;
-            try {
-              const parsed = JSON.parse(data);
-              if (parsed.error) throw new Error(parsed.error);
-              if (parsed.text) {
-                fullText += parsed.text;
-                // Throttle state updates to ~20fps to prevent textarea lag
-                const now = Date.now();
-                if (now - lastStreamUpdateRef.current >= 50) {
-                  // Extract the partial "reply" field from the streaming JSON
-                  // so users see clean text appearing progressively, not raw
-                  // JSON fragments like {"triageResult":"educate","reply":"...
-                  // If we haven't seen "reply":" yet, keep content empty so the
-                  // thinking indicator stays visible instead of showing JSON.
-                  const replyMatch = fullText.match(/"reply"\s*:\s*"((?:[^"\\]|\\.)*)/);
-                  const progressiveReply = replyMatch
-                    ? replyMatch[1].replace(/\\n/g, "\n").replace(/\\"/g, '"').replace(/\\\\/g, "\\")
-                    : "";
-                  setMessages((prev) => {
-                    const updated = [...prev];
-                    updated[updated.length - 1] = {
-                      ...updated[updated.length - 1],
-                      content: progressiveReply,
-                    };
-                    return updated;
-                  });
-                  lastStreamUpdateRef.current = now;
-                }
-              }
-            } catch {
-              /* skip malformed events */
+          if (!line.startsWith("data: ")) continue;
+          const data = line.slice(6);
+          if (data === "[DONE]") break;
+          let parsed: { text?: string; error?: string };
+          try {
+            parsed = JSON.parse(data);
+          } catch {
+            continue; // skip a malformed SSE fragment
+          }
+          // A real server error (rate limit, cap, upstream failure) must surface
+          // to the outer catch — not be silently swallowed.
+          if (parsed.error) throw new Error(parsed.error);
+          if (!parsed.text) continue;
+          fullText += parsed.text;
+
+          if (replyShown) continue;
+
+          // Has the "reply" field closed? (closing quote followed by , or })
+          const complete = fullText.match(/"reply"\s*:\s*"((?:[^"\\]|\\.)*)"\s*[,}]/);
+          if (complete) {
+            // Reply is done. Show it now along with the badges emitted before
+            // it, and end loading — the user no longer waits on metadata.
+            const strat = fullText.match(/"strategy"\s*:\s*"((?:[^"\\]|\\.)*)"/);
+            patch({
+              content: decode(complete[1]),
+              triageResult: fullText.match(/"triageResult"\s*:\s*"(\w+)"/)?.[1] as TriageResult | undefined,
+              fudType: fullText.match(/"fudType"\s*:\s*"([\w-]+)"/)?.[1] as FudType | undefined,
+              strategy: strat ? decode(strat[1]) : undefined,
+              mode: runMode,
+            });
+            replyShown = true;
+            if (runIdRef.current === myRunId) setIsLoading(false);
+          } else {
+            // Still streaming the reply — throttled progressive update (~20fps).
+            const now = Date.now();
+            if (now - lastStreamUpdateRef.current >= 50) {
+              const m = fullText.match(/"reply"\s*:\s*"((?:[^"\\]|\\.)*)/);
+              patch({
+                content: m
+                  ? m[1].replace(/\\n/g, "\n").replace(/\\"/g, '"').replace(/\\\\/g, "\\")
+                  : "",
+              });
+              lastStreamUpdateRef.current = now;
             }
           }
         }
       }
 
-      // Final update — parse structured JSON from stream
+      // Final parse — fill in sources/principles and reconcile the reply.
       try {
         const jsonMatch = fullText.match(/\{[\s\S]*\}/);
         if (jsonMatch) {
-          const parsed: FudBusterResponse = JSON.parse(jsonMatch[0]);
-          setMessages((prev) => {
-            const updated = [...prev];
-            updated[updated.length - 1] = {
-              role: "assistant",
-              content: parsed.reply,
-              fudType: parsed.fudType,
-              strategy: parsed.strategy,
-              sources: parsed.sources,
-              triageResult: parsed.triageResult,
-              principles: parsed.principles,
-              mode: runMode,
-            };
-            return updated;
+          const full: FudBusterResponse = JSON.parse(jsonMatch[0]);
+          patch({
+            content: full.reply,
+            fudType: full.fudType,
+            strategy: full.strategy,
+            sources: full.sources,
+            triageResult: full.triageResult,
+            principles: full.principles,
+            mode: runMode,
           });
-        } else {
-          // Ensure the last streaming text is committed
-          const snapshot = fullText;
-          setMessages((prev) => {
-            const updated = [...prev];
-            updated[updated.length - 1] = {
-              ...updated[updated.length - 1],
-              content: snapshot,
-            };
-            return updated;
-          });
+        } else if (!replyShown) {
+          patch({ content: fullText });
         }
       } catch {
-        // Keep raw text if JSON parse fails
-        const snapshot = fullText;
-        setMessages((prev) => {
-          const updated = [...prev];
-          updated[updated.length - 1] = {
-            ...updated[updated.length - 1],
-            content: snapshot,
-          };
-          return updated;
-        });
+        if (!replyShown) patch({ content: fullText });
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
-      setMessages((prev) => prev.filter((m) => m.content !== ""));
+      if (runIdRef.current === myRunId) {
+        setError(err instanceof Error ? err.message : "Something went wrong");
+      }
+      // Drop the placeholder only if it never received any text.
+      setMessages((prev) => prev.filter((m) => !(m.id === replyId && m.content === "")));
     } finally {
-      setIsLoading(false);
+      if (runIdRef.current === myRunId) setIsLoading(false);
     }
   }, [platform, language, tone]);
 

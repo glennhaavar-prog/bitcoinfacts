@@ -49,6 +49,10 @@ export interface FudBusterResponse {
 export interface ChatMessage {
   role: "user" | "assistant";
   content: string;
+  // Stable id for assistant messages so background updates (sources/principles
+  // streamed after the reply) target the right message even if newer messages
+  // were appended in the meantime.
+  id?: string;
   fudType?: FudType;
   strategy?: string;
   sources?: Array<{ name: string; description: string }>;
