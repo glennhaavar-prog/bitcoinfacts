@@ -15,6 +15,7 @@ import {
   Settings2,
   Lightbulb,
   FileText,
+  X,
 } from "lucide-react";
 import type {
   Platform,
@@ -192,7 +193,9 @@ export default function AgentPage() {
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [expandedPanel, setExpandedPanel] = useState<string | null>(null);
-  const [showSettings, setShowSettings] = useState(true);
+  // Settings start collapsed on mobile (drawer); always shown on desktop via lg:block.
+  const [showSettings, setShowSettings] = useState(false);
+  const [newsletterDismissed, setNewsletterDismissed] = useState(false);
 
   // Knowledge-base mode for the AI answer. Default = facts. The user can flip to
   // arguments before sending, or switch after an answer to re-run in the other mode.
@@ -374,18 +377,23 @@ export default function AgentPage() {
 
   return (
     <div
-      className="max-w-4xl mx-auto px-3 sm:px-6 lg:px-8 flex flex-col"
+      className="max-w-6xl mx-auto px-3 sm:px-6 lg:px-8 flex flex-col lg:flex-row gap-3 lg:gap-4"
       style={{ height: "calc(100dvh - 4rem)" }}
     >
-      {/* Settings bar */}
-      <div className="flex-shrink-0 mt-3 sm:mt-4">
+      {/* Controls — left sidebar on desktop, collapsible drawer on mobile.
+          These are set-and-forget, so they get out of the way of the answer. */}
+      <aside className="flex-shrink-0 lg:w-64 pt-3 sm:pt-4">
         {/* Mobile: summary toggle */}
         <button
           onClick={() => setShowSettings(!showSettings)}
-          className="sm:hidden w-full flex items-center justify-between card px-3 py-2.5 mb-2"
+          className="lg:hidden w-full flex items-center justify-between card px-3 py-2.5 mb-2"
         >
           <span className="flex items-center gap-2 text-xs text-eb-muted">
             <Settings2 className="w-3.5 h-3.5 text-eb-gold" />
+            {mode === "arguments"
+              ? language === "no" ? "Argumenter" : "Arguments"
+              : language === "no" ? "Fakta" : "Facts"}
+            {" · "}
             {platform === "general" ? "General" : platforms.find((p) => p.value === platform)?.label}
             {" · "}
             {language.toUpperCase()}
@@ -398,8 +406,40 @@ export default function AgentPage() {
         </button>
 
         {/* Settings panel */}
-        <div className={`card p-3 mb-3 ${showSettings ? "block" : "hidden sm:block"}`}>
-          <div className="grid grid-cols-3 gap-2 sm:gap-3">
+        <div className={`card p-3 ${showSettings ? "block" : "hidden"} lg:block`}>
+          {/* Knowledge-base mode toggle */}
+          <div className="mb-3">
+            <label className="block text-[10px] text-eb-subtle mb-1 uppercase tracking-wider font-semibold">
+              {language === "no" ? "Kunnskapsbase" : "Knowledge base"}
+            </label>
+            <div className="flex rounded-md border border-eb-border overflow-hidden">
+              {([
+                { value: "facts", label: language === "no" ? "Fakta" : "Facts", Icon: FileText },
+                { value: "arguments", label: language === "no" ? "Argumenter" : "Arguments", Icon: Lightbulb },
+              ] as { value: AnswerMode; label: string; Icon: typeof Lightbulb }[]).map((m) => (
+                <button
+                  key={m.value}
+                  onClick={() => switchMode(m.value)}
+                  disabled={isLoading}
+                  className={`flex-1 flex items-center justify-center gap-1.5 px-2 py-2 text-[11px] font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+                    mode === m.value
+                      ? "bg-eb-gold text-white"
+                      : "bg-eb-surface-2 text-eb-muted hover:text-eb-navy"
+                  }`}
+                >
+                  <m.Icon className="w-3.5 h-3.5" />
+                  {m.label}
+                </button>
+              ))}
+            </div>
+            <p className="mt-1 text-[10px] text-eb-subtle leading-snug">
+              {language === "no"
+                ? "Bytt etter et svar for å kjøre samme spørsmål på nytt."
+                : "Switch after an answer to re-run the same question."}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-3 lg:grid-cols-1 gap-2 sm:gap-3">
             {/* Platform */}
             <div>
               <label className="block text-[10px] text-eb-subtle mb-1 uppercase tracking-wider font-semibold">
@@ -463,43 +503,12 @@ export default function AgentPage() {
             </div>
           </div>
         </div>
-      </div>
+      </aside>
 
-      {/* Knowledge-base mode — drives what the AI grounds its answer in.
-          Default = Facts. Switching after an answer re-runs the last question. */}
-      <div className="flex-shrink-0 mb-3 card px-3 py-2.5 flex items-center justify-between gap-2 flex-wrap">
-        <span className="text-xs font-medium text-eb-navy">
-          {language === "no" ? "Kunnskapsbase" : "Knowledge base"}
-        </span>
-        <div className="flex rounded-md border border-eb-border overflow-hidden">
-          {([
-            { value: "facts", label: language === "no" ? "Fakta" : "Facts", Icon: FileText },
-            { value: "arguments", label: language === "no" ? "Argumenter" : "Arguments", Icon: Lightbulb },
-          ] as { value: AnswerMode; label: string; Icon: typeof Lightbulb }[]).map((m) => (
-            <button
-              key={m.value}
-              onClick={() => switchMode(m.value)}
-              disabled={isLoading}
-              className={`flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
-                mode === m.value
-                  ? "bg-eb-gold text-white"
-                  : "bg-eb-surface-2 text-eb-muted hover:text-eb-navy"
-              }`}
-            >
-              <m.Icon className="w-3.5 h-3.5" />
-              {m.label}
-            </button>
-          ))}
-        </div>
-        <p className="w-full text-[10px] text-eb-subtle">
-          {language === "no"
-            ? "Fakta = etterprøvbare påstander med kilde. Argumenter = logiske/økonomiske resonnementer. Bytt etter et svar for å kjøre samme spørsmål på nytt."
-            : "Facts = verifiable, sourced claims. Arguments = logical/economic reasoning. Switch after an answer to re-run the same question."}
-        </p>
-      </div>
-
-      {/* Chat area */}
-      <div className="card flex-1 flex flex-col min-h-0 mb-3 sm:mb-4 overflow-hidden">
+      {/* Chat column — takes all remaining space so the answer is the focus */}
+      <div className="flex-1 flex flex-col min-h-0 lg:pt-4 pb-3 sm:pb-4">
+        {/* Chat area */}
+        <div className="card flex-1 flex flex-col min-h-0 overflow-hidden">
         {/* Messages */}
         <div
           ref={scrollContainerRef}
@@ -682,12 +691,26 @@ export default function AgentPage() {
             </div>
           )}
 
-          {/* Newsletter prompt — appears after the user has received at least one
-              full response. They've experienced the tool's value, so we ask for
-              their email at the moment of peak interest. */}
-          {!isLoading && messages.some((m) => m.role === "assistant" && m.content) && (
-            <div className="my-4">
-              <NewsletterSignup source="agent" variant="card" />
+          {/* Newsletter prompt — slim, dismissible bar shown once after the
+              first full answer, so it doesn't dominate or steal focus from the
+              response itself. */}
+          {!isLoading && !newsletterDismissed && messages.some((m) => m.role === "assistant" && m.content) && (
+            <div className="mt-3 rounded-lg border border-eb-border bg-eb-surface-2 px-3 py-2.5">
+              <div className="flex items-start justify-between gap-2 mb-2">
+                <p className="text-[11px] text-eb-muted leading-snug">
+                  {language === "no"
+                    ? "Vil du ha en daglig Bitcoin-faktasjekk på e-post?"
+                    : "Want a daily Bitcoin fact-check by email?"}
+                </p>
+                <button
+                  onClick={() => setNewsletterDismissed(true)}
+                  aria-label={language === "no" ? "Lukk" : "Dismiss"}
+                  className="flex-shrink-0 text-eb-subtle hover:text-eb-navy transition-colors"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+              <NewsletterSignup source="agent" variant="compact" />
             </div>
           )}
 
@@ -703,6 +726,7 @@ export default function AgentPage() {
 
         {/* Input — memoised, does not re-render during streaming */}
         <ChatInput onSubmit={handleSubmit} isLoading={isLoading} />
+        </div>
       </div>
     </div>
   );
