@@ -22,6 +22,7 @@ import type {
   Language,
   Tone,
   AnswerMode,
+  TriageResult,
   FudBusterResponse,
   ChatMessage,
   PrincipleKey,
@@ -48,10 +49,184 @@ const triageIcons = {
   educate: BookOpen,
 };
 
-const triageLabels = {
-  fight: "Fight",
-  ignore: "Ignore",
-  educate: "Educate",
+// UI chrome strings, localized to follow the language selector (en/no/de/es/pt/fr).
+interface UIStrings {
+  placeholder: string;
+  inputHint: string;
+  emptyTitle: string;
+  emptyBody: string;
+  analyzing: string;
+  writing: string;
+  copy: string;
+  copied: string;
+  sources: string;
+  principles: string;
+  principlesApplied: string;
+  triage: Record<TriageResult, string>;
+  platform: string;
+  languageLabel: string;
+  tone: string;
+  toneLabels: Record<Tone, string>;
+  generalPlatform: string;
+  knowledgeBase: string;
+  facts: string;
+  argumentsLabel: string;
+  modeHint: string;
+  newsletterPrompt: string;
+  dismiss: string;
+}
+
+const UI: Record<Language, UIStrings> = {
+  en: {
+    placeholder: "Paste a Bitcoin claim or criticism…",
+    inputHint: "Enter to send · Shift+Enter for new line",
+    emptyTitle: "Ready to analyse",
+    emptyBody: "Paste a Bitcoin-related claim or criticism and get a fact-based, evidence-backed response.",
+    analyzing: "Analyzing claim",
+    writing: "Writing",
+    copy: "Copy",
+    copied: "Copied!",
+    sources: "Sources",
+    principles: "Principles",
+    principlesApplied: "Batten Principles Applied",
+    triage: { fight: "Fight", ignore: "Ignore", educate: "Educate" },
+    platform: "Platform",
+    languageLabel: "Language",
+    tone: "Tone",
+    toneLabels: { direct: "Direct", balanced: "Balanced", soft: "Soft" },
+    generalPlatform: "General",
+    knowledgeBase: "Knowledge base",
+    facts: "Facts",
+    argumentsLabel: "Arguments",
+    modeHint: "Switch after an answer to re-run the same question.",
+    newsletterPrompt: "Want a daily Bitcoin fact-check by email?",
+    dismiss: "Dismiss",
+  },
+  no: {
+    placeholder: "Lim inn en Bitcoin-påstand eller kritikk…",
+    inputHint: "Enter for å sende · Shift+Enter for ny linje",
+    emptyTitle: "Klar til å analysere",
+    emptyBody: "Lim inn en Bitcoin-relatert påstand eller kritikk og få et faktabasert, dokumentert svar.",
+    analyzing: "Analyserer påstand",
+    writing: "Skriver",
+    copy: "Kopier",
+    copied: "Kopiert!",
+    sources: "Kilder",
+    principles: "Prinsipper",
+    principlesApplied: "Batten-prinsipper brukt",
+    triage: { fight: "Imøtegå", ignore: "Ignorer", educate: "Opplys" },
+    platform: "Plattform",
+    languageLabel: "Språk",
+    tone: "Tone",
+    toneLabels: { direct: "Direkte", balanced: "Balansert", soft: "Myk" },
+    generalPlatform: "Generell",
+    knowledgeBase: "Kunnskapsbase",
+    facts: "Fakta",
+    argumentsLabel: "Argumenter",
+    modeHint: "Bytt etter et svar for å kjøre samme spørsmål på nytt.",
+    newsletterPrompt: "Vil du ha en daglig Bitcoin-faktasjekk på e-post?",
+    dismiss: "Lukk",
+  },
+  de: {
+    placeholder: "Bitcoin-Behauptung oder Kritik einfügen…",
+    inputHint: "Enter zum Senden · Umschalt+Enter für neue Zeile",
+    emptyTitle: "Bereit zur Analyse",
+    emptyBody: "Füge eine Bitcoin-bezogene Behauptung oder Kritik ein und erhalte eine faktenbasierte, belegte Antwort.",
+    analyzing: "Behauptung wird analysiert",
+    writing: "Schreibt",
+    copy: "Kopieren",
+    copied: "Kopiert!",
+    sources: "Quellen",
+    principles: "Prinzipien",
+    principlesApplied: "Angewandte Batten-Prinzipien",
+    triage: { fight: "Kontern", ignore: "Ignorieren", educate: "Aufklären" },
+    platform: "Plattform",
+    languageLabel: "Sprache",
+    tone: "Ton",
+    toneLabels: { direct: "Direkt", balanced: "Ausgewogen", soft: "Sanft" },
+    generalPlatform: "Allgemein",
+    knowledgeBase: "Wissensbasis",
+    facts: "Fakten",
+    argumentsLabel: "Argumente",
+    modeHint: "Nach einer Antwort wechseln, um dieselbe Frage erneut auszuführen.",
+    newsletterPrompt: "Täglich einen Bitcoin-Faktencheck per E-Mail?",
+    dismiss: "Schließen",
+  },
+  es: {
+    placeholder: "Pega una afirmación o crítica sobre Bitcoin…",
+    inputHint: "Enter para enviar · Mayús+Enter para nueva línea",
+    emptyTitle: "Listo para analizar",
+    emptyBody: "Pega una afirmación o crítica relacionada con Bitcoin y obtén una respuesta basada en hechos y evidencia.",
+    analyzing: "Analizando la afirmación",
+    writing: "Escribiendo",
+    copy: "Copiar",
+    copied: "¡Copiado!",
+    sources: "Fuentes",
+    principles: "Principios",
+    principlesApplied: "Principios de Batten aplicados",
+    triage: { fight: "Refutar", ignore: "Ignorar", educate: "Educar" },
+    platform: "Plataforma",
+    languageLabel: "Idioma",
+    tone: "Tono",
+    toneLabels: { direct: "Directo", balanced: "Equilibrado", soft: "Suave" },
+    generalPlatform: "General",
+    knowledgeBase: "Base de conocimiento",
+    facts: "Hechos",
+    argumentsLabel: "Argumentos",
+    modeHint: "Cambia después de una respuesta para volver a ejecutar la misma pregunta.",
+    newsletterPrompt: "¿Quieres una verificación diaria sobre Bitcoin por correo?",
+    dismiss: "Cerrar",
+  },
+  pt: {
+    placeholder: "Cole uma afirmação ou crítica sobre o Bitcoin…",
+    inputHint: "Enter para enviar · Shift+Enter para nova linha",
+    emptyTitle: "Pronto para analisar",
+    emptyBody: "Cole uma afirmação ou crítica relacionada ao Bitcoin e receba uma resposta baseada em fatos e evidências.",
+    analyzing: "Analisando a afirmação",
+    writing: "Escrevendo",
+    copy: "Copiar",
+    copied: "Copiado!",
+    sources: "Fontes",
+    principles: "Princípios",
+    principlesApplied: "Princípios de Batten aplicados",
+    triage: { fight: "Rebater", ignore: "Ignorar", educate: "Educar" },
+    platform: "Plataforma",
+    languageLabel: "Idioma",
+    tone: "Tom",
+    toneLabels: { direct: "Direto", balanced: "Equilibrado", soft: "Suave" },
+    generalPlatform: "Geral",
+    knowledgeBase: "Base de conhecimento",
+    facts: "Fatos",
+    argumentsLabel: "Argumentos",
+    modeHint: "Troque após uma resposta para refazer a mesma pergunta.",
+    newsletterPrompt: "Quer uma verificação diária sobre Bitcoin por e-mail?",
+    dismiss: "Fechar",
+  },
+  fr: {
+    placeholder: "Collez une affirmation ou critique sur le Bitcoin…",
+    inputHint: "Entrée pour envoyer · Maj+Entrée pour nouvelle ligne",
+    emptyTitle: "Prêt à analyser",
+    emptyBody: "Collez une affirmation ou critique liée au Bitcoin et obtenez une réponse fondée sur des faits et des preuves.",
+    analyzing: "Analyse de l'affirmation",
+    writing: "Rédaction",
+    copy: "Copier",
+    copied: "Copié !",
+    sources: "Sources",
+    principles: "Principes",
+    principlesApplied: "Principes de Batten appliqués",
+    triage: { fight: "Réfuter", ignore: "Ignorer", educate: "Éduquer" },
+    platform: "Plateforme",
+    languageLabel: "Langue",
+    tone: "Ton",
+    toneLabels: { direct: "Direct", balanced: "Équilibré", soft: "Doux" },
+    generalPlatform: "Général",
+    knowledgeBase: "Base de connaissances",
+    facts: "Faits",
+    argumentsLabel: "Arguments",
+    modeHint: "Changez après une réponse pour relancer la même question.",
+    newsletterPrompt: "Un fact-check Bitcoin quotidien par e-mail ?",
+    dismiss: "Fermer",
+  },
 };
 
 const principleLabels: Record<PrincipleKey, { name: string; icon: string; color: string }> = {
@@ -122,7 +297,7 @@ function StreamingProgress({ charCount, language }: { charCount: number; languag
         />
       </div>
       <span className="text-[10px] text-eb-muted tabular-nums whitespace-nowrap">
-        {language === "no" ? "Skriver" : "Writing"} · {charCount}
+        {UI[language].writing} · {charCount}
       </span>
     </div>
   );
@@ -132,9 +307,11 @@ function StreamingProgress({ charCount, language }: { charCount: number; languag
 interface ChatInputProps {
   onSubmit: (text: string) => void;
   isLoading: boolean;
+  placeholder: string;
+  hint: string;
 }
 
-const ChatInput = memo(function ChatInput({ onSubmit, isLoading }: ChatInputProps) {
+const ChatInput = memo(function ChatInput({ onSubmit, isLoading, placeholder, hint }: ChatInputProps) {
   const [text, setText] = useState("");
 
   function handleSubmit(e: React.FormEvent) {
@@ -162,7 +339,7 @@ const ChatInput = memo(function ChatInput({ onSubmit, isLoading }: ChatInputProp
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Paste a Bitcoin claim or criticism…"
+          placeholder={placeholder}
           rows={2}
           maxLength={5000}
           className="flex-1 min-h-[3.25rem] bg-eb-surface-2 border border-eb-border rounded-lg px-3 py-2.5 text-sm leading-snug text-eb-navy placeholder:text-eb-subtle resize-none focus:outline-none focus:border-eb-gold focus:ring-1 focus:ring-eb-gold/20 transition-colors"
@@ -176,7 +353,7 @@ const ChatInput = memo(function ChatInput({ onSubmit, isLoading }: ChatInputProp
         </button>
       </div>
       <p className="mt-1.5 text-[10px] text-eb-subtle">
-        Enter to send · Shift+Enter for new line
+        {hint}
         {text.length > 0 && ` · ${text.length}/5000`}
       </p>
     </form>
@@ -200,6 +377,11 @@ export default function AgentPage() {
   // Knowledge-base mode for the AI answer. Default = facts. The user can flip to
   // arguments before sending, or switch after an answer to re-run in the other mode.
   const [mode, setMode] = useState<AnswerMode>("facts");
+
+  // Localized UI chrome — follows the language selector.
+  const t = UI[language];
+  const platformLabel = (value: Platform) =>
+    value === "general" ? t.generalPlatform : platforms.find((p) => p.value === value)?.label;
 
   // Scroll refs
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -410,15 +592,13 @@ export default function AgentPage() {
         >
           <span className="flex items-center gap-2 text-xs text-eb-muted">
             <Settings2 className="w-3.5 h-3.5 text-eb-gold" />
-            {mode === "arguments"
-              ? language === "no" ? "Argumenter" : "Arguments"
-              : language === "no" ? "Fakta" : "Facts"}
+            {mode === "arguments" ? t.argumentsLabel : t.facts}
             {" · "}
-            {platform === "general" ? "General" : platforms.find((p) => p.value === platform)?.label}
+            {platformLabel(platform)}
             {" · "}
             {language.toUpperCase()}
             {" · "}
-            {tone.charAt(0).toUpperCase() + tone.slice(1)}
+            {t.toneLabels[tone]}
           </span>
           <ChevronDown
             className={`w-4 h-4 text-eb-muted transition-transform ${showSettings ? "rotate-180" : ""}`}
@@ -430,12 +610,12 @@ export default function AgentPage() {
           {/* Knowledge-base mode toggle */}
           <div className="mb-3">
             <label className="block text-[10px] text-eb-subtle mb-1 uppercase tracking-wider font-semibold">
-              {language === "no" ? "Kunnskapsbase" : "Knowledge base"}
+              {t.knowledgeBase}
             </label>
             <div className="flex rounded-md border border-eb-border overflow-hidden">
               {([
-                { value: "facts", label: language === "no" ? "Fakta" : "Facts", Icon: FileText },
-                { value: "arguments", label: language === "no" ? "Argumenter" : "Arguments", Icon: Lightbulb },
+                { value: "facts", label: t.facts, Icon: FileText },
+                { value: "arguments", label: t.argumentsLabel, Icon: Lightbulb },
               ] as { value: AnswerMode; label: string; Icon: typeof Lightbulb }[]).map((m) => (
                 <button
                   key={m.value}
@@ -453,9 +633,7 @@ export default function AgentPage() {
               ))}
             </div>
             <p className="mt-1 text-[10px] text-eb-subtle leading-snug">
-              {language === "no"
-                ? "Bytt etter et svar for å kjøre samme spørsmål på nytt."
-                : "Switch after an answer to re-run the same question."}
+              {t.modeHint}
             </p>
           </div>
 
@@ -463,7 +641,7 @@ export default function AgentPage() {
             {/* Platform */}
             <div>
               <label className="block text-[10px] text-eb-subtle mb-1 uppercase tracking-wider font-semibold">
-                Platform
+                {t.platform}
               </label>
               <div className="relative">
                 <select
@@ -472,7 +650,7 @@ export default function AgentPage() {
                   className="w-full appearance-none bg-eb-surface-2 border border-eb-border text-eb-navy text-xs rounded-lg px-2 sm:px-2.5 py-2 pr-6 focus:outline-none focus:border-eb-gold"
                 >
                   {platforms.map((p) => (
-                    <option key={p.value} value={p.value}>{p.label}</option>
+                    <option key={p.value} value={p.value}>{platformLabel(p.value)}</option>
                   ))}
                 </select>
                 <ChevronDown className="absolute right-1.5 top-1/2 -translate-y-1/2 w-3 h-3 text-eb-muted pointer-events-none" />
@@ -482,7 +660,7 @@ export default function AgentPage() {
             {/* Language */}
             <div>
               <label className="block text-[10px] text-eb-subtle mb-1 uppercase tracking-wider font-semibold">
-                Language
+                {t.languageLabel}
               </label>
               <div className="relative">
                 <select
@@ -503,20 +681,20 @@ export default function AgentPage() {
             {/* Tone */}
             <div>
               <label className="block text-[10px] text-eb-subtle mb-1 uppercase tracking-wider font-semibold">
-                Tone
+                {t.tone}
               </label>
               <div className="flex rounded-md border border-eb-border overflow-hidden">
-                {tones.map((t) => (
+                {tones.map((tn) => (
                   <button
-                    key={t.value}
-                    onClick={() => setTone(t.value)}
+                    key={tn.value}
+                    onClick={() => setTone(tn.value)}
                     className={`flex-1 px-1 sm:px-2 py-2 text-[10px] sm:text-[11px] font-medium transition-colors ${
-                      tone === t.value
+                      tone === tn.value
                         ? "bg-eb-gold text-white"
                         : "bg-eb-surface-2 text-eb-muted hover:text-eb-navy"
                     }`}
                   >
-                    {t.label}
+                    {t.toneLabels[tn.value]}
                   </button>
                 ))}
               </div>
@@ -540,11 +718,10 @@ export default function AgentPage() {
                 <BookOpen className="w-6 h-6 text-eb-gold" />
               </div>
               <h3 className="font-serif text-sm font-semibold text-eb-navy mb-1">
-                Ready to analyse
+                {t.emptyTitle}
               </h3>
               <p className="text-eb-muted text-xs max-w-xs mx-auto">
-                Paste a Bitcoin-related claim or criticism and get a
-                fact-based, evidence-backed response.
+                {t.emptyBody}
               </p>
             </div>
           )}
@@ -570,7 +747,7 @@ export default function AgentPage() {
                       return (
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-eb-surface-2 border border-eb-border text-[10px] font-medium text-eb-slate">
                           <Icon className="w-3 h-3" />
-                          {triageLabels[msg.triageResult]}
+                          {t.triage[msg.triageResult]}
                         </span>
                       );
                     })()}
@@ -587,9 +764,7 @@ export default function AgentPage() {
                     {msg.mode && (
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-eb-surface-2 border border-eb-border text-eb-muted text-[10px]">
                         {msg.mode === "arguments" ? <Lightbulb className="w-3 h-3" /> : <FileText className="w-3 h-3" />}
-                        {msg.mode === "arguments"
-                          ? language === "no" ? "Argumenter" : "Arguments"
-                          : language === "no" ? "Fakta" : "Facts"}
+                        {msg.mode === "arguments" ? t.argumentsLabel : t.facts}
                       </span>
                     )}
                   </div>
@@ -624,9 +799,9 @@ export default function AgentPage() {
                       className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md bg-eb-gold-faint hover:bg-eb-gold/20 text-eb-gold border border-eb-gold-border text-[11px] font-medium transition-colors active:scale-95"
                     >
                       {copied ? (
-                        <><Check className="w-3.5 h-3.5" /> Copied!</>
+                        <><Check className="w-3.5 h-3.5" /> {t.copied}</>
                       ) : (
-                        <><Copy className="w-3.5 h-3.5" /> Copy</>
+                        <><Copy className="w-3.5 h-3.5" /> {t.copy}</>
                       )}
                     </button>
                     {msg.sources && msg.sources.length > 0 && (
@@ -639,7 +814,7 @@ export default function AgentPage() {
                         }`}
                       >
                         <BookOpen className="w-3.5 h-3.5" />
-                        Sources
+                        {t.sources}
                       </button>
                     )}
                     {msg.principles && msg.principles.length > 0 && (
@@ -652,7 +827,7 @@ export default function AgentPage() {
                         }`}
                       >
                         <Shield className="w-3.5 h-3.5" />
-                        Principles
+                        {t.principles}
                       </button>
                     )}
                   </div>
@@ -674,7 +849,7 @@ export default function AgentPage() {
                 {msg.role === "assistant" && expandedPanel === `principles-${i}` && msg.principles && (
                   <div className="mt-2 space-y-1.5">
                     <p className="text-[10px] font-semibold text-eb-muted uppercase tracking-wider">
-                      Batten Principles Applied
+                      {t.principlesApplied}
                     </p>
                     {msg.principles.map((p, j) => {
                       const label = principleLabels[p.key] || {
@@ -704,7 +879,7 @@ export default function AgentPage() {
               <div className="bg-white border border-eb-border rounded-xl px-3 py-2.5 shadow-card inline-flex items-center gap-2">
                 <Loader2 className="w-4 h-4 text-eb-gold animate-spin" />
                 <span className="text-[13px] text-eb-muted">
-                  {language === "no" ? "Analyserer påstand" : "Analyzing claim"}
+                  {t.analyzing}
                 </span>
                 <span className="inline-flex gap-0.5">
                   <span className="w-1 h-1 rounded-full bg-eb-gold animate-bounce" style={{ animationDelay: "0ms" }} />
@@ -726,7 +901,7 @@ export default function AgentPage() {
         )}
 
         {/* Input — memoised, does not re-render during streaming */}
-        <ChatInput onSubmit={handleSubmit} isLoading={isLoading} />
+        <ChatInput onSubmit={handleSubmit} isLoading={isLoading} placeholder={t.placeholder} hint={t.inputHint} />
         </div>
       </div>
     </div>
@@ -738,13 +913,11 @@ export default function AgentPage() {
           <div className="rounded-lg border border-eb-border bg-eb-surface-2 px-3 py-2.5">
             <div className="flex items-start justify-between gap-2 mb-2">
               <p className="text-[11px] text-eb-muted leading-snug">
-                {language === "no"
-                  ? "Vil du ha en daglig Bitcoin-faktasjekk på e-post?"
-                  : "Want a daily Bitcoin fact-check by email?"}
+                {t.newsletterPrompt}
               </p>
               <button
                 onClick={() => setNewsletterDismissed(true)}
-                aria-label={language === "no" ? "Lukk" : "Dismiss"}
+                aria-label={t.dismiss}
                 className="flex-shrink-0 text-eb-subtle hover:text-eb-navy transition-colors"
               >
                 <X className="w-3.5 h-3.5" />
