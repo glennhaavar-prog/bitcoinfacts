@@ -286,18 +286,34 @@ function CollapsibleText({
 // Progress bar shown below a streaming message. Gives users visual confirmation
 // that work is happening, even once characters are flowing.
 function StreamingProgress({ charCount, language }: { charCount: number; language: Language }) {
-  // Logarithmic-feeling curve: fast start, slows as we approach 90%, finishes at full when message ends.
-  const pct = Math.min(90, Math.round((charCount / EXPECTED_REPLY_LENGTH) * 90));
+  // The reply text streams first; afterwards the model emits sources/principles
+  // (no reply growth), so a charCount-only bar freezes there and looks hung.
+  // Drive a steady creep toward ~95% on a timer so the bar is ALWAYS moving,
+  // and let actual text length push it ahead whenever it streams fast.
+  const [pct, setPct] = useState(6);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setPct((p) => Math.min(95, p + (95 - p) * 0.05));
+    }, 150);
+    return () => clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    const charPct = Math.min(90, (charCount / EXPECTED_REPLY_LENGTH) * 90);
+    setPct((p) => (charPct > p ? charPct : p));
+  }, [charCount]);
+
   return (
     <div className="mt-2 flex items-center gap-2">
       <div className="flex-1 h-1 rounded-full bg-eb-surface-2 overflow-hidden">
         <div
-          className="h-full bg-eb-gold transition-all duration-200"
+          className="h-full bg-eb-gold transition-all duration-200 ease-out"
           style={{ width: `${pct}%` }}
         />
       </div>
-      <span className="text-[10px] text-eb-muted tabular-nums whitespace-nowrap">
-        {UI[language].writing} · {charCount}
+      <span className="text-[10px] text-eb-muted whitespace-nowrap">
+        {UI[language].writing}
       </span>
     </div>
   );
