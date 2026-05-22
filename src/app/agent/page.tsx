@@ -162,10 +162,10 @@ const ChatInput = memo(function ChatInput({ onSubmit, isLoading }: ChatInputProp
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Paste a Bitcoin claim or criticism here..."
-          rows={1}
+          placeholder="Paste a Bitcoin claim or criticism…"
+          rows={2}
           maxLength={5000}
-          className="flex-1 bg-eb-surface-2 border border-eb-border rounded-lg px-3 py-2.5 text-sm text-eb-navy placeholder:text-eb-subtle resize-none focus:outline-none focus:border-eb-gold focus:ring-1 focus:ring-eb-gold/20 transition-colors"
+          className="flex-1 min-h-[3.25rem] bg-eb-surface-2 border border-eb-border rounded-lg px-3 py-2.5 text-sm leading-snug text-eb-navy placeholder:text-eb-subtle resize-none focus:outline-none focus:border-eb-gold focus:ring-1 focus:ring-eb-gold/20 transition-colors"
         />
         <button
           type="submit"
